@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jimu - Your Fitness Companion</title>
+    <title>Trainer Dashboard - Jimu</title>
     <!-- Font Awesome CDN -->
     <link
       rel="stylesheet"
@@ -17,27 +17,20 @@
     <header class="header">
       <a href="#" class="logo"> <i class="fas fa-dumbbell"></i>Jimu</a>
       <nav class="navbar">
-        <a href="#" class="active">Home</a>
+        <a href="#" class="active">Dashboard</a>
+        <button id="logout-btn" class="btn">Logout</button>
       </nav>
     </header>
     <!-- End Header -->
 
-    <!-- Home Section -->
-    <section class="home">
-      <div class="content">
-        <h3>
-          Shape <br />
-          <span>Your Body</span> <br />
-          with Jimu
-        </h3>
-        <p>
-          Jimu is your ultimate fitness companion. Track your workouts, connect
-          with trainers, and achieve your fitness goals today!
-        </p>
-        <button id="login-btn" class="btn">Login to Get Started</button>
-      </div>
-    </section>
-    <!-- End Home Section -->
+    <!-- Main Content -->
+    <main>
+      <h1>Welcome, Trainer</h1>
+      <p id="trainer-info"></p>
+      <h2>Your Trainees</h2>
+      <ul id="trainee-list"></ul>
+    </main>
+    <!-- End Main Content -->
 
     <!-- Footer -->
     <footer class="footer">
@@ -46,6 +39,6 @@
     <!-- End Footer -->
 
     <!-- Script -->
-    <script src="JS/script.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
