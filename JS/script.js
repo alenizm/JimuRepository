@@ -98,24 +98,6 @@ function handleLoginRedirect() {
   }
 }
 
-// Display user information
-function displayUserInfo(pageType) {
-  const idToken = localStorage.getItem("id_token");
-  if (!idToken) {
-    logout();
-    return;
-  }
-
-  const payload = parseJwt(idToken);
-  console.log("Displaying user info:", payload);
-
-  if (pageType === "trainer") {
-    document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
-  } else if (pageType === "trainees") {
-    document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
-  }
-}
-
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.getElementById("login-btn");
