@@ -35,9 +35,9 @@ function redirectToRolePage(idToken) {
   const payload = parseJwt(idToken);
   const groups = payload["cognito:groups"] || [];
 
-  if (groups.includes("Trainer")) {
+  if (groups.includes("trainer")) {
     window.location.href = "trainers.html"; // Redirect trainers to their page
-  } else if (groups.includes("Trainee")) {
+  } else if (groups.includes("trainees")) {
     window.location.href = "trainees.html"; // Redirect trainees to their page
   } else {
     alert("You are not authorized to access this application.");
