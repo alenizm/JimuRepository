@@ -54,10 +54,12 @@ function redirectToRolePage(idToken) {
   const payload = parseJwt(idToken);
   const groups = payload["cognito:groups"] || [];
 
-  if (groups.includes("Trainer")) {
-    window.location.href = "trainers.html";
-  } else if (groups.includes("Trainee")) {
-    window.location.href = "trainees.html";
+  console.log("User groups:", groups);
+
+  if (groups.includes("trainer")) {
+    window.location.href = "trainers.html"; // Redirect trainers to their page
+  } else if (groups.includes("trainees")) {
+    window.location.href = "trainees.html"; // Redirect trainees to their page
   } else {
     alert("You are not authorized to access this application.");
     logout();
@@ -122,7 +124,7 @@ function displayUserInfo(pageType) {
       li.innerText = trainee.name;
       traineeList.appendChild(li);
     });
-  } else if (pageType === "trainee") {
+  } else if (pageType === "trainees") {
     document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
 
     // Mock data for machines (replace with API calls if necessary)
@@ -161,6 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (window.location.pathname.includes("trainees.html")) {
-    displayUserInfo("trainee");
+    displayUserInfo("trainees");
   }
 });
