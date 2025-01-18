@@ -1,43 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trainee Dashboard - Jimu</title>
-    <!-- Font Awesome CDN -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- Header -->
-    <header class="header">
-      <a href="#" class="logo"> <i class="fas fa-dumbbell"></i>Jimu</a>
-      <nav class="navbar">
-        <button id="logout-btn" class="btn">Logout</button>
-      </nav>
-    </header>
-    <!-- End Header -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainees Page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Welcome, Trainee</h1>
+    <button id="logout-btn">Logout</button>
+  </header>
 
-    <!-- Main Content -->
-    <main>
-      <h1>Welcome, Trainee</h1>
-      <p id="trainee-info"></p>
-      <h2>Your Machines</h2>
-      <ul id="machine-list"></ul>
-    </main>
-    <!-- End Main Content -->
+  <main>
+    <h2>Your Machines</h2>
+    <p id="trainee-info"></p>
+    <div id="machine-list" class="machine-list">
+      <!-- Dynamic machine cards will be displayed here -->
+    </div>
+  </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2023 Jimu. All Rights Reserved.</p>
-    </footer>
-    <!-- End Footer -->
+  <script type="module">
+    import { displayMachines } from 'JS/machineDisplay.js';
 
-    <!-- Script -->
-    <script src="JS/script.js"></script>
-  </body>
+    // Call the function to display machines dynamically
+    document.addEventListener("DOMContentLoaded", () => {
+      displayMachines();
+    });
+  </script>
+
+  <script src="JS/script.js"></script>
+</body>
 </html>
