@@ -4,26 +4,25 @@ const clientId = "4stnvic28pb26ps8ihehcfn36a";
 const redirectUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after login
 const logoutUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after logout
 
-// Cognito Login URL
+// Cognito URLs
 const cognitoLoginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${encodeURIComponent(
   redirectUri
 )}`;
-
-// Cognito Logout URL
 const cognitoLogoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
   logoutUri
 )}`;
 
 // Redirect to Cognito login
 function redirectToLogin() {
+  console.log("Redirecting to Cognito login...");
   window.location.href = cognitoLoginUrl;
 }
 
 // Logout and redirect to the Cognito logout endpoint
 function logout() {
   console.log("Logging out...");
-  localStorage.clear(); // Clear tokens from localStorage
-  sessionStorage.setItem("loggedOut", "true"); // Flag the logout state
+  localStorage.clear(); // Clear all stored tokens
+  sessionStorage.setItem("loggedOut", "true"); // Set a logout flag
   window.location.href = cognitoLogoutUrl; // Redirect to Cognito logout endpoint
 }
 
@@ -56,46 +55,48 @@ function redirectToRolePage(idToken) {
   const groups = payload["cognito:groups"] || [];
 
   if (groups.includes("Trainer")) {
-    window.location.href = "trainers.html"; // Redirect trainers to their page
+    window.location.href = "trainers.html";
   } else if (groups.includes("Trainee")) {
-    window.location.href = "trainees.html"; // Redirect trainees to their page
+    window.location.href = "trainees.html";
   } else {
     alert("You are not authorized to access this application.");
     logout();
   }
 }
 
-// Handle login and redirection
+// Handle login redirection and session initialization
 function handleLoginRedirect() {
-  // Check if user has logged out
+  // Skip if the user has logged out
   if (sessionStorage.getItem("loggedOut")) {
-    sessionStorage.removeItem("loggedOut"); // Clear the flag
-    return; // Prevent redirection to Cognito login
+    console.log("User just logged out. Skipping login redirect.");
+    sessionStorage.removeItem("loggedOut"); // Clear the logout flag
+    return;
   }
 
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
-    // Save tokens in localStorage
+    console.log("Token found in URL. Initializing session...");
     localStorage.setItem("id_token", tokens.idToken);
     localStorage.setItem("access_token", tokens.accessToken);
 
-    // Redirect based on role
+    // Redirect based on the user's role
     redirectToRolePage(tokens.idToken);
 
     // Clear URL hash to clean up
     window.history.replaceState({}, document.title, window.location.pathname);
   } else {
+    console.log("No tokens found. Checking localStorage...");
     const idToken = localStorage.getItem("id_token");
     if (idToken) {
       redirectToRolePage(idToken);
     } else {
-      // If no tokens are available, redirect to login
+      console.log("No valid session. Redirecting to login...");
       redirectToLogin();
     }
   }
 }
 
-// Display user information for trainers or trainees
+// Display user information
 function displayUserInfo(pageType) {
   const idToken = localStorage.getItem("id_token");
   if (!idToken) {
@@ -104,11 +105,12 @@ function displayUserInfo(pageType) {
   }
 
   const payload = parseJwt(idToken);
+  console.log("Displaying user info:", payload);
 
   if (pageType === "trainer") {
     document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
 
-    // Mock: Fetch trainees (replace with real API call if necessary)
+    // Mock data for trainees (replace with API calls if necessary)
     const trainees = [
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Smith" },
@@ -120,12 +122,10 @@ function displayUserInfo(pageType) {
       li.innerText = trainee.name;
       traineeList.appendChild(li);
     });
-  }
-
-  if (pageType === "trainee") {
+  } else if (pageType === "trainee") {
     document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
 
-    // Mock: Fetch machines (replace with real API call if necessary)
+    // Mock data for machines (replace with API calls if necessary)
     const machines = [
       { id: 1, name: "Treadmill" },
       { id: 2, name: "Bench Press" },
