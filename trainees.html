@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trainees Page</title>
   <link rel="stylesheet" href="./style.css">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
+
 <body>
+  <!-- Header -->
   <header class="header">
     <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Jimu</a>
-    <button id="logout-btn">Logout</button>
+    <button id="logout-btn" class="logout-btn">Logout</button>
   </header>
+  <!-- End Header -->
 
   <div class="machine-list-container">
     <button class="nav-arrow left" onclick="scrollLeft()">&#8249;</button>
@@ -20,7 +26,15 @@
     <button class="nav-arrow right" onclick="scrollRight()">&#8250;</button>
   </div>
 
+
+  <!-- Import JS files -->
   <script src="./JS/script.js"></script>
-  <script type="module" src="./JS/machineDisplay.js"></script>
+  <script type="module">
+    import { displayMachines, logMachine, scrollLeft, scrollRight } from './JS/machineDisplay.js';
+    document.addEventListener("DOMContentLoaded", () => {
+      displayMachines();
+    });
+  </script>
 </body>
+
 </html>

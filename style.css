@@ -651,118 +651,142 @@ html::-webkit-scrollbar-thumb {
     margin-top: 10px;
   }
 }
-/* General Styles */
 body {
-  font-family: Arial, sans-serif;
-  color: #f5f5f5;
-  background-color: #121212;
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: white;
 }
 
-/* Header styling */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #8b0000; /* Dark Red */
-  color: #fff;
+  padding: 20px 40px; /* Adjusted for wider padding */
+  background-color: #8B0000;
 }
 
 .header .logo {
   font-size: 24px;
   font-weight: bold;
+  color: white;
   text-decoration: none;
-  color: white;
 }
 
-.header .nav-arrow {
-  cursor: pointer;
-  background-color: transparent;
+button {
+  background-color: #007BFF;
   border: none;
+  padding: 10px 20px;
   color: white;
-  font-size: 24px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-.header .nav-arrow:hover {
-  color: #ddd;
+button:hover {
+  background-color: #0056b3;
 }
 
-/* Machine List Container */
 .machine-list-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 40px auto; /* Centers the machine list container */
   position: relative;
-  padding: 20px;
-  margin-top: 20px;
+  width: 90%;
+  max-width: 1200px; /* Limits the maximum width */
 }
 
 .machine-list {
   display: flex;
-  overflow-x: auto;
+  overflow-x: auto; /* Allows horizontal scrolling */
+  gap: 15px; /* Increased spacing between cards */
+  width: 100%;
+  padding: 20px;
   scroll-behavior: smooth;
-  gap: 15px;
-  padding: 10px 5px;
-  margin: 0 auto;
 }
 
 .machine-card {
-  background: #242424;
-  border-radius: 8px;
+  flex: 0 0 auto;
+  width: 220px; /* Slightly larger cards */
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  flex: 0 0 250px;
-  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #202020;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.machine-card:hover {
+  transform: translateY(-5px); /* Lift on hover */
+  box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
 }
 
 .machine-card h3 {
-  margin: 0 0 10px 0;
-  font-size: 20px;
-  color: #ff6347; /* Tomato color for headers */
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #FFD700; /* Gold color for machine name */
 }
 
 .machine-card p {
   margin: 5px 0;
   font-size: 14px;
-  color: #d3d3d3;
+  color: #dcdcdc;
 }
 
-.machine-card button {
+.machine-card .log-button {
   margin-top: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
+  background-color: #32CD32; /* Lime green */
+  padding: 8px 15px;
   border-radius: 5px;
-  font-size: 14px;
+  border: none;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
-.machine-card button:hover {
-  background-color: #0056b3;
+.machine-card .log-button:hover {
+  background-color: #228B22; /* Darker green on hover */
 }
 
-/* Navigation Buttons for Scrolling */
 .nav-arrow {
+  background: rgba(0, 0, 0, 0.5); /* Transparent background */
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  border-radius: 50%;
+  z-index: 1;
   padding: 10px;
-}
-
-.nav-arrow.left {
-  left: 0;
-}
-
-.nav-arrow.right {
-  right: 0;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
 }
 
 .nav-arrow:hover {
-  background-color: #8b0000;
+  background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter on hover */
+}
+
+.nav-arrow.left {
+  left: -30px; /* Positioned just outside the container */
+}
+
+.nav-arrow.right {
+  right: -30px; /* Positioned just outside the container */
+}
+
+@media (max-width: 768px) {
+  .machine-card {
+    width: 180px; /* Smaller cards for smaller screens */
+  }
+
+  .nav-arrow {
+    font-size: 20px; /* Smaller arrows */
+  }
+
+  button {
+    padding: 8px 15px; /* Smaller button padding */
+  }
 }
