@@ -4,30 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trainees Page</title>
-  <link rel="stylesheet" href="./style.css"> <!-- Corrected path to style.css -->
+  <link rel="stylesheet" href="./style.css">
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
 </head>
 <body>
-  <header>
-    <h1>Welcome, Trainee</h1>
-    <button id="logout-btn">Logout</button>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Jimu</a>
+    <nav class="navbar">
+      <a href="#" class="active">Home</a>
+    </nav>
+    <button id="logout-btn" class="logout-btn">Logout</button>
   </header>
+  <!-- End Header -->
 
   <main>
     <h2>Your Machines</h2>
-    <p id="trainee-info"></p>
+    <p id="trainee-info">Hello, welcome to your training dashboard!</p>
     <div id="machine-list" class="machine-list">
-      <!-- Dynamic machine cards will be displayed here -->
+      <!-- Machine cards will be dynamically injected here -->
     </div>
   </main>
 
   <!-- Import JS files -->
   <script src="./JS/script.js"></script>
   <script type="module">
+    // Import the displayMachines function from machineDisplay.js
     import { displayMachines } from './JS/machineDisplay.js';
 
-    // Call the function to display machines dynamically
+    // Wait for the DOM to load before calling the function
     document.addEventListener("DOMContentLoaded", () => {
+      // Call displayMachines (future API integration point)
       displayMachines();
+    });
+
+    // Add event listener to logout button
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      localStorage.clear(); // Clear stored data
+      sessionStorage.setItem("loggedOut", "true"); // Mark as logged out
+      window.location.href = "index.html"; // Redirect to the main page
     });
   </script>
 </body>
