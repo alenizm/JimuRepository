@@ -1,10 +1,29 @@
 // Cognito Configuration
-const cognitoLoginUrl =
-  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com/login?client_id=4stnvic28pb26ps8ihehcfn36a&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=https%3A%2F%2Falenizm.github.io%2FJimuRepository%2Findex.html";
+const cognitoDomain = "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
+const clientId = "4stnvic28pb26ps8ihehcfn36a";
+const redirectUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after login
+const logoutUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after logout
+
+// Cognito Login URL
+const cognitoLoginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${encodeURIComponent(
+  redirectUri
+)}`;
+
+// Cognito Logout URL
+const cognitoLogoutUrl = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
+  logoutUri
+)}`;
 
 // Redirect to Cognito login
 function redirectToLogin() {
   window.location.href = cognitoLoginUrl;
+}
+
+// Logout and redirect to the Cognito logout endpoint
+function logout() {
+  console.log("Logging out...");
+  localStorage.clear(); // Clear tokens from localStorage
+  window.location.href = cognitoLogoutUrl; // Redirect to Cognito logout endpoint
 }
 
 // Parse tokens from the URL hash
@@ -35,9 +54,9 @@ function redirectToRolePage(idToken) {
   const payload = parseJwt(idToken);
   const groups = payload["cognito:groups"] || [];
 
-  if (groups.includes("trainer")) {
+  if (groups.includes("Trainer")) {
     window.location.href = "trainers.html"; // Redirect trainers to their page
-  } else if (groups.includes("trainees")) {
+  } else if (groups.includes("Trainee")) {
     window.location.href = "trainees.html"; // Redirect trainees to their page
   } else {
     alert("You are not authorized to access this application.");
@@ -45,7 +64,7 @@ function redirectToRolePage(idToken) {
   }
 }
 
-// Handle tokens and redirect
+// Handle login and redirection
 function handleLoginRedirect() {
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
@@ -59,23 +78,60 @@ function handleLoginRedirect() {
     // Clear URL hash to clean up
     window.history.replaceState({}, document.title, window.location.pathname);
   } else {
-    // If no tokens are available, redirect to login
-    redirectToLogin();
+    const idToken = localStorage.getItem("id_token");
+    if (idToken) {
+      redirectToRolePage(idToken);
+    } else {
+      // If no tokens are available, redirect to login
+      redirectToLogin();
+    }
   }
 }
 
-function logout() {
-  // Cognito logout URL
-  const cognitoLogoutUrl =
-    "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com/logout?client_id=4stnvic28pb26ps8ihehcfn36a&logout_uri=https%3A%2F%2Falenizm.github.io%2FJimuRepository%2Findex.html";
+// Display user information for trainers or trainees
+function displayUserInfo(pageType) {
+  const idToken = localStorage.getItem("id_token");
+  if (!idToken) {
+    logout();
+    return;
+  }
 
-  // Clear local storage to remove tokens
-  localStorage.clear();
+  const payload = parseJwt(idToken);
 
-  // Redirect to Cognito logout endpoint to end session and then back to index.html
-  window.location.href = cognitoLogoutUrl;
+  if (pageType === "trainer") {
+    document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
+
+    // Mock: Fetch trainees (replace with real API call if necessary)
+    const trainees = [
+      { id: 1, name: "John Doe" },
+      { id: 2, name: "Jane Smith" },
+    ];
+
+    const traineeList = document.getElementById("trainee-list");
+    trainees.forEach((trainee) => {
+      const li = document.createElement("li");
+      li.innerText = trainee.name;
+      traineeList.appendChild(li);
+    });
+  }
+
+  if (pageType === "trainee") {
+    document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
+
+    // Mock: Fetch machines (replace with real API call if necessary)
+    const machines = [
+      { id: 1, name: "Treadmill" },
+      { id: 2, name: "Bench Press" },
+    ];
+
+    const machineList = document.getElementById("machine-list");
+    machines.forEach((machine) => {
+      const li = document.createElement("li");
+      li.innerText = machine.name;
+      machineList.appendChild(li);
+    });
+  }
 }
-
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
@@ -101,48 +157,3 @@ document.addEventListener("DOMContentLoaded", () => {
     displayUserInfo("trainee");
   }
 });
-
-// Display user information for trainers or trainees
-function displayUserInfo(pageType) {
-  const idToken = localStorage.getItem("id_token");
-  if (!idToken) {
-    logout();
-    return;
-  }
-
-  const payload = parseJwt(idToken);
-
-  if (pageType === "trainer") {
-    document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
-
-    // Mock: Fetch trainees (replace with API call if necessary)
-    const trainees = [
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Smith" },
-    ];
-
-    const traineeList = document.getElementById("trainee-list");
-    trainees.forEach((trainee) => {
-      const li = document.createElement("li");
-      li.innerText = trainee.name;
-      traineeList.appendChild(li);
-    });
-  }
-
-  if (pageType === "trainee") {
-    document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
-
-    // Mock: Fetch machines (replace with API call if necessary)
-    const machines = [
-      { id: 1, name: "Treadmill" },
-      { id: 2, name: "Bench Press" },
-    ];
-
-    const machineList = document.getElementById("machine-list");
-    machines.forEach((machine) => {
-      const li = document.createElement("li");
-      li.innerText = machine.name;
-      machineList.appendChild(li);
-    });
-  }
-}
