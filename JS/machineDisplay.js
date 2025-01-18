@@ -10,7 +10,7 @@ async function displayMachines() {
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
       method: "GET", // Explicitly specify GET
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
       },
     });
 
