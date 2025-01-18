@@ -589,43 +589,65 @@ html::-webkit-scrollbar-thumb {
   }
 }
 
-.machine-list {
+/* Header styles */
+.header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin: 20px 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #8B0000, #4B0000); /* Gradient background */
+  color: white;
 }
 
-.machine-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 20px;
-  width: 200px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.header .logo {
+  font-size: 24px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
-.machine-card h3 {
-  margin: 0 0 10px;
-  font-size: 18px;
-  color: #333;
+.header .logo i {
+  margin-right: 10px;
+  font-size: 28px;
 }
 
-.machine-card p {
-  margin: 0 0 15px;
-  font-size: 14px;
-  color: #666;
+.header .navbar a {
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.machine-card button {
-  background-color: #007bff;
+.header .navbar a.active {
+  text-decoration: underline;
+}
+
+.header .logout-btn {
+  background-color: #FF6347;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.machine-card button:hover {
-  background-color: #0056b3;
+.header .logout-btn:hover {
+  background-color: #FF4500;
+}
+
+/* Optional: Add responsive behavior */
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar {
+    margin-top: 10px;
+  }
 }
