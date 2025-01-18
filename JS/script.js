@@ -111,34 +111,8 @@ function displayUserInfo(pageType) {
 
   if (pageType === "trainer") {
     document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
-
-    // Mock data for trainees (replace with API calls if necessary)
-    const trainees = [
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Smith" },
-    ];
-
-    const traineeList = document.getElementById("trainee-list");
-    trainees.forEach((trainee) => {
-      const li = document.createElement("li");
-      li.innerText = trainee.name;
-      traineeList.appendChild(li);
-    });
   } else if (pageType === "trainees") {
     document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
-
-    // Mock data for machines (replace with API calls if necessary)
-    const machines = [
-      { id: 1, name: "Treadmill" },
-      { id: 2, name: "Bench Press" },
-    ];
-
-    const machineList = document.getElementById("machine-list");
-    machines.forEach((machine) => {
-      const li = document.createElement("li");
-      li.innerText = machine.name;
-      machineList.appendChild(li);
-    });
   }
 }
 
