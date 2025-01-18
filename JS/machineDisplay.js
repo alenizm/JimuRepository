@@ -8,10 +8,7 @@ async function displayMachines() {
     console.log("Access Token:", token);
 
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      method: "GET" // Explicitly specify GET
     });
 
     console.log("API Response:", response);
@@ -20,10 +17,16 @@ async function displayMachines() {
       throw new Error(`Failed to fetch machines: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
-    console.log("Machines Data:", data);
+    const responseData = await response.json();
+    console.log("Machines Data:", responseData);
 
-    const machines = JSON.parse(data.body).machines;
+    // Parse the body (it's a JSON string)
+    const parsedBody = JSON.parse(responseData.body);
+    const machines = parsedBody.machines;
+
+    if (!Array.isArray(machines)) {
+      throw new Error("Machines data is not an array");
+    }
 
     // Clear the current list
     machineList.innerHTML = "";
@@ -50,25 +53,22 @@ async function displayMachines() {
   }
 }
 
-// Function to handle logging a workout
+// Example function to handle machine interaction
 function logMachine(machineId, machineName) {
   alert(`Logging workout for ${machineName} (ID: ${machineId})`);
 }
 
-// Scroll functions
+// Function to scroll left
 function scrollLeft() {
   const machineList = document.getElementById("machine-list");
   machineList.scrollBy({ left: -250, behavior: "smooth" });
 }
 
+// Function to scroll right
 function scrollRight() {
   const machineList = document.getElementById("machine-list");
   machineList.scrollBy({ left: 250, behavior: "smooth" });
 }
 
-// Initialize the display of machines on page load
-document.addEventListener("DOMContentLoaded", () => {
-  displayMachines();
-});
-
+// Export if using modules
 export { displayMachines, logMachine, scrollLeft, scrollRight };
