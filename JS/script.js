@@ -23,6 +23,7 @@ function redirectToLogin() {
 function logout() {
   console.log("Logging out...");
   localStorage.clear(); // Clear tokens from localStorage
+  sessionStorage.setItem("loggedOut", "true"); // Flag the logout state
   window.location.href = cognitoLogoutUrl; // Redirect to Cognito logout endpoint
 }
 
@@ -66,6 +67,12 @@ function redirectToRolePage(idToken) {
 
 // Handle login and redirection
 function handleLoginRedirect() {
+  // Check if user has logged out
+  if (sessionStorage.getItem("loggedOut")) {
+    sessionStorage.removeItem("loggedOut"); // Clear the flag
+    return; // Prevent redirection to Cognito login
+  }
+
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
     // Save tokens in localStorage
