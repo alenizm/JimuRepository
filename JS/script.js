@@ -1,6 +1,6 @@
 // Cognito Configuration
 const cognitoLoginUrl =
-  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com/login?client_id=4stnvic28pb26ps8ihehcfn36a&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=https%3A%2F%2Falenizm.github.io%2FJimuRepository%2F";
+  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com/login?client_id=4stnvic28pb26ps8ihehcfn36a&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=https%3A%2F%2Falenizm.github.io%2FJimuRepository%2Findex.html";
 
 // Redirect to Cognito login
 function redirectToLogin() {
@@ -45,8 +45,8 @@ function redirectToRolePage(idToken) {
   }
 }
 
-// Handle redirection and tokens after login
-function handleDashboard() {
+// Handle tokens and redirect
+function handleLoginRedirect() {
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
     // Save tokens in localStorage
@@ -59,17 +59,43 @@ function handleDashboard() {
     // Clear URL hash to clean up
     window.history.replaceState({}, document.title, window.location.pathname);
   } else {
-    const idToken = localStorage.getItem("id_token");
-    if (idToken) {
-      redirectToRolePage(idToken);
-    } else {
-      // If no tokens are available, redirect to login
-      redirectToLogin();
-    }
+    // If no tokens are available, redirect to login
+    redirectToLogin();
   }
 }
 
-// Display user details for trainers or trainees
+// Logout user and clear tokens
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const loginButton = document.getElementById("login-btn");
+  if (loginButton) {
+    loginButton.addEventListener("click", redirectToLogin);
+  }
+
+  const logoutButton = document.getElementById("logout-btn");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logout);
+  }
+
+  if (window.location.pathname.includes("index.html")) {
+    handleLoginRedirect();
+  }
+
+  if (window.location.pathname.includes("trainers.html")) {
+    displayUserInfo("trainer");
+  }
+
+  if (window.location.pathname.includes("trainees.html")) {
+    displayUserInfo("trainee");
+  }
+});
+
+// Display user information for trainers or trainees
 function displayUserInfo(pageType) {
   const idToken = localStorage.getItem("id_token");
   if (!idToken) {
@@ -82,7 +108,7 @@ function displayUserInfo(pageType) {
   if (pageType === "trainer") {
     document.getElementById("trainer-info").innerText = `Hello, ${payload.email}`;
 
-    // Mock: Fetch trainees (replace with real API call)
+    // Mock: Fetch trainees (replace with API call if necessary)
     const trainees = [
       { id: 1, name: "John Doe" },
       { id: 2, name: "Jane Smith" },
@@ -99,7 +125,7 @@ function displayUserInfo(pageType) {
   if (pageType === "trainee") {
     document.getElementById("trainee-info").innerText = `Hello, ${payload.email}`;
 
-    // Mock: Fetch machines (replace with real API call)
+    // Mock: Fetch machines (replace with API call if necessary)
     const machines = [
       { id: 1, name: "Treadmill" },
       { id: 2, name: "Bench Press" },
@@ -113,39 +139,3 @@ function displayUserInfo(pageType) {
     });
   }
 }
-
-// Logout user and clear tokens
-function logout() {
-  localStorage.clear();
-  window.location.href = "index.html";
-}
-
-// Event Listener
-document.addEventListener("DOMContentLoaded", () => {
-  const loginButton = document.getElementById("login-btn");
-  if (loginButton) {
-    loginButton.addEventListener("click", redirectToLogin);
-  }
-
-  const logoutButton = document.getElementById("logout-btn");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", logout);
-  }
-
-  if (window.location.pathname.includes("index.html")) {
-    const tokens = getTokensFromUrl();
-    if (tokens.idToken) {
-      localStorage.setItem("id_token", tokens.idToken);
-      localStorage.setItem("access_token", tokens.accessToken);
-      redirectToRolePage(tokens.idToken);
-    }
-  }
-
-  if (window.location.pathname.includes("trainers.html")) {
-    displayUserInfo("trainer");
-  }
-
-  if (window.location.pathname.includes("trainees.html")) {
-    displayUserInfo("trainee");
-  }
-});
