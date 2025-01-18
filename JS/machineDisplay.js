@@ -58,15 +58,20 @@ function logMachine(machineId, machineName) {
   alert(`Logging workout for ${machineName} (ID: ${machineId})`);
 }
 
+// Function to scroll left
 function scrollLeft() {
   const machineList = document.getElementById("machine-list");
   machineList.scrollBy({ left: -250, behavior: "smooth" });
 }
 
+// Function to scroll right
 function scrollRight() {
   const machineList = document.getElementById("machine-list");
   machineList.scrollBy({ left: 250, behavior: "smooth" });
 }
+
+// Export if using modules
+export { displayMachines, logMachine, scrollLeft, scrollRight };
 
 
 // Exporting the functions

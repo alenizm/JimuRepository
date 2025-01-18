@@ -651,135 +651,118 @@ html::-webkit-scrollbar-thumb {
     margin-top: 10px;
   }
 }
-/* General body styles */
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
+  color: #f5f5f5;
+  background-color: #121212;
   margin: 0;
   padding: 0;
-  background-color: #121212; /* Dark background */
-  color: #f5f5f5; /* Light text color */
 }
 
-/* Header styles */
+/* Header styling */
 .header {
-  background-color: #8B0000; /* Red color */
-  color: #fff;
-  padding: 10px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #8b0000; /* Dark Red */
+  color: #fff;
 }
 
 .header .logo {
   font-size: 24px;
   font-weight: bold;
   text-decoration: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
+  color: white;
 }
 
-.header .logo i {
-  margin-right: 10px;
+.header .nav-arrow {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
 }
 
-.header nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
+.header .nav-arrow:hover {
+  color: #ddd;
 }
 
-.header nav a:hover {
-  color: #ffcccc;
-}
-
-/* Add padding below the header */
-main {
+/* Machine List Container */
+.machine-list-container {
+  position: relative;
   padding: 20px;
+  margin-top: 20px;
 }
 
-/* Machine list container with scrollable navigation */
 .machine-list {
   display: flex;
-  overflow-x: auto; /* Horizontal scrollable */
-  gap: 20px;
-  padding: 20px;
-  scroll-behavior: smooth; /* Smooth scrolling for navigation */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 15px;
+  padding: 10px 5px;
+  margin: 0 auto;
 }
 
-.machine-list::-webkit-scrollbar {
-  height: 8px;
-}
-
-.machine-list::-webkit-scrollbar-thumb {
-  background: #8B0000; /* Match theme color */
-  border-radius: 10px;
-}
-
-.machine-list::-webkit-scrollbar-track {
-  background: #333;
-}
-
-/* Individual machine card */
 .machine-card {
-  background-color: #1e1e1e; /* Darker background for card */
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 15px;
-  min-width: 250px; /* Fixed width for uniform cards */
-  flex: 0 0 auto; /* Prevent shrinking */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  background: #242424;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  flex: 0 0 250px;
   text-align: center;
 }
 
 .machine-card h3 {
-  font-size: 18px;
-  color: #ffcc00; /* Highlighted color for the machine name */
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  color: #ff6347; /* Tomato color for headers */
 }
 
 .machine-card p {
-  font-size: 14px;
   margin: 5px 0;
+  font-size: 14px;
+  color: #d3d3d3;
 }
 
 .machine-card button {
   margin-top: 10px;
-  padding: 10px 15px;
-  background-color: #ffcc00; /* Yellow button color */
-  color: #000; /* Black text color */
+  background-color: #007bff;
+  color: white;
   border: none;
+  padding: 10px 15px;
   border-radius: 5px;
-  cursor: pointer;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .machine-card button:hover {
-  background-color: #ffe066; /* Lighter yellow on hover */
+  background-color: #0056b3;
 }
 
-/* Navigation arrows */
+/* Navigation Buttons for Scrolling */
 .nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #8B0000;
-  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
   border: none;
-  padding: 10px;
+  font-size: 24px;
   cursor: pointer;
   border-radius: 50%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.nav-arrow:hover {
-  background-color: #ff6666;
+  padding: 10px;
 }
 
 .nav-arrow.left {
-  left: 10px;
+  left: 0;
 }
 
 .nav-arrow.right {
-  right: 10px;
+  right: 0;
+}
+
+.nav-arrow:hover {
+  background-color: #8b0000;
 }
