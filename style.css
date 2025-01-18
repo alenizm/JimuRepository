@@ -651,3 +651,31 @@ html::-webkit-scrollbar-thumb {
     margin-top: 10px;
   }
 }
+.machine-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+}
+
+.machine-card h3 {
+  margin: 0 0 10px;
+}
+
+.machine-card p {
+  margin: 5px 0;
+}
+
+.machine-card button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.machine-card button:hover {
+  background-color: #0056b3;
+}
