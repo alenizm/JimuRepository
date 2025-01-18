@@ -8,7 +8,7 @@ async function displayMachines() {
     console.log("Access Token:", token);
 
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
-      method: "GET", // Explicitly specify GET
+      method: "GET" // Explicitly specify GET
     });
 
     console.log("API Response:", response);
@@ -21,8 +21,12 @@ async function displayMachines() {
     console.log("Machines Data:", responseData);
 
     // Parse the body (it's a JSON string)
-    const machinesData = JSON.parse(responseData.body);
-    const machines = machinesData.machines;
+    const parsedBody = JSON.parse(responseData.body);
+    const machines = parsedBody.machines;
+
+    if (!Array.isArray(machines)) {
+      throw new Error("Machines data is not an array");
+    }
 
     // Clear the current list
     machineList.innerHTML = "";
