@@ -64,11 +64,18 @@ function handleLoginRedirect() {
   }
 }
 
-// Logout user and clear tokens
 function logout() {
+  // Cognito logout URL
+  const cognitoLogoutUrl =
+    "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com/logout?client_id=4stnvic28pb26ps8ihehcfn36a&logout_uri=https%3A%2F%2Falenizm.github.io%2FJimuRepository%2Findex.html";
+
+  // Clear local storage to remove tokens
   localStorage.clear();
-  window.location.href = "index.html";
+
+  // Redirect to Cognito logout endpoint to end session and then back to index.html
+  window.location.href = cognitoLogoutUrl;
 }
+
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
