@@ -3,18 +3,25 @@ async function displayMachines() {
   const machineList = document.getElementById("machine-list");
 
   try {
-    // Future API call for fetching machines
+    console.log("Fetching machines...");
+    const token = localStorage.getItem("access_token");
+    console.log("Access Token:", token);
+
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
+      method: "GET", // Explicitly specify GET
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
+    console.log("API Response:", response);
+
     if (!response.ok) {
-      throw new Error("Failed to fetch machines.");
+      throw new Error(`Failed to fetch machines: ${response.status} ${response.statusText}`);
     }
 
     const machines = await response.json();
+    console.log("Machines Data:", machines);
 
     // Clear the current list
     machineList.innerHTML = "";
