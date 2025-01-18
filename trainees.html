@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trainees Page</title>
   <link rel="stylesheet" href="./style.css">
   <!-- Font Awesome for icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
+
 <body>
   <!-- Header -->
   <header class="header">
@@ -21,30 +20,35 @@
 
   <main>
     <h2>Your Machines</h2>
-    <p id="trainee-info">Hello, welcome to your training dashboard!</p>
-    <div id="machine-list" class="machine-list">
-      <!-- Machine cards will be dynamically injected here -->
+    <p id="trainee-info"></p>
+
+    <!-- Wrapper for navigation -->
+    <div style="position: relative;">
+      <button class="nav-arrow left" onclick="scrollLeft()">&#8249;</button>
+      <div id="machine-list" class="machine-list">
+        <!-- Dynamic machine cards will be displayed here -->
+      </div>
+      <button class="nav-arrow right" onclick="scrollRight()">&#8250;</button>
     </div>
   </main>
 
   <!-- Import JS files -->
   <script src="./JS/script.js"></script>
   <script type="module">
-    // Import the displayMachines function from machineDisplay.js
-    import { displayMachines } from './JS/machineDisplay.js';
-
-    // Wait for the DOM to load before calling the function
+    import { displayMachines, scrollLeft, scrollRight } from './JS/machineDisplay.js';
     document.addEventListener("DOMContentLoaded", () => {
-      // Call displayMachines (future API integration point)
       displayMachines();
     });
+  </script>
 
-    // Add event listener to logout button
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      localStorage.clear(); // Clear stored data
-      sessionStorage.setItem("loggedOut", "true"); // Mark as logged out
-      window.location.href = "index.html"; // Redirect to the main page
-    });
+
+  // Add event listener to logout button
+  document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.clear(); // Clear stored data
+  sessionStorage.setItem("loggedOut", "true"); // Mark as logged out
+  window.location.href = "index.html"; // Redirect to the main page
+  });
   </script>
 </body>
+
 </html>

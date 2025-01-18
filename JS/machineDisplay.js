@@ -58,5 +58,17 @@ function logMachine(machineId, machineName) {
   alert(`Logging workout for ${machineName} (ID: ${machineId})`);
 }
 
+function scrollLeft() {
+  const machineList = document.getElementById("machine-list");
+  machineList.scrollBy({ left: -250, behavior: "smooth" });
+}
+
+function scrollRight() {
+  const machineList = document.getElementById("machine-list");
+  machineList.scrollBy({ left: 250, behavior: "smooth" });
+}
+
+
 // Exporting the functions
-export { displayMachines, logMachine };
+export { displayMachines, logMachine, scrollLeft, scrollRight };
+

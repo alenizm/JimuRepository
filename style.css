@@ -651,31 +651,135 @@ html::-webkit-scrollbar-thumb {
     margin-top: 10px;
   }
 }
+/* General body styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #121212; /* Dark background */
+  color: #f5f5f5; /* Light text color */
+}
+
+/* Header styles */
+.header {
+  background-color: #8B0000; /* Red color */
+  color: #fff;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .logo {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.header .logo i {
+  margin-right: 10px;
+}
+
+.header nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+}
+
+.header nav a:hover {
+  color: #ffcccc;
+}
+
+/* Add padding below the header */
+main {
+  padding: 20px;
+}
+
+/* Machine list container with scrollable navigation */
+.machine-list {
+  display: flex;
+  overflow-x: auto; /* Horizontal scrollable */
+  gap: 20px;
+  padding: 20px;
+  scroll-behavior: smooth; /* Smooth scrolling for navigation */
+}
+
+.machine-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.machine-list::-webkit-scrollbar-thumb {
+  background: #8B0000; /* Match theme color */
+  border-radius: 10px;
+}
+
+.machine-list::-webkit-scrollbar-track {
+  background: #333;
+}
+
+/* Individual machine card */
 .machine-card {
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  background-color: #1e1e1e; /* Darker background for card */
+  border: 1px solid #333;
+  border-radius: 12px;
   padding: 15px;
-  margin: 10px 0;
-  background-color: #f9f9f9;
+  min-width: 250px; /* Fixed width for uniform cards */
+  flex: 0 0 auto; /* Prevent shrinking */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
 .machine-card h3 {
-  margin: 0 0 10px;
+  font-size: 18px;
+  color: #ffcc00; /* Highlighted color for the machine name */
 }
 
 .machine-card p {
+  font-size: 14px;
   margin: 5px 0;
 }
 
 .machine-card button {
-  background-color: #007bff;
-  color: white;
-  border: none;
+  margin-top: 10px;
   padding: 10px 15px;
-  border-radius: 3px;
+  background-color: #ffcc00; /* Yellow button color */
+  color: #000; /* Black text color */
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .machine-card button:hover {
-  background-color: #0056b3;
+  background-color: #ffe066; /* Lighter yellow on hover */
+}
+
+/* Navigation arrows */
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #8B0000;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nav-arrow:hover {
+  background-color: #ff6666;
+}
+
+.nav-arrow.left {
+  left: 10px;
+}
+
+.nav-arrow.right {
+  right: 10px;
 }
