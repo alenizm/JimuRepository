@@ -17,8 +17,12 @@ async function displayMachines() {
       throw new Error(`Failed to fetch machines: ${response.status} ${response.statusText}`);
     }
 
-    const machines = await response.json();
-    console.log("Machines Data:", machines);
+    const responseData = await response.json();
+    console.log("Machines Data:", responseData);
+
+    // Parse the body (it's a JSON string)
+    const machinesData = JSON.parse(responseData.body);
+    const machines = machinesData.machines;
 
     // Clear the current list
     machineList.innerHTML = "";
@@ -29,9 +33,12 @@ async function displayMachines() {
       machineCard.className = "machine-card";
 
       machineCard.innerHTML = `
-        <h3>${machine.name}</h3>
-        <p>${machine.description}</p>
-        <button onclick="logMachine('${machine.id}', '${machine.name}')">Log Workout</button>
+        <h3>${machine.Name}</h3>
+        <p><strong>Location:</strong> ${machine.Location}</p>
+        <p><strong>Status:</strong> ${machine.Status}</p>
+        <p><strong>Last Maintenance:</strong> ${machine.LastMaintenance}</p>
+        <p><strong>Next Maintenance:</strong> ${machine.NextMaintenance}</p>
+        <button onclick="logMachine('${machine.MachineID}', '${machine.Name}')">Log Workout</button>
       `;
 
       machineList.appendChild(machineCard);
