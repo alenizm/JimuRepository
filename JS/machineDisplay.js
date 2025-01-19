@@ -8,10 +8,7 @@ async function displayMachines() {
     console.log("Access Token:", token);
 
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      method: "GET"
     });
 
     console.log("API Response:", response);
@@ -67,9 +64,11 @@ function openLogModal(machineId, machineName) {
   modal.style.display = "block";
 }
 
-// Function to close the modal
+// Function to close the modal and clear fields
 function closeLogModal() {
   const modal = document.getElementById("logModal");
+  const form = document.getElementById("logForm"); // Assuming the form has this ID
+  form.reset(); // Clear all input fields
   modal.style.display = "none";
 }
 
@@ -119,7 +118,6 @@ async function submitWorkoutLog(event) {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -132,7 +130,7 @@ async function submitWorkoutLog(event) {
 
     console.log("Workout logged successfully.");
     alert("Workout logged successfully!");
-    closeLogModal();
+    closeLogModal(); // Close the modal and reset fields
   } catch (error) {
     console.error("Error logging workout:", error);
     alert("Failed to log workout. Please try again.");
