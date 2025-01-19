@@ -98,6 +98,33 @@ function handleLoginRedirect() {
   }
 }
 
+// Display user information
+function displayUserInfo(pageType) {
+  const idToken = localStorage.getItem("id_token");
+
+  if (!idToken) {
+    logout(); // Redirect to login if no token is found
+    return;
+  }
+
+  const payload = parseJwt(idToken); // Decode the JWT to extract user information
+  console.log("Displaying user info:", payload);
+
+  if (pageType === "trainer") {
+    // Display trainer-specific information
+    const trainerInfo = document.getElementById("trainer-info");
+    if (trainerInfo) {
+      trainerInfo.innerText = `Hello, ${payload.email || payload.username}`;
+    }
+  } else if (pageType === "trainees") {
+    // Display trainee-specific information
+    const traineeInfo = document.getElementById("trainee-info");
+    if (traineeInfo) {
+      traineeInfo.innerText = `Hello, ${payload.email || payload.username}`;
+    }
+  }
+}
+
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.getElementById("login-btn");

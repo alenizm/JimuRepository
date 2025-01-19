@@ -8,7 +8,10 @@ async function displayMachines() {
     console.log("Access Token:", token);
 
     const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
-      method: "GET" // Explicitly specify GET
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     console.log("API Response:", response);
@@ -42,7 +45,7 @@ async function displayMachines() {
         <p><strong>Status:</strong> ${machine.Status}</p>
         <p><strong>Last Maintenance:</strong> ${machine.LastMaintenance}</p>
         <p><strong>Next Maintenance:</strong> ${machine.NextMaintenance}</p>
-        <button onclick="logMachine('${machine.MachineID}', '${machine.Name}')">Log Workout</button>
+        <button onclick="openLogModal('${machine.MachineID}', '${machine.Name}')">Log Workout</button>
       `;
 
       machineList.appendChild(machineCard);
@@ -53,9 +56,61 @@ async function displayMachines() {
   }
 }
 
-// Example function to handle machine interaction
-function logMachine(machineId, machineName) {
-  alert(`Logging workout for ${machineName} (ID: ${machineId})`);
+// Example function to open a modal for logging a workout
+function openLogModal(machineId, machineName) {
+  const modal = document.getElementById("logModal");
+  const modalMachineName = document.getElementById("modal-machine-name");
+  const machineIdInput = document.getElementById("machine-id");
+
+  modalMachineName.textContent = machineName;
+  machineIdInput.value = machineId;
+  modal.style.display = "block";
+}
+
+// Function to close the modal
+function closeLogModal() {
+  const modal = document.getElementById("logModal");
+  modal.style.display = "none";
+}
+
+// Function to submit the workout log
+async function submitWorkoutLog(event) {
+  event.preventDefault();
+
+  const token = localStorage.getItem("access_token");
+  const machineId = document.getElementById("machine-id").value;
+  const sets = document.getElementById("sets").value;
+  const weight = document.getElementById("weight").value;
+  const repetitions = document.getElementById("repetitions").value;
+
+  const payload = {
+    MachineID: machineId,
+    Sets: sets,
+    Weight: weight,
+    Repetitions: repetitions,
+  };
+
+  try {
+    const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Records", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to log workout: ${response.status} ${response.statusText}`);
+    }
+
+    console.log("Workout logged successfully.");
+    alert("Workout logged successfully!");
+    closeLogModal();
+  } catch (error) {
+    console.error("Error logging workout:", error);
+    alert("Failed to log workout. Please try again.");
+  }
 }
 
 // Function to scroll left
@@ -71,4 +126,4 @@ function scrollRight() {
 }
 
 // Export if using modules
-export { displayMachines, logMachine, scrollLeft, scrollRight };
+export { displayMachines, scrollLeft, scrollRight };

@@ -541,9 +541,11 @@ html::-webkit-scrollbar-thumb {
   #menu {
     display: inline-block;
   }
+
   .fa-times {
     transform: rotate(180deg);
   }
+
   .header .navbar {
     position: absolute;
     top: 99%;
@@ -553,19 +555,24 @@ html::-webkit-scrollbar-thumb {
     border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
     clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
   }
+
   .header .navbar.active {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
+
   .header .navbar a {
     display: block;
     margin: 2rem;
   }
+
   .home {
     background-position: left;
   }
+
   .home .content h3 {
     font-size: 5rem;
   }
+
   .team .box-container .box .image {
     height: 56rem;
   }
@@ -581,9 +588,11 @@ html::-webkit-scrollbar-thumb {
   html {
     font-size: 50%;
   }
+
   .home .content h3 {
     font-size: 4rem;
   }
+
   .team .box-container .box .image {
     height: 38rem;
   }
@@ -595,7 +604,8 @@ html::-webkit-scrollbar-thumb {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background: linear-gradient(90deg, #8B0000, #4B0000); /* Gradient background */
+  background: linear-gradient(90deg, #8B0000, #4B0000);
+  /* Gradient background */
   color: white;
 }
 
@@ -651,6 +661,7 @@ html::-webkit-scrollbar-thumb {
     margin-top: 10px;
   }
 }
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -662,7 +673,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px; /* Adjusted for wider padding */
+  padding: 20px 40px;
+  /* Adjusted for wider padding */
   background-color: #8B0000;
 }
 
@@ -687,106 +699,3 @@ button:hover {
   background-color: #0056b3;
 }
 
-.machine-list-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 40px auto; /* Centers the machine list container */
-  position: relative;
-  width: 90%;
-  max-width: 1200px; /* Limits the maximum width */
-}
-
-.machine-list {
-  display: flex;
-  overflow-x: auto; /* Allows horizontal scrolling */
-  gap: 15px; /* Increased spacing between cards */
-  width: 100%;
-  padding: 20px;
-  scroll-behavior: smooth;
-}
-
-.machine-card {
-  flex: 0 0 auto;
-  width: 220px; /* Slightly larger cards */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #202020;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.machine-card:hover {
-  transform: translateY(-5px); /* Lift on hover */
-  box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.4); /* Enhanced shadow on hover */
-}
-
-.machine-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #FFD700; /* Gold color for machine name */
-}
-
-.machine-card p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #dcdcdc;
-}
-
-.machine-card .log-button {
-  margin-top: 10px;
-  background-color: #32CD32; /* Lime green */
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.machine-card .log-button:hover {
-  background-color: #228B22; /* Darker green on hover */
-}
-
-.nav-arrow {
-  background: rgba(0, 0, 0, 0.5); /* Transparent background */
-  color: white;
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  padding: 10px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.nav-arrow:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter on hover */
-}
-
-.nav-arrow.left {
-  left: -30px; /* Positioned just outside the container */
-}
-
-.nav-arrow.right {
-  right: -30px; /* Positioned just outside the container */
-}
-
-@media (max-width: 768px) {
-  .machine-card {
-    width: 180px; /* Smaller cards for smaller screens */
-  }
-
-  .nav-arrow {
-    font-size: 20px; /* Smaller arrows */
-  }
-
-  button {
-    padding: 8px 15px; /* Smaller button padding */
-  }
-}
