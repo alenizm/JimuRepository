@@ -88,7 +88,7 @@ async function submitWorkoutLog(event) {
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const decodedPayload = JSON.parse(atob(base64));
 
-  const userId = decodedPayload.sub || decodedPayload.UserID || decodedPayload.client_id; // Adjust based on token structure
+  const userId = decodedPayload.client_id; // Adjust based on token structure
   if (!userId) {
     alert("Failed to extract UserID from token. Please log in again.");
     return;
