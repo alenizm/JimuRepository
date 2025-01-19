@@ -31,22 +31,27 @@
   <div id="logModal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2>Log Workout for <span id="modal-machine-name"></span></h2>
-      <form onsubmit="submitWorkoutLog(event)">
+      <form id="logForm" onsubmit="submitWorkoutLog(event)">
         <input type="hidden" id="machine-id">
-        <label for="sets">Sets:</label>
-        <input id="sets" type="number" required>
-        <label for="repetitions">Repetitions:</label>
-        <input id="repetitions" type="number" required>
-        <label for="weight">Weight:</label>
-        <input id="weight" type="number" required>
-        <button type="submit">Submit</button>
-        <button type="button" onclick="closeLogModal()">Cancel</button>
+        <div class="form-group">
+          <label for="sets">Sets:</label>
+          <input id="sets" type="number" required>
+        </div>
+        <div class="form-group">
+          <label for="repetitions">Repetitions:</label>
+          <input id="repetitions" type="number" required>
+        </div>
+        <div class="form-group">
+          <label for="weight">Weight:</label>
+          <input id="weight" type="number" required>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="submit-button">Submit</button>
+          <button type="button" class="cancel-button" onclick="closeLogModal()">Cancel</button>
+        </div>
       </form>
     </div>
   </div>
-
-
-
 
   <!-- Import JS files -->
   <script src="JS/machineDisplay.js" defer></script>
