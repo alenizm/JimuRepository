@@ -56,7 +56,7 @@ async function displayMachines() {
   }
 }
 
-// Example function to open a modal for logging a workout
+// Function to open the modal for logging a workout
 function openLogModal(machineId, machineName) {
   const modal = document.getElementById("logModal");
   const modalMachineName = document.getElementById("modal-machine-name");
@@ -88,7 +88,7 @@ async function submitWorkoutLog(event) {
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const decodedPayload = JSON.parse(atob(base64));
 
-  const userId = decodedPayload.client_id; // Assuming `sub` or `UserID` contains the UserID
+  const userId = decodedPayload.sub || decodedPayload.UserID || decodedPayload.client_id; // Adjust based on token structure
   if (!userId) {
     alert("Failed to extract UserID from token. Please log in again.");
     return;
@@ -139,7 +139,6 @@ async function submitWorkoutLog(event) {
   }
 }
 
-
 // Function to scroll left
 function scrollLeft() {
   const machineList = document.getElementById("machine-list");
@@ -152,5 +151,5 @@ function scrollRight() {
   machineList.scrollBy({ left: 250, behavior: "smooth" });
 }
 
-// Export if using modules
-export { displayMachines, scrollLeft, scrollRight };
+// Initialize the machine display when the page loads
+document.addEventListener("DOMContentLoaded", displayMachines);
