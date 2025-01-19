@@ -78,27 +78,53 @@ async function submitWorkoutLog(event) {
   event.preventDefault();
 
   const token = localStorage.getItem("access_token");
+  if (!token) {
+    alert("You are not logged in. Please log in to continue.");
+    return;
+  }
+
+  // Decode the token to extract UserID
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const decodedPayload = JSON.parse(atob(base64));
+
+  const userId = decodedPayload.client_id; // Assuming `sub` or `UserID` contains the UserID
+  if (!userId) {
+    alert("Failed to extract UserID from token. Please log in again.");
+    return;
+  }
+
+  // Collect input values for query string
   const machineId = document.getElementById("machine-id").value;
   const sets = document.getElementById("sets").value;
   const weight = document.getElementById("weight").value;
   const repetitions = document.getElementById("repetitions").value;
 
-  const payload = {
+  // Construct the query string
+  const queryString = new URLSearchParams({
     MachineID: machineId,
-    Sets: sets,
+    Set: sets,
     Weight: weight,
     Repetitions: repetitions,
+  }).toString();
+
+  // Payload with only UserID
+  const payload = {
+    UserID: userId,
   };
 
   try {
-    const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Records", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      `https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Records?${queryString}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to log workout: ${response.status} ${response.statusText}`);
@@ -112,6 +138,7 @@ async function submitWorkoutLog(event) {
     alert("Failed to log workout. Please try again.");
   }
 }
+
 
 // Function to scroll left
 function scrollLeft() {
