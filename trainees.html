@@ -19,12 +19,12 @@
   </header>
   <!-- End Header -->
 
+  <!-- Machine List Section -->
   <div class="machine-list-container">
-    <button class="nav-arrow left" onclick="scrollLeft()">&#9664;</button>
+    <button class="nav-arrow left" id="scroll-left">&#9664;</button>
     <div id="machine-list" class="machine-list">
-      <!-- Machine cards will be dynamically inserted here -->
     </div>
-    <button class="nav-arrow right" onclick="scrollRight()">&#9654;</button>
+    <button class="nav-arrow right" id="scroll-right">&#9654;</button>
   </div>
 
   <!-- Log Workout Modal -->
@@ -56,20 +56,29 @@
   <!-- Import JS files -->
   <script src="JS/machineDisplay.js" defer></script>
   <script>
-    // Attach functions to the global scope for onclick handlers
-    function scrollLeft() {
+    // Wait for DOM to load before attaching event listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      const scrollLeftButton = document.getElementById("scroll-left");
+      const scrollRightButton = document.getElementById("scroll-right");
       const machineList = document.getElementById("machine-list");
-      machineList.scrollBy({ left: -250, behavior: "smooth" });
-    }
-    window.scrollLeft = scrollLeft;
 
-    function scrollRight() {
-      const machineList = document.getElementById("machine-list");
-      machineList.scrollBy({ left: 250, behavior: "smooth" });
-    }
-    window.scrollRight = scrollRight;
+      // Scroll left function
+      function scrollLeft() {
+        console.log("Scrolling left");
+        machineList.scrollBy({ left: -250, behavior: "smooth" });
+      }
+
+      // Scroll right function
+      function scrollRight() {
+        console.log("Scrolling right");
+        machineList.scrollBy({ left: 250, behavior: "smooth" });
+      }
+
+      // Attach event listeners to buttons
+      scrollLeftButton.addEventListener("click", scrollLeft);
+      scrollRightButton.addEventListener("click", scrollRight);
+    });
   </script>
 </body>
-
 
 </html>
