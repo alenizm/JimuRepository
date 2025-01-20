@@ -1,5 +1,6 @@
 // Cognito Configuration
-const cognitoDomain = "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
+const cognitoDomain =
+  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
 const redirectUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after login
 const logoutUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after logout

@@ -604,7 +604,7 @@ html::-webkit-scrollbar-thumb {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background: linear-gradient(90deg, #8B0000, #4B0000);
+  background: linear-gradient(90deg, #8b0000, #4b0000);
   /* Gradient background */
   color: white;
 }
@@ -636,7 +636,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .header .logout-btn {
-  background-color: #FF6347;
+  background-color: #ff6347;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -647,7 +647,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .header .logout-btn:hover {
-  background-color: #FF4500;
+  background-color: #ff4500;
 }
 
 /* Optional: Add responsive behavior */
@@ -675,7 +675,7 @@ body {
   align-items: center;
   padding: 20px 40px;
   /* Adjusted for wider padding */
-  background-color: #8B0000;
+  background-color: #8b0000;
 }
 
 .header .logo {
@@ -686,7 +686,7 @@ body {
 }
 
 button {
-  background-color: #007BFF;
+  background-color: #007bff;
   border: none;
   padding: 10px 20px;
   color: white;
@@ -698,4 +698,3 @@ button {
 button:hover {
   background-color: #0056b3;
 }
-
