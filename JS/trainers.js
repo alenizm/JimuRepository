@@ -92,7 +92,9 @@ async function fetchMachines() {
     });
     if (!response.ok) throw new Error("Failed to fetch machines.");
 
-    const machines = await response.json();
+    const responseBody = await response.json();
+    const machines = JSON.parse(responseBody.body);
+
     const machineSelect = document.getElementById("machine-select");
     machines.forEach((machine) => {
       const option = document.createElement("option");
