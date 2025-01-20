@@ -55,6 +55,21 @@
 
   <!-- Import JS files -->
   <script src="JS/machineDisplay.js" defer></script>
+  <script>
+    // Attach functions to the global scope for onclick handlers
+    function scrollLeft() {
+      const machineList = document.getElementById("machine-list");
+      machineList.scrollBy({ left: -250, behavior: "smooth" });
+    }
+    window.scrollLeft = scrollLeft;
+
+    function scrollRight() {
+      const machineList = document.getElementById("machine-list");
+      machineList.scrollBy({ left: 250, behavior: "smooth" });
+    }
+    window.scrollRight = scrollRight;
+  </script>
 </body>
+
 
 </html>
