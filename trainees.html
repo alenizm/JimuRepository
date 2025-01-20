@@ -21,6 +21,7 @@
     </header>
     <!-- End Header -->
 
+<<<<<<< HEAD
     <div class="machine-list-container">
       <button class="nav-arrow left" onclick="scrollLeft()">&#9664;</button>
       <div id="machine-list" class="machine-list">
@@ -28,6 +29,23 @@
       </div>
       <button class="nav-arrow right" onclick="scrollRight()">&#9654;</button>
     </div>
+=======
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Jimu</a>
+    <button id="logout-btn" class="logout-btn" onclick="logout()">Logout</button>
+  </header>
+  <!-- End Header -->
+
+  <!-- Machine List Section -->
+  <div class="machine-list-container">
+    <button class="nav-arrow left" id="scroll-left">&#9664;</button>
+    <div id="machine-list" class="machine-list">
+    </div>
+    <button class="nav-arrow right" id="scroll-right">&#9654;</button>
+  </div>
+>>>>>>> 72401b0e7ba3b8a402842abffd0ede21c764c3d6
 
     <!-- Log Workout Modal -->
     <div id="logModal" class="modal" style="display: none">
@@ -61,7 +79,39 @@
       </div>
     </div>
 
+<<<<<<< HEAD
     <!-- Import JS files -->
     <script src="JS/machineDisplay.js" defer></script>
   </body>
+=======
+  <!-- Import JS files -->
+  <script src="JS/machineDisplay.js" defer></script>
+  <script>
+    // Wait for DOM to load before attaching event listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      const scrollLeftButton = document.getElementById("scroll-left");
+      const scrollRightButton = document.getElementById("scroll-right");
+      const machineList = document.getElementById("machine-list");
+
+      // Scroll left function
+      function scrollLeft() {
+        console.log("Scrolling left");
+        machineList.scrollBy({ left: -250, behavior: "smooth" });
+      }
+
+      // Scroll right function
+      function scrollRight() {
+        console.log("Scrolling right");
+        machineList.scrollBy({ left: 250, behavior: "smooth" });
+      }
+
+      // Attach event listeners to buttons
+      scrollLeftButton.addEventListener("click", scrollLeft);
+      scrollRightButton.addEventListener("click", scrollRight);
+    });
+  </script>
+  <script src="JS/script.js"></script>
+</body>
+
+>>>>>>> 72401b0e7ba3b8a402842abffd0ede21c764c3d6
 </html>
