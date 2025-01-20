@@ -168,6 +168,21 @@ function addMachineToProgram() {
   updateProgramPreview(); // Update the preview grid
 }
 
+// Enable Set Fields
+document.getElementById("machine-select").addEventListener("change", () => {
+  const machineSelect = document.getElementById("machine-select").value;
+  const weightInput = document.querySelector("#sets-container input[type='number']");
+  const repsInput = document.querySelector("#sets-container input[type='number']");
+
+  if (machineSelect) {
+    weightInput.disabled = false;
+    repsInput.disabled = false;
+  } else {
+    weightInput.disabled = true;
+    repsInput.disabled = true;
+  }
+});
+
 // Update Program Preview
 function updateProgramPreview() {
   const previewContainer = document.getElementById("program-preview");
