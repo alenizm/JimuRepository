@@ -1,6 +1,6 @@
 // API Gateway Endpoints
-const machinesApiEndpoint = "https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/machines"; // Replace with your endpoint
-const trainingProgramApiEndpoint = "https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/programs"; // Replace with your endpoint
+const machinesApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines"; // Replace with your endpoint
+const trainingProgramApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/WorkingPlans"; // Replace with your endpoint
 const traineesApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/trainees"; // Replace with your endpoint
 
 let trainingProgram = [];
