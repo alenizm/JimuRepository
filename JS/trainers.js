@@ -29,9 +29,9 @@ async function getTrainees() {
     const responseBody = await response.json();
 
     // Check if the response contains a valid array
-    const trainees = Array.isArray(responseBody) ? responseBody : JSON.parse(responseBody.body);
+    const trainees = JSON.parse(responseBody.body);
 
-    console.log("Trainees fetched successfully:", trainees);
+    console.log("Trainees fetched successfully:", trainees,"!!");
 
     // Render trainees to the HTML
     const traineesList = document.getElementById("trainees");
