@@ -23,7 +23,7 @@
   <section class="trainees-list">
     <h1>List of Trainees</h1>
     <div class="search-container">
-      <input type="text" id="searchBar" placeholder="Search Trainees..." onkeyup="filterTrainees()">
+      <input type="text" id="trainee-search" placeholder="Search Trainees...">
     </div>
     <div id="trainees" class="trainees">
       <!-- Trainee cards will be dynamically inserted here -->
@@ -39,35 +39,30 @@
       <!-- Machine Selection -->
       <div class="form-group">
         <label for="machine-select">Select Machine:</label>
-        <select id="machine-select" name="machine-select" onchange="enableSetFields()">
+        <select id="machine-select" name="machine-select">
           <option value="">-- Select a Machine --</option>
         </select>
       </div>
 
       <!-- Sets and Reps Input -->
       <div id="sets-container">
-        <div id="set-fields" style="display: none;">
-          <div class="form-group">
-            <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" name="weight" disabled>
-          </div>
-          <div class="form-group">
-            <label for="repetitions">Repetitions:</label>
-            <input type="number" id="repetitions" name="repetitions" disabled>
-          </div>
-        </div>
+        <!-- Dynamic set fields will be inserted here -->
       </div>
 
       <div class="button-group">
         <button type="button" class="btn btn-add" onclick="addSet()">Add Set</button>
         <button type="button" class="btn btn-add" onclick="addMachineToProgram()">Add Machine To Program</button>
-        <button type="button" class="btn btn-submit" onclick="submitProgram()">Submit Program</button>
-        <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">Cancel</button>
       </div>
 
       <!-- Program Preview -->
       <div id="program-preview" class="program-preview">
         <!-- Program preview will be dynamically inserted here -->
+      </div>
+
+      <!-- Submit and Cancel Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn btn-submit" onclick="submitProgram()">Submit Program</button>
+        <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">Cancel</button>
       </div>
     </div>
   </div>
