@@ -7,14 +7,19 @@ async function displayMachines() {
     const token = localStorage.getItem("access_token");
     console.log("Access Token:", token);
 
-    const response = await fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines", {
-      method: "GET"
-    });
+    const response = await fetch(
+      "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/Machines",
+      {
+        method: "GET",
+      }
+    );
 
     console.log("API Response:", response);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch machines: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch machines: ${response.status} ${response.statusText}`
+      );
     }
 
     const responseData = await response.json();
@@ -49,7 +54,8 @@ async function displayMachines() {
     });
   } catch (error) {
     console.error("Error fetching machines:", error);
-    machineList.innerHTML = "<p>Failed to load machines. Please try again later.</p>";
+    machineList.innerHTML =
+      "<p>Failed to load machines. Please try again later.</p>";
   }
 }
 
@@ -83,8 +89,8 @@ async function submitWorkoutLog(event) {
   }
 
   // Decode the token to extract UserID
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const decodedPayload = JSON.parse(atob(base64));
 
   const userId = decodedPayload.client_id; // Adjust based on token structure
@@ -125,7 +131,9 @@ async function submitWorkoutLog(event) {
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to log workout: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to log workout: ${response.status} ${response.statusText}`
+      );
     }
 
     console.log("Workout logged successfully.");
