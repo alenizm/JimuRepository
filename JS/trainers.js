@@ -1,54 +1,35 @@
 // API Gateway Endpoint for the Lambda Function
 const apiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/trainees"; // Replace with your API Gateway endpoint
 
-// Function to send a POST request with the training program
-async function sendTrainingProgram(email, username, programDetails) {
-  try {
-    const response = await fetch(apiEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        username: username,
-        trainingProgram: programDetails,
-      }),
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-      alert(`Training program sent successfully to ${email}`);
-    } else {
-      console.error("Error sending training program:", result);
-      alert("Failed to send training program. Please try again.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("An error occurred while sending the training program.");
-  }
-}
-
 // Function to fetch trainees using API Gateway
 async function getTrainees() {
   try {
+    // Show the loading spinner
+    document.getElementById("loading").style.display = "block";
+
     // Specify User Pool ID and Group Name in the query string
     const userPoolId = "us-east-1_gXjTPXbr6"; // Replace with your User Pool ID
     const groupName = "trainees"; // Replace with the name of your group
 
     const response = await fetch(`${apiEndpoint}?UserPoolId=${userPoolId}&GroupName=${groupName}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Hide the loading spinner
+    document.getElementById("loading").style.display = "none";
 
     if (!response.ok) {
       throw new Error("Failed to fetch trainees");
     }
 
-    const trainees = await response.json();
+    // Parse the response JSON
+    const responseBody = await response.json();
+
+    // Check if the response contains a valid array
+    const trainees = Array.isArray(responseBody) ? responseBody : JSON.parse(responseBody.body);
 
     console.log("Trainees fetched successfully:", trainees);
 
@@ -83,10 +64,27 @@ async function getTrainees() {
 function createTrainingProgram(email, username) {
   const program = prompt(`Enter a training program for ${username}:`);
   if (program) {
-    sendTrainingProgram(email, username, program);
+    console.log(`Training program for ${email}: ${program}`);
+    alert(`Training program created for ${email}`);
+    // Add API call to save the training program if needed
   } else {
     alert("No training program entered.");
   }
+}
+
+// Search function
+function searchTrainees() {
+  const searchTerm = document.getElementById("search").value.toLowerCase();
+  const traineeCards = document.querySelectorAll(".trainee-card");
+
+  traineeCards.forEach((card) => {
+    const name = card.querySelector(".trainee-info h2").textContent.toLowerCase();
+    if (name.includes(searchTerm)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
 }
 
 // Event Listener for Page Load

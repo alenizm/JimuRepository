@@ -1,4 +1,69 @@
-.trainees {
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+  }
+  
+  /* Header Styles */
+  .header {
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+  
+  .header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .logout-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .logout-btn:hover {
+    background-color: #e04343;
+  }
+  
+  /* Trainee List Section */
+  .trainees-list {
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .trainees-list h1 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .search-container {
+    margin-bottom: 15px;
+  }
+  
+  .search-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  /* Trainee Cards */
+  .trainees {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
@@ -13,23 +78,34 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .trainee-info h2 {
+  .trainee-card h2 {
     font-size: 18px;
     margin-bottom: 10px;
   }
   
-  .trainee-info p {
+  .trainee-card p {
     font-size: 14px;
     color: #555;
   }
   
   .create-program-btn {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #28a745;
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+  }
+  
+  .create-program-btn:hover {
+    background-color: #218838;
+  }
+  
+  /* Loading Indicator */
+  .loading {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
   }
   

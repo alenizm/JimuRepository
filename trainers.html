@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trainer Dashboard</title>
   <link rel="stylesheet" href="CSS/trainer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
 </head>
 
@@ -20,6 +21,17 @@
   <!-- Trainees List Section -->
   <section class="trainees-list">
     <h1>List of Trainees</h1>
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Search trainees..." oninput="searchTrainees()">
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading" class="loading" style="display: none;">
+      <p>Loading trainees...</p>
+    </div>
+
+    <!-- Trainees Cards -->
     <div id="trainees" class="trainees">
       <!-- Trainee cards will be dynamically inserted here -->
     </div>
