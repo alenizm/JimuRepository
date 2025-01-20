@@ -157,7 +157,7 @@ html::-webkit-scrollbar-thumb {
 /* home */
 
 .home {
-  background: url(JimuRepository/images/home.jpeg) no-repeat;
+  background: url(https://alenizm.github.io/JimuRepository/images/home.jpeg) no-repeat;
   min-height: 110vh;
   display: flex;
   align-items: center;
