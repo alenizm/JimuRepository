@@ -22,6 +22,9 @@
   <!-- Trainees List Section -->
   <section class="trainees-list">
     <h1>List of Trainees</h1>
+    <div class="search-container">
+      <input type="text" id="trainee-search" placeholder="Search trainees by name or email...">
+    </div>
     <div id="trainees" class="trainees">
       <!-- Trainee cards will be dynamically inserted here -->
     </div>
@@ -30,14 +33,14 @@
   <!-- Training Program Modal -->
   <div id="programModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeProgramModal()">&times;</span>
+      <button class="close-modal" onclick="closeProgramModal()">&times;</button>
       <h2>Create Training Program</h2>
 
       <!-- Machine Selection -->
       <div class="form-group">
         <label for="machine-select">Select Machine:</label>
         <select id="machine-select" name="machine-select">
-          <option value="">-- Select a Machine --</option>
+          <option value="" disabled selected>-- Select a Machine --</option>
         </select>
       </div>
 
@@ -45,7 +48,7 @@
       <div id="sets-container">
         <!-- Dynamic sets will be inserted here -->
       </div>
-      <button type="button" class="btn" onclick="addSet()">Add Set</button>
+      <button type="button" class="btn btn-add" onclick="addSet()">Add Set</button>
 
       <!-- Add to Program Button -->
       <button type="button" class="btn btn-add" onclick="addMachineToProgram()">Add Machine to Program</button>
