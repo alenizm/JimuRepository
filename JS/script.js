@@ -18,12 +18,12 @@ function redirectToLogin() {
   window.location.href = cognitoLoginUrl;
 }
 
-// Logout and redirect to the Cognito logout endpoint
+// Logout and redirect to the index page
 function logout() {
   console.log("Logging out...");
   localStorage.clear(); // Clear all stored tokens
   sessionStorage.setItem("loggedOut", "true"); // Set a logout flag
-  window.location.href = cognitoLogoutUrl; // Redirect to Cognito logout endpoint
+  window.location.href = "index.html"; // Redirect back to index.html after logout
 }
 
 // Parse tokens from the URL hash
@@ -66,15 +66,8 @@ function redirectToRolePage(idToken) {
   }
 }
 
-// Handle login redirection and session initialization
-function handleLoginRedirect() {
-  // Skip if the user has logged out
-  if (sessionStorage.getItem("loggedOut")) {
-    console.log("User just logged out. Skipping login redirect.");
-    sessionStorage.removeItem("loggedOut"); // Clear the logout flag
-    return;
-  }
-
+// Handle session initialization without redirecting to login
+function initializeSession() {
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
     console.log("Token found in URL. Initializing session...");
@@ -87,13 +80,12 @@ function handleLoginRedirect() {
     // Clear URL hash to clean up
     window.history.replaceState({}, document.title, window.location.pathname);
   } else {
-    console.log("No tokens found. Checking localStorage...");
+    console.log("No tokens found in URL. Checking localStorage...");
     const idToken = localStorage.getItem("id_token");
     if (idToken) {
       redirectToRolePage(idToken);
     } else {
-      console.log("No valid session. Redirecting to login...");
-      redirectToLogin();
+      console.log("No valid session. Waiting for user to log in...");
     }
   }
 }
@@ -103,7 +95,7 @@ function displayUserInfo(pageType) {
   const idToken = localStorage.getItem("id_token");
 
   if (!idToken) {
-    logout(); // Redirect to login if no token is found
+    logout(); // Redirect to index.html if no token is found
     return;
   }
 
@@ -138,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (window.location.pathname.includes("index.html")) {
-    handleLoginRedirect();
+    initializeSession();
   }
 
   if (window.location.pathname.includes("trainers.html")) {
