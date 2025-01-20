@@ -23,7 +23,7 @@
   <section class="trainees-list">
     <h1>List Of Trainees</h1>
     <div class="search-container">
-      <input type="text" id="trainee-search" placeholder="Search Trainees">
+      <input id="trainee-search" type="text" placeholder="Search Trainees">
     </div>
     <div id="trainees" class="trainees">
       <!-- Trainee cards will be dynamically inserted here -->
@@ -39,24 +39,27 @@
       <!-- Machine Selection -->
       <div class="form-group">
         <label for="machine-select">Select Machine:</label>
-        <select id="machine-select" name="machine-select">
-          <option value="">-- Select A Machine --</option>
+        <select id="machine-select" name="machine-select" onchange="enableSetFields()">
+          <option value="">-- Select a Machine --</option>
         </select>
       </div>
 
-      <!-- Sets Navigation -->
+      <!-- Sets and Reps Input -->
       <div id="sets-container">
         <!-- Dynamic sets will be inserted here -->
       </div>
-      <div class="set-navigation">
-        <button type="button" class="btn" onclick="navigateSet('prev')">Previous Set</button>
-        <button type="button" class="btn" onclick="navigateSet('next')">Next Set</button>
+      <button type="button" class="btn btn-add" onclick="navigateSet('prev')">Previous Set</button>
+      <button type="button" class="btn btn-add" onclick="navigateSet('next')">Next Set</button>
+
+      <!-- Add to Program Button -->
+      <button type="button" class="btn btn-add-machine" onclick="addMachineToProgram()">Add Machine To Program</button>
+
+      <!-- Machines and Sets Preview -->
+      <div id="program-preview" class="program-preview">
+        <!-- Machines with their sets will be displayed here -->
       </div>
 
-      <!-- Add Machine Button -->
-      <button type="button" class="btn btn-add" onclick="addMachineToProgram()">Add Machine To Program</button>
-
-      <!-- Submit Program Button -->
+      <!-- Submit Program -->
       <div class="button-group">
         <button type="button" class="btn btn-submit" onclick="submitProgram()">Submit Program</button>
         <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">Cancel</button>

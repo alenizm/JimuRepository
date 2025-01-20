@@ -3,7 +3,7 @@ const machinesApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.
 const trainingProgramApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/WorkingPlans"; // Replace with your endpoint
 const traineesApiEndpoint = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/dev/trainees"; // Replace with your endpoint
 
-let trainingProgram = [];
+let trainingProgram = []; // Array to store machines and their sets
 let selectedUserEmail = ""; // Store selected user email
 let currentSets = []; // Store the sets for the current machine
 let currentSetIndex = 0; // Track the current set index
@@ -164,6 +164,49 @@ function addMachineToProgram() {
   document.getElementById("sets-container").innerHTML = "";
   currentSets = [];
   currentSetIndex = 0;
+
+  updateProgramPreview(); // Update the preview grid
+}
+
+// Update Program Preview
+function updateProgramPreview() {
+  const previewContainer = document.getElementById("program-preview");
+  previewContainer.innerHTML = "";
+
+  trainingProgram.forEach((program) => {
+    const programDiv = document.createElement("div");
+    programDiv.className = "program-box";
+
+    let setsHTML = "";
+    program.sets.forEach((set, index) => {
+      setsHTML += `
+        <div class="set-info">
+          <span>Set ${index + 1}: ${set.weight}kg, ${set.reps} reps</span>
+          <button class="btn-delete" onclick="deleteSet('${program.machine}', ${index})">Delete</button>
+        </div>
+      `;
+    });
+
+    programDiv.innerHTML = `
+      <h3>${program.machine}</h3>
+      ${setsHTML}
+    `;
+
+    previewContainer.appendChild(programDiv);
+  });
+}
+
+// Delete Set
+function deleteSet(machineName, setIndex) {
+  const machine = trainingProgram.find((item) => item.machine === machineName);
+  if (machine) {
+    machine.sets.splice(setIndex, 1);
+    if (machine.sets.length === 0) {
+      trainingProgram = trainingProgram.filter((item) => item.machine !== machineName);
+    }
+  }
+
+  updateProgramPreview();
 }
 
 // Select User for Training Program
@@ -204,7 +247,6 @@ function navigateSet(direction) {
       <input type="number" id="weight-${currentSetIndex}" value="${set.weight}" onchange="updateSet(${currentSetIndex}, 'weight', this.value)" />
       <label for="reps-${currentSetIndex}">Reps:</label>
       <input type="number" id="reps-${currentSetIndex}" value="${set.reps}" onchange="updateSet(${currentSetIndex}, 'reps', this.value)" />
-      <button type="button" class="btn-delete" onclick="deleteSet(${currentSetIndex})">Delete Set</button>
     `;
     setsContainer.appendChild(setDiv);
   }
@@ -213,15 +255,6 @@ function navigateSet(direction) {
 // Update Set Details
 function updateSet(index, field, value) {
   currentSets[index][field] = value;
-}
-
-// Delete Set
-function deleteSet(index) {
-  if (confirm("Are you sure you want to delete this set?")) {
-    currentSets.splice(index, 1);
-    currentSetIndex = Math.max(0, currentSetIndex - 1);
-    navigateSet(0);
-  }
 }
 
 // Submit Program via POST
