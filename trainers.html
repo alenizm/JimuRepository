@@ -1,43 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trainer Dashboard - Jimu</title>
-    <!-- Font Awesome CDN -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="CSS/style.css" />
-  </head>
-  <body>
-    <!-- Header -->
-    <header class="header">
-      <a href="#" class="logo"> <i class="fas fa-dumbbell"></i>Jimu</a>
-      <nav class="navbar">
-        <button id="logout-btn" class="btn">Logout</button>
-      </nav>
-    </header>
-    <!-- End Header -->
 
-    <!-- Main Content -->
-    <main>
-      <h1>Welcome, Trainer</h1>
-      <p id="trainer-info"></p>
-      <h2>Your Trainees</h2>
-      <ul id="trainee-list"></ul>
-    </main>
-    <!-- End Main Content -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer Dashboard</title>
+  <link rel="stylesheet" href="CSS/style.css">
+  <link rel="stylesheet" href="CSS/trainer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
+</head>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2023 Jimu. All Rights Reserved.</p>
-    </footer>
-    <!-- End Footer -->
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Trainer Dashboard</a>
+    <button id="logout-btn" class="logout-btn">Logout</button>
+  </header>
+  <!-- End Header -->
 
-    <!-- Script -->
-    <script src="JS/script.js"></script>
-  </body>
+  <!-- Trainees List Section -->
+  <section class="trainees-list">
+    <h1>List Of Trainees</h1>
+    <div class="search-container">
+      <input id="trainee-search" type="text" placeholder="Search Trainees">
+    </div>
+    <div id="trainees" class="trainees">
+      <!-- Trainee cards will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <!-- Training Program Modal -->
+  <div id="programModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeProgramModal()">&times;</button>
+      <h2>Create Training Program</h2>
+
+      <!-- Machine Selection -->
+      <div class="form-group">
+        <label for="machine-select">Select Machine:</label>
+        <select id="machine-select" name="machine-select" onchange="enableSetFields()">
+          <option value="">-- Select a Machine --</option>
+        </select>
+      </div>
+
+      <!-- Sets and Reps Input -->
+      <div id="sets-container">
+        <!-- Dynamic sets will be inserted here -->
+      </div>
+      <button type="button" class="btn btn-add" onclick="navigateSet('prev')">Previous Set</button>
+      <button type="button" class="btn btn-add" onclick="navigateSet('next')">Next Set</button>
+
+      <!-- Add to Program Button -->
+      <button type="button" class="btn btn-add-machine" onclick="addMachineToProgram()">Add Machine To Program</button>
+
+      <!-- Machines and Sets Preview -->
+      <div id="program-preview" class="program-preview">
+        <!-- Machines with their sets will be displayed here -->
+      </div>
+
+      <!-- Submit Program -->
+      <div class="button-group">
+        <button type="button" class="btn btn-submit" onclick="submitProgram()">Submit Program</button>
+        <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import JavaScript -->
+  <script src="JS/trainers.js" defer></script>
+</body>
+
 </html>

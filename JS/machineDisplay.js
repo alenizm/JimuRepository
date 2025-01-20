@@ -145,17 +145,5 @@ async function submitWorkoutLog(event) {
   }
 }
 
-// Function to scroll left
-function scrollLeft() {
-  const machineList = document.getElementById("machine-list");
-  machineList.scrollBy({ left: -250, behavior: "smooth" });
-}
-
-// Function to scroll right
-function scrollRight() {
-  const machineList = document.getElementById("machine-list");
-  machineList.scrollBy({ left: 250, behavior: "smooth" });
-}
-
 // Initialize the machine display when the page loads
 document.addEventListener("DOMContentLoaded", displayMachines);
