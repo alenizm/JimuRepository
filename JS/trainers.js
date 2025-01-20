@@ -164,7 +164,6 @@ function addMachineToProgram() {
   document.getElementById("sets-container").innerHTML = "";
   currentSets = [];
   currentSetIndex = 0;
-  updateProgramPreview();
 }
 
 // Select User for Training Program
@@ -176,15 +175,18 @@ function selectUser(email) {
 // Navigate Between Sets
 function navigateSet(direction) {
   const setsContainer = document.getElementById("sets-container");
+
   if (direction === "next") {
-    if (currentSetIndex === currentSets.length) {
+    if (currentSetIndex === currentSets.length - 1) {
       if (confirm("Do you want to add a new set?")) {
         currentSets.push({ weight: "", reps: "" });
+        currentSetIndex++;
       } else {
         return;
       }
+    } else if (currentSetIndex < currentSets.length - 1) {
+      currentSetIndex++;
     }
-    currentSetIndex++;
   } else if (direction === "prev") {
     if (currentSetIndex > 0) {
       currentSetIndex--;
@@ -202,6 +204,7 @@ function navigateSet(direction) {
       <input type="number" id="weight-${currentSetIndex}" value="${set.weight}" onchange="updateSet(${currentSetIndex}, 'weight', this.value)" />
       <label for="reps-${currentSetIndex}">Reps:</label>
       <input type="number" id="reps-${currentSetIndex}" value="${set.reps}" onchange="updateSet(${currentSetIndex}, 'reps', this.value)" />
+      <button type="button" class="btn-delete" onclick="deleteSet(${currentSetIndex})">Delete Set</button>
     `;
     setsContainer.appendChild(setDiv);
   }
@@ -212,50 +215,12 @@ function updateSet(index, field, value) {
   currentSets[index][field] = value;
 }
 
-// Update Program Preview
-function updateProgramPreview() {
-  const previewContainer = document.getElementById("program-preview");
-  previewContainer.innerHTML = "";
-
-  trainingProgram.forEach((programItem, machineIndex) => {
-    const machineDiv = document.createElement("div");
-    machineDiv.className = "preview-machine";
-
-    let setsHtml = "";
-    programItem.sets.forEach((set, setIndex) => {
-      setsHtml += `<li>Set ${setIndex + 1}: ${set.weight}kg x ${set.reps} reps <button onclick="editSet('${programItem.machine}', ${setIndex})">Edit</button> <button onclick="deleteSet('${programItem.machine}', ${setIndex})">Delete</button></li>`;
-    });
-
-    machineDiv.innerHTML = `
-      <h4>Machine: ${programItem.machine}</h4>
-      <ul>${setsHtml}</ul>
-    `;
-
-    previewContainer.appendChild(machineDiv);
-  });
-}
-
-// Edit Set
-function editSet(machineName, setIndex) {
-  const machine = trainingProgram.find((item) => item.machine === machineName);
-  if (machine) {
-    const set = machine.sets[setIndex];
-    if (set) {
-      currentSets = [...machine.sets];
-      currentSetIndex = setIndex;
-      navigateSet(0);
-      document.getElementById("machine-select").value = machineName;
-      alert("Editing the selected set. Make changes and save.");
-    }
-  }
-}
-
 // Delete Set
-function deleteSet(machineName, setIndex) {
-  const machine = trainingProgram.find((item) => item.machine === machineName);
-  if (machine) {
-    machine.sets.splice(setIndex, 1);
-    updateProgramPreview();
+function deleteSet(index) {
+  if (confirm("Are you sure you want to delete this set?")) {
+    currentSets.splice(index, 1);
+    currentSetIndex = Math.max(0, currentSetIndex - 1);
+    navigateSet(0);
   }
 }
 
@@ -306,7 +271,6 @@ async function submitProgram() {
     // Reset program
     trainingProgram = [];
     selectedUserEmail = "";
-    document.getElementById("program-preview").innerHTML = "";
     closeProgramModal();
   } catch (error) {
     console.error("Error submitting training program:", error);
