@@ -1,3 +1,5 @@
+// כאן אני דואג לכל העניין של הסליידר של המכונות - רן
+
 let nextButton = document.getElementById("next");
 let prevButton = document.getElementById("prev");
 let carousel = document.querySelector(".carousel");
