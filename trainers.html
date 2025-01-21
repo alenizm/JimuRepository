@@ -1,79 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trainer Dashboard</title>
+    <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trainer Dashboard</title>
-  <link rel="stylesheet" href="CSS/style.css">
-  <link rel="stylesheet" href="CSS/trainer.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
-</head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <a href="#" class="logo"
+        ><i class="fas fa-dumbbell"></i> Trainer Dashboard</a
+      >
+      <button id="logout-btn" class="logout-btn">Logout</button>
+    </header>
+    <!-- End Header -->
 
-<body>
-  <!-- Header -->
-  <header class="header">
-    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Trainer Dashboard</a>
-    <button id="logout-btn" class="logout-btn">Logout</button>
-  </header>
-  <!-- End Header -->
-
-  <!-- Trainees List Section -->
-  <section class="trainees-list">
-    <h1>List of Trainees</h1>
-    <div class="search-container">
-      <input type="text" id="trainee-search" placeholder="Search Trainees..." onkeyup="filterTrainees()">
-    </div>
-    <div id="trainees" class="trainees">
-      <!-- Trainee cards will be dynamically inserted here -->
-    </div>
-  </section>
-
-  <!-- Training Program Modal -->
-  <div id="programModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeProgramModal()">&times;</button>
-      <h2>Create Training Program</h2>
-
-      <!-- Machine Selection -->
-      <div class="form-group">
-        <label for="machine-select">Select Machine:</label>
-        <select id="machine-select" name="machine-select" onchange="enableSetFields()">
-          <option value="">-- Select a Machine --</option>
-        </select>
+    <!-- Trainees List Section -->
+    <section class="trainees-list">
+      <h1>List of Trainees</h1>
+      <div class="search-container">
+        <input
+          type="text"
+          id="trainee-search"
+          placeholder="Search Trainees..."
+          onkeyup="filterTrainees()"
+        />
       </div>
+      <div id="trainees" class="trainees">
+        <!-- Trainee cards will be dynamically inserted here -->
+      </div>
+    </section>
 
-      <!-- Sets and Reps Input -->
-      <div id="sets-container">
-        <div id="set-fields" style="display: none;">
-          <div class="form-group">
-            <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" name="weight" disabled>
-          </div>
-          <div class="form-group">
-            <label for="repetitions">Repetitions:</label>
-            <input type="number" id="repetitions" name="repetitions" disabled>
+    <!-- Training Program Modal -->
+    <div id="programModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeProgramModal()">
+          &times;
+        </button>
+        <h2>Create Training Program</h2>
+
+        <!-- Machine Selection -->
+        <div class="form-group">
+          <label for="machine-select">Select Machine:</label>
+          <select
+            id="machine-select"
+            name="machine-select"
+            onchange="enableSetFields()"
+          >
+            <option value="">-- Select a Machine --</option>
+          </select>
+        </div>
+
+        <!-- Sets and Reps Input -->
+        <div id="sets-container">
+          <div id="set-fields" style="display: none">
+            <div class="form-group">
+              <label for="weight">Weight (kg):</label>
+              <input type="number" id="weight" name="weight" disabled />
+            </div>
+            <div class="form-group">
+              <label for="repetitions">Repetitions:</label>
+              <input
+                type="number"
+                id="repetitions"
+                name="repetitions"
+                disabled
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="button-group">
-        <button type="button" class="btn btn-add" onclick="addSet()">Add Set</button>
-        <button type="button" class="btn btn-add" onclick="addMachineToProgram()">Add Machine To Program</button>
-        <button type="button" class="btn btn-submit" onclick="submitProgram()">Submit Program</button>
-        <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">Cancel</button>
-      </div>
+        <div class="button-group">
+          <button type="button" class="btn btn-add" onclick="addSet()">
+            Add Set
+          </button>
+          <button
+            type="button"
+            class="btn btn-add"
+            onclick="addMachineToProgram()"
+          >
+            Add Machine To Program
+          </button>
+          <button
+            type="button"
+            class="btn btn-submit"
+            onclick="submitProgram()"
+          >
+            Submit Program
+          </button>
+          <button
+            type="button"
+            class="btn btn-cancel"
+            onclick="closeProgramModal()"
+          >
+            Cancel
+          </button>
+        </div>
 
-      <!-- Program Preview -->
-      <div id="program-preview" class="program-preview">
-        <!-- Program preview will be dynamically inserted here -->
+        <!-- Program Preview -->
+        <div id="program-preview" class="program-preview">
+          <!-- Program preview will be dynamically inserted here -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Import JavaScript -->
-  <script src="JS/trainers.js" defer></script>
-</body>
-
+    <!-- Import JavaScript -->
+    <script src="JS/trainers.js" defer></script>
+  </body>
 </html>

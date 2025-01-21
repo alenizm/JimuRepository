@@ -20,7 +20,7 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
             <div class="title">MACHINE SELECTION</div>
             <div class="topic">${machine.Name}</div>
             <div class="des">${machine.Description}</div>
-            <button class="chooseMachine">SELECT MACHINE &#8599;</button>
+            <button class="chooseMachine">More Info &#8599;</button>
         </div>
       `;
 

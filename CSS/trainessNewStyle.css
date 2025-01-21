@@ -332,7 +332,7 @@ header nav a {
 }
 .arrows {
   position: absolute;
-  bottom: 10px;
+  bottom: 30px;
   width: 1140px;
   max-width: 90%;
   display: flex;
