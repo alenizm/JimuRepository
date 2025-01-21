@@ -14,7 +14,7 @@ function enableSetFields() {
     const repetitionsInput = document.getElementById("repetitions");
 
     // Enable or disable fields based on the machine selection
-    if (machineSelect.value) {
+    if (machineSelect.value !== "") {
         weightInput.disabled = false;
         repetitionsInput.disabled = false;
     } else {
@@ -22,6 +22,7 @@ function enableSetFields() {
         repetitionsInput.disabled = true;
     }
 }
+
 
 // Function to decode JWT
 function parseJwt(token) {
@@ -238,6 +239,12 @@ function deleteSet(machineName, setIndex) {
 
     updateProgramPreview();
 }
+
+//add set
+function addSet() {
+    currentSets.push({ weight: "", reps: "" });
+    navigateSet("next");
+  }
 
 // Select User for Training Program
 function selectUser(email) {
