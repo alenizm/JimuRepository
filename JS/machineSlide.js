@@ -1,11 +1,8 @@
 // כאן אני דואג לכל העניין של הסליידר של המכונות - רן
-
 let nextButton = document.getElementById("next");
 let prevButton = document.getElementById("prev");
 let carousel = document.querySelector(".carousel");
 let listHTML = document.querySelector(".carousel .list");
-let chooseMachineButtons = document.querySelectorAll(".chooseMachine");
-let backButton = document.getElementById("back");
 
 nextButton.onclick = function () {
   showSlider("next");
@@ -13,6 +10,7 @@ nextButton.onclick = function () {
 prevButton.onclick = function () {
   showSlider("prev");
 };
+
 let unAcceppClick;
 const showSlider = (type) => {
   nextButton.style.pointerEvents = "none";
@@ -32,13 +30,4 @@ const showSlider = (type) => {
     nextButton.style.pointerEvents = "auto";
     prevButton.style.pointerEvents = "auto";
   }, 2000);
-};
-chooseMachineButtons.forEach((button) => {
-  button.onclick = function () {
-    carousel.classList.remove("next", "prev");
-    carousel.classList.add("showDetail");
-  };
-});
-backButton.onclick = function () {
-  carousel.classList.remove("showDetail");
 };

@@ -5,7 +5,6 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
 
     const listElement = document.querySelector(".list");
 
-    // פרס את המחרוזת JSON בשדה body אם צריך
     const machines =
       typeof data.body === "string" ? JSON.parse(data.body) : data.body;
 
@@ -27,47 +26,54 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
 
       listElement.appendChild(itemElement);
 
-      // הוספת אירוע לכפתור לאחר שהאלמנטים נוספו לדף
       const button = itemElement.querySelector(".chooseMachine");
 
       if (button) {
         button.addEventListener("click", () => {
-          console.log("כפתור נלחץ"); // בדיקה בקונסול
+          console.log("כפתור נלחץ");
 
-          // בדוק אם ה- detail כבר נוצר כדי למנוע כפילויות
-          if (!itemElement.querySelector(".detail")) {
-            const detailElement = document.createElement("div");
-            detailElement.classList.add("detail");
-            detailElement.innerHTML = `
-              <div class="title">${machine.Name}</div>
-              <div class="des">${machine.Description}</div>
-              <div class="specifications">
-                  <div><p>Machine Name</p>
-                  <p>${machine.Name}</p></div>
-                  <div><p>Type</p>
-                  <p>${machine.Type}</p></div>
-                  <div><p>Brand</p>
-                  <p>${machine.Brand}</p></div>
-                  <div><p>Target Body Part</p>
-                  <p>${machine.TargetBodyPart}</p></div>
-                  <div><p>Availability</p>
-                  <p>${
-                    machine.Availability === "true"
-                      ? "Available"
-                      : "Not Available"
-                  }</p></div>
-              </div>
-              <div class="setworkout">
-                  <button>Watch Your History</button>
-                  <button>Set Workout</button>
-              </div>
-            `;
+          // יצירת חלון קופץ
+          const modal = document.createElement("div");
+          modal.classList.add("modal");
 
-            itemElement.appendChild(detailElement);
-          }
+          modal.innerHTML = `
+            <div class="modal-content">
+              <span class="close-button">&times;</span>
+              <h2 class="modal-title">${machine.Name}</h2>
+              <p class="modal-description">${machine.Description}</p>
+              <table class="modal-table">
+                <tr><td>Machine Name</td><td>${machine.Name}</td></tr>
+                <tr><td>Type</td><td>${machine.Type}</td></tr>
+                <tr><td>Brand</td><td>${machine.Brand}</td></tr>
+                <tr><td>Target Body Part</td><td>${
+                  machine.TargetBodyPart
+                }</td></tr>
+                <tr><td>Availability</td><td>${
+                  machine.Availability === "true"
+                    ? "Available"
+                    : "Not Available"
+                }</td></tr>
+              </table>
+              <button class="backButton">Back</button>
+            </div>
+          `;
+
+          document.body.appendChild(modal);
+
+          // הפעלת אנימציה
+          setTimeout(() => modal.classList.add("visible"), 10);
+
+          const closeButton = modal.querySelector(".close-button");
+          const backButton = modal.querySelector(".backButton");
+
+          const closeModal = () => {
+            modal.classList.remove("visible");
+            setTimeout(() => modal.remove(), 300);
+          };
+
+          closeButton.addEventListener("click", closeModal);
+          backButton.addEventListener("click", closeModal);
         });
-      } else {
-        console.error("כפתור לא נמצא.");
       }
     });
   })
