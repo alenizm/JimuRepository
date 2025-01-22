@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trainer Dashboard</title>
-  <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+
   <!-- SweetAlert2 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet"/>
 
-  <!-- SweetAlert2 JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
-
+  <!-- AWS SDK -->
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
-</head>
 
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="trainerNewStyle.css" />
+</head>
 <body>
+
   <!-- Header -->
   <header class="header">
     <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Trainer Dashboard</a>
@@ -38,9 +40,7 @@
   <!-- Training Program Modal -->
   <div id="programModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <button class="close-modal" onclick="closeProgramModal()">
-        &times;
-      </button>
+      <button class="close-modal" onclick="closeProgramModal()">&times;</button>
       <h2>Create Training Program</h2>
 
       <!-- Machine Selection -->
@@ -66,11 +66,22 @@
         <!-- Weight/Reps Inputs for Current Set -->
         <div class="form-group">
           <label for="weight">Weight (kg):</label>
-          <input type="number" id="weight" name="weight" oninput="updateCurrentSet('weight', this.value)" />
+          <input 
+            type="number" 
+            id="weight" 
+            name="weight" 
+            oninput="updateCurrentSet('weight', this.value)" 
+          />
         </div>
+
         <div class="form-group">
           <label for="repetitions">Repetitions:</label>
-          <input type="number" id="repetitions" name="repetitions" oninput="updateCurrentSet('reps', this.value)" />
+          <input 
+            type="number" 
+            id="repetitions" 
+            name="repetitions" 
+            oninput="updateCurrentSet('reps', this.value)" 
+          />
         </div>
 
         <!-- Buttons for Add Set & Confirm Machine in Program -->
@@ -102,8 +113,11 @@
     </div>
   </div>
 
-  <!-- Import JavaScript -->
+  <!-- SweetAlert2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+  
+  <!-- Custom JavaScript (your main logic) -->
   <script src="JS/trainers.js" defer></script>
-</body>
 
+</body>
 </html>
