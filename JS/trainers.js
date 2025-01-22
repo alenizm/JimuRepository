@@ -244,9 +244,13 @@ function navigateSet(direction) {
 }
 
 /*******************************
- * ADD A NEW SET
+ * ADD A NEW SET (WITH CONFIRMATION)
  *******************************/
 function addNewSet() {
+  // Confirm with the trainer
+  const confirmAdd = confirm("Do you want to add a new set?");
+  if (!confirmAdd) return;
+
   // Create a blank set
   currentSets.push({ weight: "", reps: "" });
   // Move to the newly created set
@@ -263,7 +267,7 @@ function updateCurrentSet(field, value) {
 }
 
 /*******************************
- * SAVE (ADD) MACHINE + ITS SETS INTO trainingProgram
+ * SAVE (ADD) MACHINE + ITS SETS INTO trainingProgram (WITH CONFIRMATION)
  *******************************/
 function saveMachineSets() {
   const machineSelect = document.getElementById("machine-select");
@@ -277,6 +281,12 @@ function saveMachineSets() {
     alert("No sets found for this machine.");
     return;
   }
+
+  // Confirm with the trainer
+  const confirmAdd = confirm(
+    `Are you sure you want to add/overwrite the sets for ${machineName}?`
+  );
+  if (!confirmAdd) return;
 
   // Check if machine already exists
   const existingMachineIndex = trainingProgram.findIndex(
@@ -309,9 +319,7 @@ function deleteSet(machineName, setIndex) {
 
   // If no sets left, remove the machine entirely
   if (machine.sets.length === 0) {
-    trainingProgram = trainingProgram.filter(
-      (m) => m.machine !== machineName
-    );
+    trainingProgram = trainingProgram.filter((m) => m.machine !== machineName);
   }
 
   // ----- Keep the modal in sync if this is the currently selected machine -----
