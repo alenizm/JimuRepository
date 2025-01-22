@@ -1,92 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Records - Jimu</title>
-    <link rel="stylesheet" href="CSS/trainessNewStyle.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
-  </head>
-  <body>
-    <!-- Header -->
-    <header>
-      <div class="logo">Jimu</div>
-      <nav>
-        <a href="trainessNew.html">Home</a>
-        <a href="logout.html">Log Out</a>
-      </nav>
-    </header>
-    <!-- End Header -->
 
-    <!-- Records Section -->
-    <section class="records">
-      <h2>My Records</h2>
-      <div class="record-list">
-        <!-- הרשומות ייטענו כאן -->
-      </div>
-    </section>
-    <!-- End Main Section -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Records - Jimu</title>
+  <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
+</head>
 
-    <script>
-      // הגדרת AWS SDK
-      AWS.config.update({
-        region: "us-east-1", // עדכני את האזור שלך
-        accessKeyId: "YOUR_ACCESS_KEY", // החליפי במפתח שלך
-        secretAccessKey: "YOUR_SECRET_KEY", // החליפי במפתח הסודי שלך
-      });
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> My Records</a>
+    <button id="logout-btn" class="logout-btn">Logout</button>
+  </header>
+  <!-- End Header -->
 
-      const dynamoDB = new AWS.DynamoDB.DocumentClient();
+  <!-- Records Section -->
+  <section class="records-section">
+    <h1>My Training Records</h1>
+    <div id="record-list" class="record-list">
+      <!-- רשומות ייטענו דינאמית כאן -->
+    </div>
+  </section>
+  <!-- End Records Section -->
 
-      // שליפת רשומות מ-DynamoDB
-      function fetchRecordsFromDynamoDB(userId) {
-        const params = {
-          TableName: "Records",
-          KeyConditionExpression: "UserID = :uid",
-          ExpressionAttributeValues: {
-            ":uid": userId,
-          },
-        };
+  <script>
+    // הגדרת AWS SDK
+    AWS.config.update({
+      region: "us-east-1", // עדכני את האזור שלך
+      accessKeyId: "YOUR_ACCESS_KEY", // החליפי במפתח שלך
+      secretAccessKey: "YOUR_SECRET_KEY", // החליפי במפתח הסודי שלך
+    });
 
-        dynamoDB.query(params, function (err, data) {
-          if (err) {
-            console.error("Failed to fetch records:", JSON.stringify(err, null, 2));
-            alert("Failed to load your records.");
-          } else {
-            console.log("Fetched records:", JSON.stringify(data.Items, null, 2));
-            renderRecords(data.Items);
-          }
-        });
-      }
+    const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-      // הצגת הרשומות ב-HTML
-      function renderRecords(records) {
-        const recordList = document.querySelector(".record-list");
-        if (records.length === 0) {
-          recordList.innerHTML = "<p>No records found.</p>";
+    // שליפת רשומות מ-DynamoDB
+    function fetchRecordsFromDynamoDB(userId) {
+      const params = {
+        TableName: "Records",
+        KeyConditionExpression: "UserID = :uid",
+        ExpressionAttributeValues: {
+          ":uid": userId,
+        },
+      };
+
+      dynamoDB.query(params, function (err, data) {
+        if (err) {
+          console.error("Failed to fetch records:", JSON.stringify(err, null, 2));
+          alert("Failed to load your records.");
         } else {
-          recordList.innerHTML = records
-            .map(
-              (record) => `
-            <div class="record-item">
-              <h3>${record.Machine}</h3>
-              <p>Sets: ${record.Sets} | Reps: ${record.Reps}</p>
-              <p>Date: ${new Date(record.Timestamp).toLocaleString()}</p>
-            </div>
-          `
-            )
-            .join("");
+          console.log("Fetched records:", JSON.stringify(data.Items, null, 2));
+          renderRecords(data.Items);
         }
-      }
-
-      // קריאה לפונקציה בעת טעינת העמוד
-      document.addEventListener("DOMContentLoaded", () => {
-        const userId = "user123"; // יש לקחת את זה מה-Login
-        fetchRecordsFromDynamoDB(userId);
       });
-    </script>
-  </body>
+    }
+
+    // הצגת הרשומות ב-HTML
+    function renderRecords(records) {
+      const recordList = document.getElementById("record-list");
+      if (records.length === 0) {
+        recordList.innerHTML = "<p>No records found.</p>";
+      } else {
+        recordList.innerHTML = records
+          .map(
+            (record) => `
+          <div class="record-item">
+            <h3>${record.Machine}</h3>
+            <p>Weight: ${record.Weight || "N/A"} | Sets: ${record.Sets} | Reps: ${record.Reps}</p>
+            <p>Date: ${new Date(record.Timestamp).toLocaleString()}</p>
+          </div>
+        `
+          )
+          .join("");
+      }
+    }
+
+    // עדכון נתונים בזמן אמת (Polling)
+    function startPolling(userId) {
+      setInterval(() => {
+        fetchRecordsFromDynamoDB(userId);
+      }, 5000); // שולף רשומות כל 5 שניות
+    }
+
+    // טעינת הרשומות בעת פתיחת העמוד
+    document.addEventListener("DOMContentLoaded", () => {
+      const userId = "user123"; // יש לקחת את זה ממערכת ה-Login
+      fetchRecordsFromDynamoDB(userId); // טעינה ראשונית
+      startPolling(userId); // עדכון אוטומטי כל 5 שניות
+    });
+  </script>
+</body>
+
 </html>
