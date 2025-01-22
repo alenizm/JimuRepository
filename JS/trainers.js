@@ -418,18 +418,14 @@ async function submitProgram() {
   const bodyPayload = {
     UserEmail: selectedUserEmail,  // The trainee's email
     UserID: selectedUserSub,       // The trainee's sub
-    TrainerID: trainerSub          // The trainer's sub
+    TrainerID: trainerSub,          // The trainer's sub
+    PlanDetails : trainingProgram
   };
 
-  // PlanDetails in query param
-  const queryParams = {
-    PlanDetails: JSON.stringify(trainingProgram),
-  };
+
 
   // Build URL
-  const url = `${TRAINING_PROGRAM_API_ENDPOINT}?PlanDetails=${encodeURIComponent(
-    queryParams.PlanDetails
-  )}`;
+  const url = `${TRAINING_PROGRAM_API_ENDPOINT}}`;
 
   try {
     const response = await fetch(url, {
