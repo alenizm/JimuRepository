@@ -34,6 +34,24 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
+//filter trainees function
+function filterTrainees() {
+  const searchInput = document.getElementById("trainee-search").value.toLowerCase();
+  const traineeCards = document.querySelectorAll(".trainee-card");
+
+  traineeCards.forEach((card) => {
+    const traineeName = card.querySelector("h3").textContent.toLowerCase();
+    const traineeEmail = card.querySelector("p").textContent.toLowerCase();
+
+    if (traineeName.includes(searchInput) || traineeEmail.includes(searchInput)) {
+      card.style.display = "block"; // Show the card
+    } else {
+      card.style.display = "none"; // Hide the card
+    }
+  });
+}
+
+
 // Get Trainer Name from Access Token
 function getTrainerName() {
   const accessToken = localStorage.getItem("access_token");
@@ -247,65 +265,70 @@ function navigateSet(direction) {
  * ADD A NEW SET (WITH CONFIRMATION)
  *******************************/
 function addNewSet() {
-  // Confirm with the trainer
-  const confirmAdd = confirm("Do you want to add a new set?");
-  if (!confirmAdd) return;
-
-  // Create a blank set
-  currentSets.push({ weight: "", reps: "" });
-  // Move to the newly created set
-  currentSetIndex = currentSets.length - 1;
-  displayCurrentSet();
+  Swal.fire({
+    title: "Add Another Set?",
+    text: "Are you sure you want to add a new set?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3498db",
+    cancelButtonColor: "#e74c3c",
+    confirmButtonText: "Yes, Add Set",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Add the new set
+      currentSets.push({ weight: "", reps: "" });
+      currentSetIndex = currentSets.length - 1;
+      displayCurrentSet();
+      Swal.fire("Set Added!", "A new set has been added.", "success");
+    }
+  });
 }
 
-/*******************************
- * UPDATE CURRENT SET FIELDS
- *******************************/
-function updateCurrentSet(field, value) {
-  if (currentSets.length === 0) return;
-  currentSets[currentSetIndex][field] = value;
-}
-
-/*******************************
- * SAVE (ADD) MACHINE + ITS SETS INTO trainingProgram (WITH CONFIRMATION)
- *******************************/
 function saveMachineSets() {
   const machineSelect = document.getElementById("machine-select");
   const machineName = machineSelect.value;
+
   if (!machineName) {
-    alert("Please select a machine first.");
+    Swal.fire("Error", "Please select a machine first.", "error");
     return;
   }
 
   if (currentSets.length === 0) {
-    alert("No sets found for this machine.");
+    Swal.fire("Error", "No sets found for this machine.", "error");
     return;
   }
 
-  // Confirm with the trainer
-  const confirmAdd = confirm(
-    `Are you sure you want to add/overwrite the sets for ${machineName}?`
-  );
-  if (!confirmAdd) return;
+  Swal.fire({
+    title: "Add Machine To Program?",
+    text: `Are you sure you want to save this machine with its sets?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3498db",
+    cancelButtonColor: "#e74c3c",
+    confirmButtonText: "Yes, Save",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Add machine to program
+      const existingMachineIndex = trainingProgram.findIndex(
+        (item) => item.machine === machineName
+      );
 
-  // Check if machine already exists
-  const existingMachineIndex = trainingProgram.findIndex(
-    (item) => item.machine === machineName
-  );
+      if (existingMachineIndex >= 0) {
+        trainingProgram[existingMachineIndex].sets = [...currentSets];
+      } else {
+        trainingProgram.push({
+          machine: machineName,
+          sets: [...currentSets],
+        });
+      }
 
-  // Overwrite or add
-  if (existingMachineIndex >= 0) {
-    trainingProgram[existingMachineIndex].sets = [...currentSets];
-  } else {
-    trainingProgram.push({
-      machine: machineName,
-      sets: [...currentSets],
-    });
-  }
-
-  alert(`Sets for "${machineName}" saved to program!`);
-  updateProgramPreview();
+      updateProgramPreview();
+    }
+  });
 }
+
 
 /*******************************
  * DELETE SET (FROM PREVIEW)
