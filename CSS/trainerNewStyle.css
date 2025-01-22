@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 body {
   margin: 0;
   background-color: #f4f4f4;
-  font-family: Poppins;
+  font-family: "Poppins", sans-serif;
 }
+
 /* Header Styles */
 .header {
   display: flex;
@@ -175,8 +176,8 @@ body {
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px 15px;
-  font-size: 1rem;
+  padding: 8px 12px;
+  font-size: 0.9rem;
   border: 1px solid #ccc;
   border-radius: 5px;
   transition: border-color 0.3s ease;
@@ -195,8 +196,8 @@ body {
 }
 
 .button-group .btn {
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 8px 16px;
+  font-size: 0.9rem;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -229,16 +230,94 @@ body {
   background-color: #c0392b;
 }
 
+/* Navigation Buttons for Sets (Previous/Next) */
+.btn-navigation {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 0.9rem;
+}
+
+.btn-navigation:hover {
+  background-color: #444;
+}
+
+/* Edit & Delete Buttons in Program Preview */
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
 /* Program Preview */
 .program-preview {
   margin-top: 30px;
-  text-align: left;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 10px;
 }
 
-.program-preview .program-item {
-  background-color: #ecf0f1;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 1rem;
+.program-preview .program-box {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.program-preview .program-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.program-preview .program-box h3 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+  color: #2c3e50;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.program-preview .set-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.program-preview .set-info span {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.program-preview .set-info button {
+  margin-left: 5px;
 }
