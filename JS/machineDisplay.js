@@ -1,5 +1,63 @@
 let selectedMachineId = null; // משתנה גלובלי לשמירת ה-ID
-let UserID = null;
+
+/*******************************
+ * AUTH & TOKEN UTILITIES
+ * (Optional) If your app uses JWT from Cognito
+ *******************************/
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
+}
+const accessToken = localStorage.getItem("access_token");
+console.log("Access Token:", accessToken); // בדוק את הערך של ה-token
+
+function getTrainerName() {
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) {
+    Swal.fire("Error", "No access token found. Please log in.", "error");
+    return null;
+  }
+
+  const decodedToken = parseJwt(accessToken);
+  if (!decodedToken) {
+    Swal.fire(
+      "Error",
+      "Failed to decode token. Invalid token format.",
+      "error"
+    );
+    return null;
+  }
+
+  // חיפוש שמות משתמשים אפשריים בטוקן
+  const trainerName =
+    decodedToken.name ||
+    decodedToken.username ||
+    decodedToken.sub ||
+    decodedToken.preferred_username ||
+    decodedToken.email;
+
+  if (!trainerName) {
+    Swal.fire("Error", "User ID not found in token.", "error");
+    return null;
+  }
+
+  return trainerName;
+}
+
+let UserID = getTrainerName();
+console.log("Trainer Name (UserID):", UserID);
 fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
   .then((response) => response.json())
   .then((data) => {
@@ -147,7 +205,6 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
     console.error("Error fetching machines:", error);
   });
 
-// Adding an event listener to the "Click to confirm" button
 document.body.addEventListener("click", (event) => {
   if (event.target.classList.contains("confirmButton")) {
     // יצירת חלון קופץ לאישור
@@ -155,16 +212,16 @@ document.body.addEventListener("click", (event) => {
     confirmationModal.classList.add("modal");
 
     confirmationModal.innerHTML = `
-      <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2 class="modal-title">Confirmation</h2>
-        <p class="modal-description">Are you sure these are your personal workout settings?</p>
-        <div class="modal-buttons">
-          <button class="confirm-yes">Yes</button>
-          <button class="confirm-no">No</button>
+        <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2 class="modal-title">Confirmation</h2>
+          <p class="modal-description">Are you sure these are your personal workout settings?</p>
+          <div class="modal-buttons">
+            <button class="confirm-yes">Yes</button>
+            <button class="confirm-no">No</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
 
     document.body.appendChild(confirmationModal);
 
@@ -189,6 +246,7 @@ document.body.addEventListener("click", (event) => {
       closeConfirmationModal();
       sendWorkoutData(); // קריאה לפונקציה ששולחת את הנתונים
     });
+
     // פונקציה לשליחה ל-DynamoDB אחרי שהמשתמש מאשר את האימון
     const sendWorkoutData = () => {
       // אוספים את הערכים שהמשתמש הזין
@@ -212,9 +270,11 @@ document.body.addEventListener("click", (event) => {
       // כתובת ה-API של Lambda
       const apiUrl =
         "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records";
+      let UserID = getTrainerName();
+      console.log("Trainer Name (UserID):", UserID);
 
       const payload = {
-        UserID: "Test2", // יכול לשנות כאן ל-ID של המשתמש אם נדרש
+        UserID: UserID, // השתמש בשם המשתמש שנשלף מהטוקן
         MachineID: selectedMachineId, // משתמש ב-MachineID שנשמר קודם
         Repetitions: repetitions,
         Set: sets,
@@ -236,7 +296,7 @@ document.body.addEventListener("click", (event) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: payloadString, // שלח את המחרוזת,
+        body: payloadString, // שלח את המחרוזת
       })
         .then((response) => response.json())
         .then((data) => {
