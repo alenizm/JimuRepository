@@ -268,7 +268,7 @@ document.body.addEventListener("click", (event) => {
 
       // יש לוודא שהערכים תקינים לפני שליחתם
       if (!repetitions || !sets || !weight || !duration) {
-        alert("All fields must be filled in.");
+        Swal.fire("Oops!", "All fields must be filled in.", "warning");
         return;
       }
 
@@ -304,23 +304,30 @@ document.body.addEventListener("click", (event) => {
         .then((response) => response.json())
         .then((data) => {
           console.log("Response from Lambda:", data);
-          // יצירת אלמנט חדש
-          const alertDiv = document.createElement("div");
-          alertDiv.id = "customAlert";
-          alertDiv.classList.add("custom-alert");
-          alertDiv.innerText = "Workout has been added successfully!";
-          document.body.appendChild(alertDiv);
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Workout has been added successfully!",
+            confirmButtonText: "OK",
+            background: "#222222", // רקע כהה
+            color: "#ffffff", // טקסט לבן
+            confirmButtonColor: "#4CAF50", // צבע הכפתור
+            iconColor: "#4CAF50", // צבע האייקון
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
-          // יצירת אלמנט חדש להודעת שגיאה
-          const errorDiv = document.createElement("div");
-          errorDiv.id = "errorAlert";
-          errorDiv.classList.add("custom-alert");
-          errorDiv.innerText = "An error occurred while saving your workout.";
-
-          // הוספת האלמנט לדף
-          document.body.appendChild(errorDiv);
+          // הצגת הודעת שגיאה עם Swal
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "An error occurred while saving your workout.",
+            confirmButtonText: "Try Again",
+            background: "#222222", // רקע כהה
+            color: "#ffffff", // טקסט לבן
+            confirmButtonColor: "#f44336", // צבע הכפתור
+            iconColor: "#f44336", // צבע האייקון
+          });
         });
     };
   }

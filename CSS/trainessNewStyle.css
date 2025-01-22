@@ -41,7 +41,27 @@ header {
 }
 header .logo {
   font-weight: bold;
+  font-size: 40px; /* גודל טקסט בולט */
+  color: #222222; /* גוון שחור עדין */
+  text-transform: uppercase; /* הופך לאותיות רישיות */
+  letter-spacing: 2px; /* ריווח עדין בין האותיות */
+  font-family: "Roboto", sans-serif; /* גופן מודרני ויוקרתי */
+  text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.6); /* הצללה עדינה ומקצועית */
+  transition: all 0.3s ease-in-out; /* מעבר חלק בעת אינטראקציה */
 }
+
+header .logo:hover {
+  color: #e0e0e0; /* שינוי צבע בהיר בהנחת עכבר */
+  text-shadow: 6px 6px 10px rgba(0, 0, 0, 0.7), -4px -4px 5px rgba(0, 0, 0, 0.4); /* הצללה מודגשת יותר */
+  transform: scale(1.05); /* שינוי קל בגודל בעת הנחת עכבר */
+}
+
+header .logo:active {
+  color: #b3b3b3; /* צבע כהה יותר בעת לחיצה */
+  text-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8);
+  transform: scale(1); /* חזרה לגודל הרגיל בזמן הלחיצה */
+}
+
 header nav a {
   margin-left: 30px;
   text-decoration: none;
@@ -539,4 +559,39 @@ header nav a {
 .confirmButton:hover .confirm-yes:hover,
 .confirm-no:hover {
   background-color: #333; /* שחור בהיר יותר בהובר */
+}
+
+.logOut {
+  display: inline-block;
+  text-decoration: none;
+  padding: 8px 20px; /* הקטנת הריווח הפנימי */
+  background: linear-gradient(145deg, #1c1c1c, #292929);
+  color: #f1f1f1;
+  font-size: 14px; /* גודל טקסט מוקטן */
+  font-weight: bold;
+  border: 1px solid #333; /* מסגרת עדינה יותר */
+  border-radius: 6px; /* עיגול פינות קטן */
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7),
+    -3px -3px 8px rgba(60, 60, 60, 0.2);
+  cursor: pointer;
+  letter-spacing: 0.5px; /* ריווח קטן בין האותיות */
+}
+
+.logOut:hover {
+  background: linear-gradient(145deg, #292929, #1c1c1c);
+  color: #ffffff;
+  border-color: #444;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9),
+    -4px -4px 12px rgba(60, 60, 60, 0.3);
+  transform: translateY(-1px);
+}
+
+.logOut:active {
+  background: #111;
+  border-color: #222;
+  box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.8),
+    inset -3px -3px 8px rgba(60, 60, 60, 0.2);
+  transform: translateY(0);
 }
