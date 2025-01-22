@@ -34,6 +34,24 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
+//filter trainees function
+function filterTrainees() {
+  const searchInput = document.getElementById("trainee-search").value.toLowerCase();
+  const traineeCards = document.querySelectorAll(".trainee-card");
+
+  traineeCards.forEach((card) => {
+    const traineeName = card.querySelector("h3").textContent.toLowerCase();
+    const traineeEmail = card.querySelector("p").textContent.toLowerCase();
+
+    if (traineeName.includes(searchInput) || traineeEmail.includes(searchInput)) {
+      card.style.display = "block"; // Show the card
+    } else {
+      card.style.display = "none"; // Hide the card
+    }
+  });
+}
+
+
 // Get Trainer Name from Access Token
 function getTrainerName() {
   const accessToken = localStorage.getItem("access_token");
