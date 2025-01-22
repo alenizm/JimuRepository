@@ -448,7 +448,8 @@ header nav a {
 /*עיצוב החלון הקופץ*/
 
 /* עיצוב החלון הקופץ */
-.modal {
+.modal,
+.custom-alert {
   position: fixed;
   top: 0;
   left: 0;
