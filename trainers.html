@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Trainer Dashboard</title>
     <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
     <link
@@ -39,7 +39,7 @@
     </section>
 
     <!-- Training Program Modal -->
-    <div id="programModal" class="modal" style="display: none">
+    <div id="programModal" class="modal" style="display: none;">
       <div class="modal-content">
         <button class="close-modal" onclick="closeProgramModal()">
           &times;
@@ -58,22 +58,15 @@
           </select>
         </div>
 
-        <!-- Sets and Reps Input -->
-        <div id="sets-container">
-          <div id="set-fields" style="display: none">
-            <div class="form-group">
-              <label for="weight">Weight (kg):</label>
-              <input type="number" id="weight" name="weight" disabled />
-            </div>
-            <div class="form-group">
-              <label for="repetitions">Repetitions:</label>
-              <input
-                type="number"
-                id="repetitions"
-                name="repetitions"
-                disabled
-              />
-            </div>
+        <!-- Sets Container -->
+        <div id="sets-container" style="display: none;">
+          <div class="form-group">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" name="weight" disabled />
+          </div>
+          <div class="form-group">
+            <label for="repetitions">Repetitions:</label>
+            <input type="number" id="repetitions" name="repetitions" disabled />
           </div>
         </div>
 

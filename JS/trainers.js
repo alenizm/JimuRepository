@@ -1,31 +1,26 @@
-// API Gateway Endpoints
+/********************
+ * API ENDPOINTS
+ ********************/
 const machinesApiEndpoint =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines"; // Replace with your endpoint
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines"; 
 const trainingProgramApiEndpoint =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans"; // Replace with your endpoint
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans";
 const traineesApiEndpoint =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees"; // Replace with your endpoint
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees";
 
+/*******************************
+ * GLOBAL VARIABLES
+ *******************************/
 let trainingProgram = []; // Array to store machines and their sets
 let selectedUserEmail = ""; // Store selected user email
-let currentSets = []; // Store the sets for the current machine
-let currentSetIndex = 0; // Track the current set index
 
-function enableSetFields() {
-  const machineSelect = document.getElementById("machine-select");
-  const weightInput = document.getElementById("weight");
-  const repetitionsInput = document.getElementById("repetitions");
+// For handling the current machine's sets
+let currentSets = [];
+let currentSetIndex = 0;
 
-  // Enable or disable fields based on the machine selection
-  if (machineSelect.value !== "") {
-    weightInput.disabled = false;
-    repetitionsInput.disabled = false;
-  } else {
-    weightInput.disabled = true;
-    repetitionsInput.disabled = true;
-  }
-}
-
+/*******************************
+ * AUTH & TOKEN UTILITIES
+ *******************************/
 // Function to decode JWT
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
@@ -54,11 +49,12 @@ function getTrainerName() {
     alert("Trainer name not found in token.");
     return null;
   }
-
   return trainerName;
 }
 
-// Fetch Trainees from API
+/*******************************
+ * FETCH TRAINEES
+ *******************************/
 async function fetchTrainees() {
   try {
     const userPoolId = "us-east-1_gXjTPXbr6"; // Replace with your User Pool ID
@@ -106,7 +102,9 @@ async function fetchTrainees() {
   }
 }
 
-// Add Trainee Search Functionality
+/*******************************
+ * TRAINEE SEARCH FILTER
+ *******************************/
 document.getElementById("trainee-search").addEventListener("input", (event) => {
   const searchText = event.target.value.toLowerCase();
   const traineeCards = document.querySelectorAll(".trainee-card");
@@ -122,7 +120,9 @@ document.getElementById("trainee-search").addEventListener("input", (event) => {
   });
 });
 
-// Fetch Machines from API
+/*******************************
+ * FETCH MACHINES
+ *******************************/
 async function fetchMachines() {
   try {
     const response = await fetch(machinesApiEndpoint, {
@@ -141,7 +141,7 @@ async function fetchMachines() {
         ? JSON.parse(responseBody.body)
         : responseBody.body;
 
-    console.log("Parsed Body:", machines);
+    console.log("Parsed Machines:", machines);
 
     const machineSelect = document.getElementById("machine-select");
 
@@ -159,51 +159,101 @@ async function fetchMachines() {
   }
 }
 
-// Add Machine to Program
+/*******************************
+ * ENABLE SET FIELDS AFTER MACHINE SELECT
+ *******************************/
+function enableSetFields() {
+  const machineSelect = document.getElementById("machine-select");
+  const setsContainer = document.getElementById("sets-container");
+  const weightInput = document.getElementById("weight");
+  const repetitionsInput = document.getElementById("repetitions");
+
+  // If a machine is selected, allow set entry
+  if (machineSelect.value !== "") {
+    // Show the sets container
+    setsContainer.style.display = "block";
+    // Enable weight/reps
+    weightInput.disabled = false;
+    repetitionsInput.disabled = false;
+
+    // Initialize currentSets and currentSetIndex fresh for this machine
+    currentSets = [];
+    currentSetIndex = 0;
+  } else {
+    // Hide the sets container
+    setsContainer.style.display = "none";
+    // Clear out any data
+    weightInput.value = "";
+    repetitionsInput.value = "";
+    weightInput.disabled = true;
+    repetitionsInput.disabled = true;
+  }
+}
+
+/*******************************
+ * ADD A SINGLE SET TO currentSets
+ *******************************/
+function addSet() {
+  const machineSelect = document.getElementById("machine-select");
+  if (!machineSelect.value) {
+    alert("Please select a machine before adding a set.");
+    return;
+  }
+  const weightValue = document.getElementById("weight").value;
+  const repsValue = document.getElementById("repetitions").value;
+
+  if (!weightValue || !repsValue) {
+    alert("Please enter weight and repetitions.");
+    return;
+  }
+
+  // Push the new set into currentSets
+  currentSets.push({ weight: weightValue, reps: repsValue });
+
+  // Clear the inputs for the next set
+  document.getElementById("weight").value = "";
+  document.getElementById("repetitions").value = "";
+
+  alert("Set added to current machine. Don’t forget to click 'Add Machine To Program' to finalize.");
+}
+
+/*******************************
+ * ADD MACHINE (AND ITS SETS) TO THE TRAINING PROGRAM
+ *******************************/
 function addMachineToProgram() {
-  const machineName = document.getElementById("machine-select").value;
-  if (!machineName) {
-    alert("Select a machine.");
+  const machineSelect = document.getElementById("machine-select").value;
+  if (!machineSelect) {
+    alert("Please select a machine first.");
+    return;
+  }
+
+  if (currentSets.length === 0) {
+    alert("No sets added for this machine.");
     return;
   }
 
   // Check if the machine already exists in the program
   const existingMachine = trainingProgram.find(
-    (item) => item.machine === machineName
+    (item) => item.machine === machineSelect
   );
+
   if (existingMachine) {
+    // Overwrite sets for the existing machine
     existingMachine.sets = [...currentSets];
   } else {
-    trainingProgram.push({ machine: machineName, sets: [...currentSets] });
+    // Add new machine + sets
+    trainingProgram.push({ machine: machineSelect, sets: [...currentSets] });
   }
 
-  document.getElementById("sets-container").innerHTML = "";
-  currentSets = [];
-  currentSetIndex = 0;
-
-  updateProgramPreview(); // Update the preview grid
+  // Reset for next machine selection
+  document.getElementById("machine-select").value = "";
+  enableSetFields(); // This will hide sets container again
+  updateProgramPreview();
 }
 
-// Enable Set Fields
-document.getElementById("machine-select").addEventListener("change", () => {
-  const machineSelect = document.getElementById("machine-select").value;
-  const weightInput = document.querySelector(
-    "#sets-container input[type='number']"
-  );
-  const repsInput = document.querySelector(
-    "#sets-container input[type='number']"
-  );
-
-  if (machineSelect) {
-    weightInput.disabled = false;
-    repsInput.disabled = false;
-  } else {
-    weightInput.disabled = true;
-    repsInput.disabled = true;
-  }
-});
-
-// Update Program Preview
+/*******************************
+ * UPDATE PROGRAM PREVIEW
+ *******************************/
 function updateProgramPreview() {
   const previewContainer = document.getElementById("program-preview");
   previewContainer.innerHTML = "";
@@ -217,9 +267,7 @@ function updateProgramPreview() {
       setsHTML += `
         <div class="set-info">
           <span>Set ${index + 1}: ${set.weight}kg, ${set.reps} reps</span>
-          <button class="btn-delete" onclick="deleteSet('${
-            program.machine
-          }', ${index})">Delete</button>
+          <button class="btn-delete" onclick="deleteSet('${program.machine}', ${index})">Delete</button>
         </div>
       `;
     });
@@ -228,88 +276,41 @@ function updateProgramPreview() {
       <h3>${program.machine}</h3>
       ${setsHTML}
     `;
-
     previewContainer.appendChild(programDiv);
   });
 }
 
-// Delete Set
+/*******************************
+ * DELETE A SET FROM PREVIEW
+ *******************************/
 function deleteSet(machineName, setIndex) {
   const machine = trainingProgram.find((item) => item.machine === machineName);
   if (machine) {
     machine.sets.splice(setIndex, 1);
     if (machine.sets.length === 0) {
+      // Remove the machine entirely if no sets left
       trainingProgram = trainingProgram.filter(
         (item) => item.machine !== machineName
       );
     }
   }
-
   updateProgramPreview();
 }
 
-//add set
-function addSet() {
-  currentSets.push({ weight: "", reps: "" });
-  navigateSet("next");
-}
-
-// Select User for Training Program
+/*******************************
+ * SELECT USER FOR TRAINING PROGRAM
+ *******************************/
 function selectUser(email) {
   selectedUserEmail = email;
   openProgramModal();
 }
 
-// Navigate Between Sets
-function navigateSet(direction) {
-  const setsContainer = document.getElementById("sets-container");
-
-  if (direction === "next") {
-    if (currentSetIndex === currentSets.length - 1) {
-      if (confirm("Do you want to add a new set?")) {
-        currentSets.push({ weight: "", reps: "" });
-        currentSetIndex++;
-      } else {
-        return;
-      }
-    } else if (currentSetIndex < currentSets.length - 1) {
-      currentSetIndex++;
-    }
-  } else if (direction === "prev") {
-    if (currentSetIndex > 0) {
-      currentSetIndex--;
-    }
-  }
-
-  setsContainer.innerHTML = "";
-  if (currentSets[currentSetIndex]) {
-    const set = currentSets[currentSetIndex];
-    const setDiv = document.createElement("div");
-    setDiv.className = "form-group";
-    setDiv.innerHTML = `
-      <h4>Set ${currentSetIndex + 1}</h4>
-      <label for="weight-${currentSetIndex}">Weight (kg):</label>
-      <input type="number" id="weight-${currentSetIndex}" value="${
-      set.weight
-    }" onchange="updateSet(${currentSetIndex}, 'weight', this.value)" />
-      <label for="reps-${currentSetIndex}">Reps:</label>
-      <input type="number" id="reps-${currentSetIndex}" value="${
-      set.reps
-    }" onchange="updateSet(${currentSetIndex}, 'reps', this.value)" />
-    `;
-    setsContainer.appendChild(setDiv);
-  }
-}
-
-// Update Set Details
-function updateSet(index, field, value) {
-  currentSets[index][field] = value;
-}
-
-// Submit Program via POST
+/*******************************
+ * SUBMIT PROGRAM (POST)
+ *******************************/
 async function submitProgram() {
   if (trainingProgram.length === 0) {
-    alert("Add at least one machine to the program.");
+    alert("Add at least one machine and sets to the program before submitting.");
     return;
   }
 
@@ -323,7 +324,7 @@ async function submitProgram() {
 
   const bodyPayload = {
     UserEmail: selectedUserEmail,
-    TrainerName: trainerName, // Use the trainer's name instead of ID
+    TrainerName: trainerName, // Use the trainer's name
   };
 
   const queryParameters = {
@@ -352,9 +353,10 @@ async function submitProgram() {
     console.log("Program submitted successfully:", result);
     alert("Training program submitted successfully!");
 
-    // Reset program
+    // Reset after submission
     trainingProgram = [];
     selectedUserEmail = "";
+    updateProgramPreview();
     closeProgramModal();
   } catch (error) {
     console.error("Error submitting training program:", error);
@@ -362,22 +364,26 @@ async function submitProgram() {
   }
 }
 
-// Open the Modal
+/*******************************
+ * OPEN PROGRAM MODAL
+ *******************************/
 function openProgramModal() {
   document.getElementById("programModal").style.display = "flex";
-  document.getElementById("machine-select").value = ""; // Reset machine select
-  document.getElementById("sets-container").innerHTML = ""; // Clear sets
-  currentSets = [{ weight: "", reps: "" }]; // Start with the first set
-  currentSetIndex = 0;
-  navigateSet(0);
+  // Reset any selections or fields
+  document.getElementById("machine-select").value = "";
+  enableSetFields(); // This will hide the sets container initially
 }
 
-// Close the Modal
+/*******************************
+ * CLOSE PROGRAM MODAL
+ *******************************/
 function closeProgramModal() {
   document.getElementById("programModal").style.display = "none";
 }
 
-// Event Listener for Page Load
+/*******************************
+ * ON PAGE LOAD
+ *******************************/
 document.addEventListener("DOMContentLoaded", () => {
   fetchMachines();
   fetchTrainees();
