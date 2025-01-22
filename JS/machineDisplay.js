@@ -1,3 +1,5 @@
+let selectedMachineId = null; // משתנה גלובלי לשמירת ה-ID
+let UserID = null;
 fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
   .then((response) => response.json())
   .then((data) => {
@@ -30,7 +32,7 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
 
       if (button) {
         button.addEventListener("click", () => {
-          console.log("כפתור נלחץ");
+          console.log("כפתור 1 נלחץ");
 
           // יצירת חלון קופץ
           const modal = document.createElement("div");
@@ -54,6 +56,9 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
                     : "Not Available"
                 }</td></tr>
               </table>
+               <button class="WorkoutButton" data-machine-id="${
+                 machine.MachineID
+               }">Define a personal workout.</button>
               <button class="backButton">Back</button>
             </div>
           `;
@@ -73,6 +78,67 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
 
           closeButton.addEventListener("click", closeModal);
           backButton.addEventListener("click", closeModal);
+
+          // הוספת האזנה לכפתור "Define a personal workout"
+          const button2 = modal.querySelector(".WorkoutButton");
+          if (button2) {
+            button2.addEventListener("click", () => {
+              console.log("כפתור 2 נלחץ");
+
+              // שליפת ה-MachineID מהמאפיין של כפתור האימון
+              selectedMachineId = button2.getAttribute("data-machine-id"); // שמירת ה-ID
+
+              console.log("Machine ID for workout:", selectedMachineId);
+
+              // יצירת חלון קופץ נוסף להגדרת האימון
+              const secondModal = document.createElement("div");
+              secondModal.classList.add("modal");
+
+              secondModal.innerHTML = `
+              <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 class="modal-title">Define Your Personal Workout</h2>
+                <p class="modal-description">Set the repetitions, weight, sets, and duration for your workout.</p>
+                <table class="modal-table">
+                  <tr>
+                    <td>Repetitions:</td>
+                    <td><input type="number" id="repetitions" name="repetitions" min="1" required></td>
+                  </tr>
+                  <tr>
+                    <td>Sets:</td>
+                    <td><input type="number" id="sets" name="sets" min="1" required></td>
+                  </tr>
+                  <tr>
+                    <td>Weight (kg):</td>
+                    <td><input type="number" id="weight" name="weight" min="1" required></td>
+                  </tr>
+                  <tr>
+                    <td>Duration (minutes):</td>
+                    <td><input type="number" id="duration" name="duration" min="1" required></td>
+                  </tr>
+                </table>
+                <button type="submit" class="confirmButton">Click to confirm</button>
+                <button class="backButton">Back</button>
+              </div>
+            `;
+
+              document.body.appendChild(secondModal);
+
+              // הפעלת אנימציה
+              setTimeout(() => secondModal.classList.add("visible"), 10);
+
+              const closeButton2 = secondModal.querySelector(".close-button");
+              const backButton2 = secondModal.querySelector(".backButton");
+
+              const closeModal2 = () => {
+                secondModal.classList.remove("visible");
+                setTimeout(() => secondModal.remove(), 300);
+              };
+
+              closeButton2.addEventListener("click", closeModal2);
+              backButton2.addEventListener("click", closeModal2);
+            });
+          }
         });
       }
     });
@@ -80,3 +146,107 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
   .catch((error) => {
     console.error("Error fetching machines:", error);
   });
+
+// Adding an event listener to the "Click to confirm" button
+document.body.addEventListener("click", (event) => {
+  if (event.target.classList.contains("confirmButton")) {
+    // יצירת חלון קופץ לאישור
+    const confirmationModal = document.createElement("div");
+    confirmationModal.classList.add("modal");
+
+    confirmationModal.innerHTML = `
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 class="modal-title">Confirmation</h2>
+        <p class="modal-description">Are you sure these are your personal workout settings?</p>
+        <div class="modal-buttons">
+          <button class="confirm-yes">Yes</button>
+          <button class="confirm-no">No</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(confirmationModal);
+
+    // הצגת המודל
+    setTimeout(() => confirmationModal.classList.add("visible"), 10);
+
+    const closeButton = confirmationModal.querySelector(".close-button");
+    const confirmYes = confirmationModal.querySelector(".confirm-yes");
+    const confirmNo = confirmationModal.querySelector(".confirm-no");
+
+    const closeConfirmationModal = () => {
+      confirmationModal.classList.remove("visible");
+      setTimeout(() => confirmationModal.remove(), 300);
+    };
+
+    // מאזינים לכפתורים
+    closeButton.addEventListener("click", closeConfirmationModal);
+    confirmNo.addEventListener("click", closeConfirmationModal);
+
+    confirmYes.addEventListener("click", () => {
+      console.log("The user confirmed the workout settings.");
+      closeConfirmationModal();
+      sendWorkoutData(); // קריאה לפונקציה ששולחת את הנתונים
+    });
+    // פונקציה לשליחה ל-DynamoDB אחרי שהמשתמש מאשר את האימון
+    const sendWorkoutData = () => {
+      // אוספים את הערכים שהמשתמש הזין
+      const repetitions = document.getElementById("repetitions").value;
+      const sets = document.getElementById("sets").value;
+      const weight = document.getElementById("weight").value;
+      const duration = document.getElementById("duration").value; // שדה חדש
+
+      // הדפסת הנתונים שהמשתמש הזין
+      console.log("Repetitions:", repetitions);
+      console.log("Sets:", sets);
+      console.log("Weight:", weight);
+      console.log("Duration:", duration); // הדפסת duration
+
+      // יש לוודא שהערכים תקינים לפני שליחתם
+      if (!repetitions || !sets || !weight || !duration) {
+        alert("All fields must be filled in.");
+        return;
+      }
+
+      // כתובת ה-API של Lambda
+      const apiUrl =
+        "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records";
+
+      const payload = {
+        UserID: "Test2", // יכול לשנות כאן ל-ID של המשתמש אם נדרש
+        MachineID: selectedMachineId, // משתמש ב-MachineID שנשמר קודם
+        Repetitions: repetitions,
+        Set: sets,
+        Weight: weight,
+        Duration: duration, // שליחה של duration
+      };
+
+      // הדפסת ה-payload לפני שליחתו
+      console.log(
+        "Sending the following payload to Lambda:",
+        JSON.stringify(payload)
+      );
+      // המרת ה- payload ל-string
+      const payloadString = JSON.stringify(payload);
+
+      // שליחת הנתונים ל-Lambda
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: payloadString, // שלח את המחרוזת,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response from Lambda:", data);
+          alert("Workout has been added successfully!");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred while saving your workout.");
+        });
+    };
+  }
+});

@@ -518,7 +518,11 @@ header nav a {
   border: none;
 }
 
-.backButton {
+.backButton,
+.WorkoutButton,
+.confirmButton,
+.confirm-yes,
+.confirm-no {
   padding: 10px 20px;
   background-color: #000; /* צבע שחור */
   color: white; /* טקסט לבן */
@@ -529,6 +533,9 @@ header nav a {
   transition: background-color 0.3s;
 }
 
-.backButton:hover {
+.backButton:hover,
+.WorkoutButton:hover,
+.confirmButton:hover .confirm-yes:hover,
+.confirm-no:hover {
   background-color: #333; /* שחור בהיר יותר בהובר */
 }
