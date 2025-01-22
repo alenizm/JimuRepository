@@ -1,5 +1,5 @@
 /*******************************
- * API ENDPOINTS (example only)
+ * API ENDPOINTS
  *******************************/
 const MACHINES_API_ENDPOINT =
   "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
@@ -8,15 +8,17 @@ const TRAINEES_API_ENDPOINT =
 const TRAINING_PROGRAM_API_ENDPOINT =
   "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans";
 
-// Example: Cognito details
+// Cognito details
 const COGNITO_USER_POOL_ID = "us-east-1_gXjTPXbr6";
 const COGNITO_GROUP_NAME = "trainees";
 
 /*******************************
  * GLOBAL VARIABLES
  *******************************/
-let selectedUserEmail = ""; // Email of the trainee we are building a program for
-let trainingProgram = [];   // Array of objects: { machine, sets: [ { weight, reps }, ... ] }
+let selectedUserEmail = ""; 
+let selectedUserSub = "";   // Store the trainee's sub (UserID)
+
+let trainingProgram = [];   // [{ machine, sets: [{ weight, reps }, ...] }]
 
 // For handling sets of the *currently selected machine*
 let currentSets = [];
@@ -24,8 +26,9 @@ let currentSetIndex = 0;
 
 /*******************************
  * AUTH & TOKEN UTILITIES
- * (Optional) If your app uses JWT from Cognito
  *******************************/
+
+// Decode JWT
 function parseJwt(token) {
   const base64Url = token.split(".")[1];
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -38,37 +41,27 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
-function getTrainerName() {
+// Get trainer's Cognito sub (unique user ID) from the JWT
+function getTrainerSub() {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) {
     Swal.fire("Error", "No access token found. Please log in.", "error");
     return null;
   }
-
   const decodedToken = parseJwt(accessToken);
-  const trainerName = decodedToken.name || decodedToken.username;
-
-  if (!trainerName) {
-    Swal.fire("Error", "Trainer name not found in token.", "error");
-    return null;
-  }
-  return trainerName;
+  return decodedToken.sub;
 }
 
 /*******************************
  * ON PAGE LOAD
  *******************************/
 document.addEventListener("DOMContentLoaded", () => {
-  // Fetch data from server
+  // Fetch from server
   fetchMachines();
   fetchTrainees();
 
-  // Handle logout
+  // Logout button
   document.getElementById("logout-btn").addEventListener("click", logout);
-
-  // For demonstration, if you want to show or hide modal for debugging,
-  // you can comment/uncomment as needed.
-  // openProgramModal(); 
 });
 
 /*******************************
@@ -96,14 +89,14 @@ async function fetchTrainees() {
       const card = document.createElement("div");
       card.className = "trainee-card";
       card.setAttribute("data-email", trainee.email);
+      card.setAttribute("data-sub", trainee.sub);
 
-      // Example: Show trainee's username or full name
       card.innerHTML = `
         <h3>${trainee.username}</h3>
         <p>Email: ${trainee.email}</p>
-        <button onclick="selectUser('${trainee.email}')">Create Program</button>
+        <!-- Pass both email and sub to selectUser() -->
+        <button onclick="selectUser('${trainee.email}', '${trainee.sub}')">Create Program</button>
       `;
-
       traineesList.appendChild(card);
     });
   } catch (error) {
@@ -125,7 +118,6 @@ async function fetchMachines() {
     if (!response.ok) throw new Error("Failed to fetch machines");
 
     const responseBody = await response.json();
-    // Some APIs return the data in .body as a string, so parse if needed
     const machines =
       typeof responseBody.body === "string"
         ? JSON.parse(responseBody.body)
@@ -136,7 +128,6 @@ async function fetchMachines() {
     const machineSelect = document.getElementById("machine-select");
     machines.forEach((machine) => {
       const option = document.createElement("option");
-      // Here we assume each machine has "Name" and "Location"
       option.value = machine.Name;
       option.textContent = `${machine.Name} (${machine.Location})`;
       machineSelect.appendChild(option);
@@ -157,21 +148,16 @@ function filterTrainees() {
   traineeCards.forEach((card) => {
     const nameElement = card.querySelector("h3");
     const nameText = nameElement ? nameElement.textContent.toLowerCase() : "";
-
-    // Show/hide based on whether the name includes the search term
-    if (nameText.includes(searchTerm)) {
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
-    }
+    card.style.display = nameText.includes(searchTerm) ? "block" : "none";
   });
 }
 
 /*******************************
  * SELECT A TRAINEE
  *******************************/
-function selectUser(email) {
+function selectUser(email, sub) {
   selectedUserEmail = email;
+  selectedUserSub = sub; // Store the trainee's Cognito sub (UserID)
   openProgramModal();
 }
 
@@ -184,10 +170,6 @@ function openProgramModal() {
 
 function closeProgramModal() {
   document.getElementById("programModal").style.display = "none";
-  // Optionally reset fields if you want a fresh start each time
-  // trainingProgram = [];
-  // selectedUserEmail = "";
-  // updateProgramPreview();
 }
 
 /*******************************
@@ -196,8 +178,8 @@ function closeProgramModal() {
 function logout() {
   // Clear tokens if stored
   localStorage.removeItem("access_token");
-  // Redirect to login or reload page
-  window.location.href = "login.html";
+  // Redirect
+  window.location.href = "index.html";
 }
 
 /*******************************
@@ -212,35 +194,33 @@ function machineSelected() {
     return;
   }
 
-  // Check if this machine already exists in our trainingProgram
-  const existingMachine = trainingProgram.find((item) => item.machine === machineSelect);
+  // Check if this machine already in trainingProgram
+  const existingMachine = trainingProgram.find(
+    (item) => item.machine === machineSelect
+  );
 
-  // If so, use its sets; otherwise, start fresh
+  // If so, use its sets; else start fresh
   currentSets = existingMachine ? [...existingMachine.sets] : [];
   currentSetIndex = 0;
-
-  // Show the sets container
   setsContainer.style.display = "block";
   displayCurrentSet();
 }
 
 /*******************************
- * NAVIGATE SET (Previous / Next)
+ * NAVIGATE SET
  *******************************/
 function navigateSet(direction) {
-  // First, ensure the current set data is updated before leaving
+  // Save current inputs before moving
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
   if (direction === "prev" && currentSetIndex > 0) {
     currentSetIndex--;
   } else if (direction === "next") {
-    // Move to next set only if we haven't reached the end
     if (currentSetIndex < currentSets.length - 1) {
       currentSetIndex++;
-    } 
-    // Or, if you want to automatically add a new set:
-    // else { addNewSet(); }
+    }
+    // else { addNewSet(); } // optional auto-add
   }
 
   displayCurrentSet();
@@ -250,30 +230,24 @@ function navigateSet(direction) {
  * DISPLAY CURRENT SET
  *******************************/
 function displayCurrentSet() {
-  // If no sets exist, start with one empty set
   if (currentSets.length === 0) {
     currentSets.push({ weight: "", reps: "" });
     currentSetIndex = 0;
   }
-
-  // Fix any out-of-bounds index
   if (currentSetIndex < 0) currentSetIndex = 0;
   if (currentSetIndex >= currentSets.length) {
     currentSetIndex = currentSets.length - 1;
   }
 
-  // Update UI
-  const setTitle = document.getElementById("set-title");
-  const weightInput = document.getElementById("weight");
-  const repsInput = document.getElementById("repetitions");
-
-  setTitle.textContent = `Set ${currentSetIndex + 1} of ${currentSets.length}`;
-  weightInput.value = currentSets[currentSetIndex].weight;
-  repsInput.value = currentSets[currentSetIndex].reps;
+  document.getElementById("set-title").textContent = 
+    `Set ${currentSetIndex + 1} of ${currentSets.length}`;
+    
+  document.getElementById("weight").value = currentSets[currentSetIndex].weight;
+  document.getElementById("repetitions").value = currentSets[currentSetIndex].reps;
 }
 
 /*******************************
- * UPDATE CURRENT SET FIELDS
+ * UPDATE CURRENT SET
  *******************************/
 function updateCurrentSet(field, value) {
   if (!currentSets[currentSetIndex]) return;
@@ -288,11 +262,9 @@ function updateCurrentSet(field, value) {
  * ADD NEW SET
  *******************************/
 function addNewSet() {
-  // Update the current set before adding a new one
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
-  // Confirmation (optional)
   Swal.fire({
     title: "Add Another Set?",
     text: "Are you sure you want to add a new set?",
@@ -313,7 +285,6 @@ function addNewSet() {
  * SAVE MACHINE SETS
  *******************************/
 function saveMachineSets() {
-  // Make sure current set is updated from the UI
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
@@ -332,7 +303,6 @@ function saveMachineSets() {
     cancelButtonText: "Cancel",
   }).then((result) => {
     if (result.isConfirmed) {
-      // Check if machine already in trainingProgram
       const existingIndex = trainingProgram.findIndex(
         (item) => item.machine === machineSelect
       );
@@ -340,10 +310,7 @@ function saveMachineSets() {
       if (existingIndex >= 0) {
         trainingProgram[existingIndex].sets = [...currentSets];
       } else {
-        trainingProgram.push({
-          machine: machineSelect,
-          sets: [...currentSets],
-        });
+        trainingProgram.push({ machine: machineSelect, sets: [...currentSets] });
       }
 
       updateProgramPreview();
@@ -361,7 +328,6 @@ function updateProgramPreview() {
 
   trainingProgram.forEach((entry) => {
     const { machine, sets } = entry;
-
     const programDiv = document.createElement("div");
     programDiv.className = "program-box";
 
@@ -388,19 +354,17 @@ function updateProgramPreview() {
  * DELETE SET
  *******************************/
 function deleteSet(machineName, setIndex) {
-  // Find the machine object in trainingProgram
   const machineObj = trainingProgram.find((m) => m.machine === machineName);
   if (!machineObj) return;
 
-  // Remove the set
   machineObj.sets.splice(setIndex, 1);
 
-  // If no sets left, remove machine from the program
+  // If no sets left, remove machine entirely
   if (machineObj.sets.length === 0) {
     trainingProgram = trainingProgram.filter((m) => m.machine !== machineName);
   }
 
-  // If we are currently editing that machine, update the modal's current sets
+  // If we're currently editing that machine
   const selectedMachine = document.getElementById("machine-select").value;
   if (machineName === selectedMachine) {
     currentSets = machineObj.sets || [];
@@ -422,14 +386,11 @@ function editSet(machineName, setIndex) {
   // Re-open the modal if it's closed
   document.getElementById("programModal").style.display = "flex";
 
-  // Switch the machine-select to the correct machine
+  // Switch the machine-select
   const machineSelect = document.getElementById("machine-select");
   machineSelect.value = machineName;
 
-  // Re-load sets from trainingProgram
-  machineSelected();
-
-  // Jump to the set user wants to edit
+  machineSelected(); // Reload sets
   currentSetIndex = setIndex;
   displayCurrentSet();
 }
@@ -438,33 +399,34 @@ function editSet(machineName, setIndex) {
  * SUBMIT PROGRAM
  *******************************/
 async function submitProgram() {
+  // Must have at least one machine + sets
   if (trainingProgram.length === 0) {
     Swal.fire("Error", "Add at least one machine and one set before submitting.", "error");
     return;
   }
-
-  if (!selectedUserEmail) {
+  // Must have a selected user
+  if (!selectedUserEmail || !selectedUserSub) {
     Swal.fire("Error", "No user selected for the training program.", "error");
     return;
   }
 
-  // (Optional) If using the trainer name from JWT
-  const trainerName = getTrainerName();
-  if (!trainerName) return;
+  // Trainer's sub from localStorage token
+  const trainerSub = getTrainerSub();
+  if (!trainerSub) return;
 
   // Body payload for the API
   const bodyPayload = {
-    UserEmail: selectedUserEmail,
-    TrainerName: trainerName, // or some other field
+    UserEmail: selectedUserEmail,  // The trainee's email
+    UserID: selectedUserSub,       // The trainee's sub
+    TrainerID: trainerSub          // The trainer's sub
   };
 
-  // Some APIs want program details as query params or in the body
-  // Adjust this as needed:
+  // PlanDetails in query param
   const queryParams = {
     PlanDetails: JSON.stringify(trainingProgram),
   };
 
-  // Construct final URL with query param
+  // Build URL
   const url = `${TRAINING_PROGRAM_API_ENDPOINT}?PlanDetails=${encodeURIComponent(
     queryParams.PlanDetails
   )}`;
@@ -481,9 +443,11 @@ async function submitProgram() {
     }
 
     Swal.fire("Success", "Training program submitted successfully!", "success");
-    // Clear everything if desired:
+
+    // Clear everything
     trainingProgram = [];
     selectedUserEmail = "";
+    selectedUserSub = "";
     updateProgramPreview();
     closeProgramModal();
 
