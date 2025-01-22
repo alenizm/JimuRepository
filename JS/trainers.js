@@ -247,9 +247,6 @@ function navigateSet(direction) {
  * ADD A NEW SET
  *******************************/
 function addNewSet() {
-  // Before adding a new set, store any changes in the current set
-  // (updateCurrentSet is already called on input, so we should be up to date)
-
   // Create a blank set
   currentSets.push({ weight: "", reps: "" });
   // Move to the newly created set
@@ -276,27 +273,20 @@ function saveMachineSets() {
     return;
   }
 
-  // If we have no sets, do not save
   if (currentSets.length === 0) {
     alert("No sets found for this machine.");
     return;
   }
-
-  // Save changes for the current set just in case
-  // (but we've been updating on input already)
-  // currentSets[currentSetIndex].weight = document.getElementById("weight").value;
-  // currentSets[currentSetIndex].reps = document.getElementById("repetitions").value;
 
   // Check if machine already exists
   const existingMachineIndex = trainingProgram.findIndex(
     (item) => item.machine === machineName
   );
 
+  // Overwrite or add
   if (existingMachineIndex >= 0) {
-    // Overwrite sets
     trainingProgram[existingMachineIndex].sets = [...currentSets];
   } else {
-    // Add new
     trainingProgram.push({
       machine: machineName,
       sets: [...currentSets],
@@ -308,7 +298,71 @@ function saveMachineSets() {
 }
 
 /*******************************
- * UPDATE PROGRAM PREVIEW
+ * DELETE SET (FROM PREVIEW)
+ *******************************/
+function deleteSet(machineName, setIndex) {
+  const machine = trainingProgram.find((m) => m.machine === machineName);
+  if (!machine) return;
+
+  // Remove the set from that machine
+  machine.sets.splice(setIndex, 1);
+
+  // If no sets left, remove the machine entirely
+  if (machine.sets.length === 0) {
+    trainingProgram = trainingProgram.filter(
+      (m) => m.machine !== machineName
+    );
+  }
+
+  // ----- Keep the modal in sync if this is the currently selected machine -----
+  const selectedMachine = document.getElementById("machine-select").value;
+  if (machineName === selectedMachine) {
+    // Re-sync currentSets with trainingProgram for this machine
+    const updatedMachine = trainingProgram.find(
+      (m) => m.machine === machineName
+    );
+    if (updatedMachine) {
+      currentSets = [...updatedMachine.sets];
+    } else {
+      currentSets = []; // machine is fully removed
+    }
+    currentSetIndex = 0;
+    // If there are still sets left, display them
+    if (currentSets.length > 0) {
+      displayCurrentSet();
+    } else {
+      // If no sets left, hide the container or let it auto-create a blank set
+      document.getElementById("sets-container").style.display = "none";
+    }
+  }
+
+  updateProgramPreview();
+}
+
+/*******************************
+ * EDIT SET (FROM PREVIEW)
+ *******************************/
+function editSet(machineName, setIndex) {
+  // Open the modal if it's not open already
+  const modal = document.getElementById("programModal");
+  if (modal.style.display === "none" || modal.style.display === "") {
+    openProgramModal();
+  }
+
+  // Select the machine in the dropdown
+  const machineSelect = document.getElementById("machine-select");
+  machineSelect.value = machineName;
+
+  // Load that machine's sets
+  machineSelected(); // This will read from trainingProgram and place sets in currentSets
+
+  // Navigate to the chosen set
+  currentSetIndex = setIndex;
+  displayCurrentSet();
+}
+
+/*******************************
+ * PROGRAM PREVIEW
  *******************************/
 function updateProgramPreview() {
   const previewContainer = document.getElementById("program-preview");
@@ -326,6 +380,9 @@ function updateProgramPreview() {
           <button class="btn-delete" onclick="deleteSet('${program.machine}', ${index})">
             Delete
           </button>
+          <button class="btn-edit" onclick="editSet('${program.machine}', ${index})">
+            Edit
+          </button>
         </div>
       `;
     });
@@ -336,23 +393,6 @@ function updateProgramPreview() {
     `;
     previewContainer.appendChild(programDiv);
   });
-}
-
-/*******************************
- * DELETE SET FROM A MACHINE
- *******************************/
-function deleteSet(machineName, setIndex) {
-  const machine = trainingProgram.find((m) => m.machine === machineName);
-  if (machine) {
-    machine.sets.splice(setIndex, 1);
-    if (machine.sets.length === 0) {
-      // Remove the machine if all sets gone
-      trainingProgram = trainingProgram.filter(
-        (m) => m.machine !== machineName
-      );
-    }
-  }
-  updateProgramPreview();
 }
 
 /*******************************
@@ -427,7 +467,7 @@ async function submitProgram() {
  *******************************/
 function openProgramModal() {
   document.getElementById("programModal").style.display = "flex";
-  // Reset the dropdown so user picks a machine each time
+  // Reset the dropdown so user picks a machine
   document.getElementById("machine-select").value = "";
   document.getElementById("sets-container").style.display = "none";
 }
