@@ -136,20 +136,12 @@ async function fetchMachines() {
     console.log("Raw Response Body:", responseBody);
 
     // Parse the nested body if it's a string
-    const parsedBody =
+    const machines =
       typeof responseBody.body === "string"
         ? JSON.parse(responseBody.body)
         : responseBody.body;
 
-    console.log("Parsed Body:", parsedBody);
-
-    // Access the machines array
-    const machines = parsedBody.machines || [];
-    console.log("Machines Array:", machines);
-
-    if (!Array.isArray(machines)) {
-      throw new Error("Machines data is not in the expected array format.");
-    }
+    console.log("Parsed Body:", machines);
 
     const machineSelect = document.getElementById("machine-select");
 
