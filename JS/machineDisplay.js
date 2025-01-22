@@ -260,6 +260,11 @@ document.body.addEventListener("click", (event) => {
       console.log("Sets:", sets);
       console.log("Weight:", weight);
       console.log("Duration:", duration); // הדפסת duration
+      if (typeof userID !== "undefined" && userID) {
+        console.log("UserID:", userID);
+      } else {
+        console.log("UserID is not defined or empty");
+      }
 
       // יש לוודא שהערכים תקינים לפני שליחתם
       if (!repetitions || !sets || !weight || !duration) {
@@ -270,8 +275,6 @@ document.body.addEventListener("click", (event) => {
       // כתובת ה-API של Lambda
       const apiUrl =
         "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records";
-      let UserID = getTrainerName();
-      console.log("Trainer Name (UserID):", UserID);
 
       const payload = {
         UserID: UserID, // השתמש בשם המשתמש שנשלף מהטוקן
@@ -301,11 +304,23 @@ document.body.addEventListener("click", (event) => {
         .then((response) => response.json())
         .then((data) => {
           console.log("Response from Lambda:", data);
-          alert("Workout has been added successfully!");
+          // יצירת אלמנט חדש
+          const alertDiv = document.createElement("div");
+          alertDiv.id = "customAlert";
+          alertDiv.classList.add("custom-alert");
+          alertDiv.innerText = "Workout has been added successfully!";
+          document.body.appendChild(alertDiv);
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("An error occurred while saving your workout.");
+          // יצירת אלמנט חדש להודעת שגיאה
+          const errorDiv = document.createElement("div");
+          errorDiv.id = "errorAlert";
+          errorDiv.classList.add("custom-alert");
+          errorDiv.innerText = "An error occurred while saving your workout.";
+
+          // הוספת האלמנט לדף
+          document.body.appendChild(errorDiv);
         });
     };
   }
