@@ -1,137 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trainer Dashboard</title>
-    <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
-  </head>
 
-  <body>
-    <!-- Header -->
-    <header class="header">
-      <a href="#" class="logo"
-        ><i class="fas fa-dumbbell"></i> Trainer Dashboard</a
-      >
-      <button id="logout-btn" class="logout-btn">Logout</button>
-    </header>
-    <!-- End Header -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trainer Dashboard</title>
+  <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet" />
 
-    <!-- Trainees List Section -->
-    <section class="trainees-list">
-      <h1>List of Trainees</h1>
-      <div class="search-container">
-        <input
-          type="text"
-          id="trainee-search"
-          placeholder="Search Trainees..."
-          onkeyup="filterTrainees()"
-        />
+  <!-- SweetAlert2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Trainer Dashboard</a>
+    <button id="logout-btn" class="logout-btn">Logout</button>
+  </header>
+  <!-- End Header -->
+
+  <!-- Trainees List Section -->
+  <section class="trainees-list">
+    <h1>List of Trainees</h1>
+    <div class="search-container">
+      <input type="text" id="trainee-search" placeholder="Search Trainees..." onkeyup="filterTrainees()" />
+    </div>
+    <div id="trainees" class="trainees">
+      <!-- Trainee cards will be dynamically inserted here -->
+    </div>
+  </section>
+
+  <!-- Training Program Modal -->
+  <div id="programModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeProgramModal()">
+        &times;
+      </button>
+      <h2>Create Training Program</h2>
+
+      <!-- Machine Selection -->
+      <div class="form-group">
+        <label for="machine-select">Select Machine:</label>
+        <select id="machine-select" name="machine-select" onchange="machineSelected()">
+          <option value="">-- Select a Machine --</option>
+        </select>
       </div>
-      <div id="trainees" class="trainees">
-        <!-- Trainee cards will be dynamically inserted here -->
-      </div>
-    </section>
 
-    <!-- Training Program Modal -->
-    <div id="programModal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closeProgramModal()">
-          &times;
-        </button>
-        <h2>Create Training Program</h2>
+      <!-- Sets Navigation and Entry -->
+      <div id="sets-container" style="display: none;">
+        <div class="set-navigation">
+          <button type="button" class="btn" onclick="navigateSet('prev')">
+            &larr; Previous Set
+          </button>
+          <span id="set-title"></span>
+          <button type="button" class="btn" onclick="navigateSet('next')">
+            Next Set &rarr;
+          </button>
+        </div>
 
-        <!-- Machine Selection -->
+        <!-- Weight/Reps Inputs for Current Set -->
         <div class="form-group">
-          <label for="machine-select">Select Machine:</label>
-          <select
-            id="machine-select"
-            name="machine-select"
-            onchange="machineSelected()"
-          >
-            <option value="">-- Select a Machine --</option>
-          </select>
+          <label for="weight">Weight (kg):</label>
+          <input type="number" id="weight" name="weight" oninput="updateCurrentSet('weight', this.value)" />
+        </div>
+        <div class="form-group">
+          <label for="repetitions">Repetitions:</label>
+          <input type="number" id="repetitions" name="repetitions" oninput="updateCurrentSet('reps', this.value)" />
         </div>
 
-        <!-- Sets Navigation and Entry -->
-        <div id="sets-container" style="display: none;">
-          <div class="set-navigation">
-            <button type="button" class="btn" onclick="navigateSet('prev')">
-              &larr; Previous Set
-            </button>
-            <span id="set-title"></span>
-            <button type="button" class="btn" onclick="navigateSet('next')">
-              Next Set &rarr;
-            </button>
-          </div>
-
-          <!-- Weight/Reps Inputs for Current Set -->
-          <div class="form-group">
-            <label for="weight">Weight (kg):</label>
-            <input
-              type="number"
-              id="weight"
-              name="weight"
-              oninput="updateCurrentSet('weight', this.value)"
-            />
-          </div>
-          <div class="form-group">
-            <label for="repetitions">Repetitions:</label>
-            <input
-              type="number"
-              id="repetitions"
-              name="repetitions"
-              oninput="updateCurrentSet('reps', this.value)"
-            />
-          </div>
-
-          <!-- Buttons for Add Set & Confirm Machine in Program -->
-          <div class="button-group">
-            <button type="button" class="btn btn-add" onclick="addNewSet()">
-              Add Another Set
-            </button>
-            <button
-              type="button"
-              class="btn btn-add"
-              onclick="saveMachineSets()"
-            >
-              Add Machine To Program
-            </button>
-          </div>
-        </div>
-
-        <!-- Program Controls -->
+        <!-- Buttons for Add Set & Confirm Machine in Program -->
         <div class="button-group">
-          <button
-            type="button"
-            class="btn btn-submit"
-            onclick="submitProgram()"
-          >
-            Submit Program
+          <button type="button" class="btn btn-add" onclick="addNewSet()">
+            Add Another Set
           </button>
-          <button
-            type="button"
-            class="btn btn-cancel"
-            onclick="closeProgramModal()"
-          >
-            Cancel
+          <button type="button" class="btn btn-add" onclick="saveMachineSets()">
+            Add Machine To Program
           </button>
         </div>
+      </div>
 
-        <!-- Program Preview -->
-        <h3>Program Preview:</h3>
-        <div id="program-preview" class="program-preview">
-          <!-- Program preview will be dynamically inserted here -->
-        </div>
+      <!-- Program Controls -->
+      <div class="button-group">
+        <button type="button" class="btn btn-submit" onclick="submitProgram()">
+          Submit Program
+        </button>
+        <button type="button" class="btn btn-cancel" onclick="closeProgramModal()">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Program Preview -->
+      <h3>Program Preview:</h3>
+      <div id="program-preview" class="program-preview">
+        <!-- Program preview will be dynamically inserted here -->
       </div>
     </div>
+  </div>
 
-    <!-- Import JavaScript -->
-    <script src="JS/trainers.js" defer></script>
-  </body>
+  <!-- Import JavaScript -->
+  <script src="JS/trainers.js" defer></script>
+</body>
+
 </html>

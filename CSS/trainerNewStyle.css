@@ -118,21 +118,7 @@ body {
 .trainees .trainee-card button:hover {
   background-color: #219150;
 }
-
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
+/* General Modal Adjustments */
 .modal-content {
   background: white;
   width: 90%;
@@ -142,25 +128,21 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   position: relative;
-}
 
-.modal-content .close-modal {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #7f8c8d;
+  /* Add Flexbox for better layout */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
 }
 
 .modal-content h2 {
-  margin-bottom: 20px;
-  font-size: 2rem;
+  margin-bottom: 10px;
+  font-size: 1.8rem;
   color: #2c3e50;
 }
 
+/* Ensure inputs stay within bounds */
 .form-group {
   margin-bottom: 20px;
   text-align: left;
@@ -168,7 +150,7 @@ body {
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   font-weight: 600;
   color: #34495e;
 }
@@ -176,6 +158,7 @@ body {
 .form-group input,
 .form-group select {
   width: 100%;
+  max-width: 100%;
   padding: 8px 12px;
   font-size: 0.9rem;
   border: 1px solid #ccc;
@@ -189,8 +172,10 @@ body {
   outline: none;
 }
 
+/* Button Group Styling */
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
 }
@@ -203,6 +188,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
+/* Button Colors */
 .btn-add {
   background-color: #3498db;
   color: white;
@@ -230,7 +216,6 @@ body {
   background-color: #c0392b;
 }
 
-/* Navigation Buttons for Sets (Previous/Next) */
 .btn-navigation {
   background-color: #555;
   color: #fff;
@@ -246,7 +231,6 @@ body {
   background-color: #444;
 }
 
-/* Edit & Delete Buttons in Program Preview */
 .btn-delete {
   background-color: #e74c3c;
   color: white;
@@ -275,42 +259,40 @@ body {
   background-color: #2980b9;
 }
 
-/* Program Preview */
+/* Program Preview Styling */
 .program-preview {
-  margin-top: 30px;
+  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 10px;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  padding: 0;
+  text-align: left;
 }
 
 .program-preview .program-box {
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: #ecf0f1;
+  border-radius: 5px;
   padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .program-preview .program-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .program-preview .program-box h3 {
-  margin: 0 0 10px;
   font-size: 1.4rem;
+  margin-bottom: 10px;
   color: #2c3e50;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
 }
 
 .program-preview .set-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 8px 0;
+  margin: 5px 0;
 }
 
 .program-preview .set-info span {
@@ -320,4 +302,20 @@ body {
 
 .program-preview .set-info button {
   margin-left: 5px;
+}
+
+/* Close Modal Button */
+.modal-content .close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #7f8c8d;
+}
+
+.modal-content .close-modal:hover {
+  color: #e74c3c;
 }
