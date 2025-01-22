@@ -2,7 +2,7 @@
  * API ENDPOINTS
  ********************/
 const machinesApiEndpoint =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines"; 
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
 const trainingProgramApiEndpoint =
   "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans";
 const traineesApiEndpoint =
@@ -11,10 +11,10 @@ const traineesApiEndpoint =
 /*******************************
  * GLOBAL VARIABLES
  *******************************/
-let trainingProgram = []; // Array to store machines and their sets
+let trainingProgram = []; // Array to store { machine, sets: [{ weight, reps }, ...] }
 let selectedUserEmail = ""; // Store selected user email
 
-// For handling the current machine's sets
+// For handling sets of the *currently selected machine*
 let currentSets = [];
 let currentSetIndex = 0;
 
@@ -91,7 +91,9 @@ async function fetchTrainees() {
           <h2>${trainee.username}</h2>
           <p>Email: ${trainee.email}</p>
         </div>
-        <button class="create-program-btn" onclick="selectUser('${trainee.email}')">Create Training Program</button>
+        <button class="create-program-btn" onclick="selectUser('${trainee.email}')">
+          Create Training Program
+        </button>
       `;
 
       traineesList.appendChild(card);
@@ -160,94 +162,148 @@ async function fetchMachines() {
 }
 
 /*******************************
- * ENABLE SET FIELDS AFTER MACHINE SELECT
+ * MACHINE SELECT HANDLER
  *******************************/
-function enableSetFields() {
-  const machineSelect = document.getElementById("machine-select");
-  const setsContainer = document.getElementById("sets-container");
-  const weightInput = document.getElementById("weight");
-  const repetitionsInput = document.getElementById("repetitions");
-
-  // If a machine is selected, allow set entry
-  if (machineSelect.value !== "") {
-    // Show the sets container
-    setsContainer.style.display = "block";
-    // Enable weight/reps
-    weightInput.disabled = false;
-    repetitionsInput.disabled = false;
-
-    // Initialize currentSets and currentSetIndex fresh for this machine
-    currentSets = [];
-    currentSetIndex = 0;
-  } else {
-    // Hide the sets container
-    setsContainer.style.display = "none";
-    // Clear out any data
-    weightInput.value = "";
-    repetitionsInput.value = "";
-    weightInput.disabled = true;
-    repetitionsInput.disabled = true;
-  }
-}
-
-/*******************************
- * ADD A SINGLE SET TO currentSets
- *******************************/
-function addSet() {
-  const machineSelect = document.getElementById("machine-select");
-  if (!machineSelect.value) {
-    alert("Please select a machine before adding a set.");
-    return;
-  }
-  const weightValue = document.getElementById("weight").value;
-  const repsValue = document.getElementById("repetitions").value;
-
-  if (!weightValue || !repsValue) {
-    alert("Please enter weight and repetitions.");
-    return;
-  }
-
-  // Push the new set into currentSets
-  currentSets.push({ weight: weightValue, reps: repsValue });
-
-  // Clear the inputs for the next set
-  document.getElementById("weight").value = "";
-  document.getElementById("repetitions").value = "";
-
-  alert("Set added to current machine. Don’t forget to click 'Add Machine To Program' to finalize.");
-}
-
-/*******************************
- * ADD MACHINE (AND ITS SETS) TO THE TRAINING PROGRAM
- *******************************/
-function addMachineToProgram() {
+function machineSelected() {
   const machineSelect = document.getElementById("machine-select").value;
+  const setsContainer = document.getElementById("sets-container");
+
   if (!machineSelect) {
+    // No machine selected, hide sets section
+    setsContainer.style.display = "none";
+    return;
+  }
+
+  // If machine is already in trainingProgram, load its sets
+  const existingMachine = trainingProgram.find(
+    (item) => item.machine === machineSelect
+  );
+  if (existingMachine) {
+    currentSets = [...existingMachine.sets]; // Load existing sets
+  } else {
+    // Otherwise start fresh
+    currentSets = [];
+  }
+
+  // Show sets container
+  setsContainer.style.display = "block";
+
+  // Reset index to 0 and display
+  currentSetIndex = 0;
+  displayCurrentSet();
+}
+
+/*******************************
+ * DISPLAY CURRENT SET
+ *******************************/
+function displayCurrentSet() {
+  const setTitle = document.getElementById("set-title");
+  const weightInput = document.getElementById("weight");
+  const repsInput = document.getElementById("repetitions");
+
+  if (currentSets.length === 0) {
+    // If no sets, create a default empty set
+    currentSets.push({ weight: "", reps: "" });
+    currentSetIndex = 0;
+  }
+
+  // Ensure currentSetIndex is in range
+  if (currentSetIndex < 0) currentSetIndex = 0;
+  if (currentSetIndex > currentSets.length - 1) {
+    currentSetIndex = currentSets.length - 1;
+  }
+
+  // Update set title
+  setTitle.textContent = `Set ${currentSetIndex + 1} of ${currentSets.length}`;
+
+  // Fill input fields from currentSets
+  weightInput.value = currentSets[currentSetIndex].weight;
+  repsInput.value = currentSets[currentSetIndex].reps;
+}
+
+/*******************************
+ * NAVIGATE SETS (LEFT/RIGHT)
+ *******************************/
+function navigateSet(direction) {
+  if (currentSets.length === 0) {
+    alert("No sets to navigate. Please add a set first.");
+    return;
+  }
+
+  if (direction === "prev") {
+    if (currentSetIndex > 0) {
+      currentSetIndex--;
+      displayCurrentSet();
+    }
+  } else if (direction === "next") {
+    if (currentSetIndex < currentSets.length - 1) {
+      currentSetIndex++;
+      displayCurrentSet();
+    }
+  }
+}
+
+/*******************************
+ * ADD A NEW SET
+ *******************************/
+function addNewSet() {
+  // Before adding a new set, store any changes in the current set
+  // (updateCurrentSet is already called on input, so we should be up to date)
+
+  // Create a blank set
+  currentSets.push({ weight: "", reps: "" });
+  // Move to the newly created set
+  currentSetIndex = currentSets.length - 1;
+  displayCurrentSet();
+}
+
+/*******************************
+ * UPDATE CURRENT SET FIELDS
+ *******************************/
+function updateCurrentSet(field, value) {
+  if (currentSets.length === 0) return;
+  currentSets[currentSetIndex][field] = value;
+}
+
+/*******************************
+ * SAVE (ADD) MACHINE + ITS SETS INTO trainingProgram
+ *******************************/
+function saveMachineSets() {
+  const machineSelect = document.getElementById("machine-select");
+  const machineName = machineSelect.value;
+  if (!machineName) {
     alert("Please select a machine first.");
     return;
   }
 
+  // If we have no sets, do not save
   if (currentSets.length === 0) {
-    alert("No sets added for this machine.");
+    alert("No sets found for this machine.");
     return;
   }
 
-  // Check if the machine already exists in the program
-  const existingMachine = trainingProgram.find(
-    (item) => item.machine === machineSelect
+  // Save changes for the current set just in case
+  // (but we've been updating on input already)
+  // currentSets[currentSetIndex].weight = document.getElementById("weight").value;
+  // currentSets[currentSetIndex].reps = document.getElementById("repetitions").value;
+
+  // Check if machine already exists
+  const existingMachineIndex = trainingProgram.findIndex(
+    (item) => item.machine === machineName
   );
 
-  if (existingMachine) {
-    // Overwrite sets for the existing machine
-    existingMachine.sets = [...currentSets];
+  if (existingMachineIndex >= 0) {
+    // Overwrite sets
+    trainingProgram[existingMachineIndex].sets = [...currentSets];
   } else {
-    // Add new machine + sets
-    trainingProgram.push({ machine: machineSelect, sets: [...currentSets] });
+    // Add new
+    trainingProgram.push({
+      machine: machineName,
+      sets: [...currentSets],
+    });
   }
 
-  // Reset for next machine selection
-  document.getElementById("machine-select").value = "";
-  enableSetFields(); // This will hide sets container again
+  alert(`Sets for "${machineName}" saved to program!`);
   updateProgramPreview();
 }
 
@@ -266,8 +322,10 @@ function updateProgramPreview() {
     program.sets.forEach((set, index) => {
       setsHTML += `
         <div class="set-info">
-          <span>Set ${index + 1}: ${set.weight}kg, ${set.reps} reps</span>
-          <button class="btn-delete" onclick="deleteSet('${program.machine}', ${index})">Delete</button>
+          <span>Set ${index + 1}: ${set.weight} kg, ${set.reps} reps</span>
+          <button class="btn-delete" onclick="deleteSet('${program.machine}', ${index})">
+            Delete
+          </button>
         </div>
       `;
     });
@@ -281,16 +339,16 @@ function updateProgramPreview() {
 }
 
 /*******************************
- * DELETE A SET FROM PREVIEW
+ * DELETE SET FROM A MACHINE
  *******************************/
 function deleteSet(machineName, setIndex) {
-  const machine = trainingProgram.find((item) => item.machine === machineName);
+  const machine = trainingProgram.find((m) => m.machine === machineName);
   if (machine) {
     machine.sets.splice(setIndex, 1);
     if (machine.sets.length === 0) {
-      // Remove the machine entirely if no sets left
+      // Remove the machine if all sets gone
       trainingProgram = trainingProgram.filter(
-        (item) => item.machine !== machineName
+        (m) => m.machine !== machineName
       );
     }
   }
@@ -310,7 +368,7 @@ function selectUser(email) {
  *******************************/
 async function submitProgram() {
   if (trainingProgram.length === 0) {
-    alert("Add at least one machine and sets to the program before submitting.");
+    alert("Add at least one machine and at least one set before submitting.");
     return;
   }
 
@@ -324,11 +382,11 @@ async function submitProgram() {
 
   const bodyPayload = {
     UserEmail: selectedUserEmail,
-    TrainerName: trainerName, // Use the trainer's name
+    TrainerName: trainerName,
   };
 
   const queryParameters = {
-    PlanDetails: JSON.stringify(trainingProgram), // Convert training program to JSON string
+    PlanDetails: JSON.stringify(trainingProgram),
   };
 
   try {
@@ -369,9 +427,9 @@ async function submitProgram() {
  *******************************/
 function openProgramModal() {
   document.getElementById("programModal").style.display = "flex";
-  // Reset any selections or fields
+  // Reset the dropdown so user picks a machine each time
   document.getElementById("machine-select").value = "";
-  enableSetFields(); // This will hide the sets container initially
+  document.getElementById("sets-container").style.display = "none";
 }
 
 /*******************************

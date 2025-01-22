@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trainer Dashboard</title>
     <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
     <link
@@ -52,35 +52,61 @@
           <select
             id="machine-select"
             name="machine-select"
-            onchange="enableSetFields()"
+            onchange="machineSelected()"
           >
             <option value="">-- Select a Machine --</option>
           </select>
         </div>
 
-        <!-- Sets Container -->
+        <!-- Sets Navigation and Entry -->
         <div id="sets-container" style="display: none;">
+          <div class="set-navigation">
+            <button type="button" class="btn" onclick="navigateSet('prev')">
+              &larr; Previous Set
+            </button>
+            <span id="set-title"></span>
+            <button type="button" class="btn" onclick="navigateSet('next')">
+              Next Set &rarr;
+            </button>
+          </div>
+
+          <!-- Weight/Reps Inputs for Current Set -->
           <div class="form-group">
             <label for="weight">Weight (kg):</label>
-            <input type="number" id="weight" name="weight" disabled />
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              oninput="updateCurrentSet('weight', this.value)"
+            />
           </div>
           <div class="form-group">
             <label for="repetitions">Repetitions:</label>
-            <input type="number" id="repetitions" name="repetitions" disabled />
+            <input
+              type="number"
+              id="repetitions"
+              name="repetitions"
+              oninput="updateCurrentSet('reps', this.value)"
+            />
+          </div>
+
+          <!-- Buttons for Add Set & Confirm Machine in Program -->
+          <div class="button-group">
+            <button type="button" class="btn btn-add" onclick="addNewSet()">
+              Add Another Set
+            </button>
+            <button
+              type="button"
+              class="btn btn-add"
+              onclick="saveMachineSets()"
+            >
+              Add Machine To Program
+            </button>
           </div>
         </div>
 
+        <!-- Program Controls -->
         <div class="button-group">
-          <button type="button" class="btn btn-add" onclick="addSet()">
-            Add Set
-          </button>
-          <button
-            type="button"
-            class="btn btn-add"
-            onclick="addMachineToProgram()"
-          >
-            Add Machine To Program
-          </button>
           <button
             type="button"
             class="btn btn-submit"
@@ -98,6 +124,7 @@
         </div>
 
         <!-- Program Preview -->
+        <h3>Program Preview:</h3>
         <div id="program-preview" class="program-preview">
           <!-- Program preview will be dynamically inserted here -->
         </div>
