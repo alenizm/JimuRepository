@@ -425,7 +425,7 @@ async function submitProgram() {
 
 
   // Build URL
-  const url = `${TRAINING_PROGRAM_API_ENDPOINT}}`;
+  const url = `${TRAINING_PROGRAM_API_ENDPOINT}`;
 
   try {
     const response = await fetch(url, {
