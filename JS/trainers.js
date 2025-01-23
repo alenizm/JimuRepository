@@ -178,6 +178,7 @@ function closeProgramModal() {
 function logout() {
   // Clear tokens if stored
   localStorage.removeItem("access_token");
+  localStorage.removeItem("id_token")
   // Redirect
   window.location.href = "index.html";
 }
