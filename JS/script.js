@@ -1,7 +1,8 @@
 // ------------------------------------
 // Cognito Configuration (unchanged except redirectUri):
 // ------------------------------------
-const cognitoDomain = "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
+const cognitoDomain =
+  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
 
 // 1) Use loading.html as the Cognito callback
@@ -45,7 +46,7 @@ function parseJwt(token) {
   const jsonPayload = decodeURIComponent(
     atob(base64)
       .split("")
-      .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
       .join("")
   );
   return JSON.parse(jsonPayload);
@@ -69,6 +70,9 @@ function redirectToRolePage(idToken) {
   }
 }
 
+// ------------------------------------
+// Loading Page Logic
+// ------------------------------------
 // ------------------------------------
 // Loading Page Logic
 // ------------------------------------
@@ -96,24 +100,40 @@ function initializeSessionOnLoadingPage() {
     // Greet user
     greetUserIfPossible(tokens.idToken);
 
-    // Delay for 3 seconds, then redirect based on role
-    setTimeout(() => {
-      redirectToRolePage(tokens.idToken);
-    }, 3000); 
+    // Fetch data and redirect once completed
+    fetchDataAndRedirect(tokens.idToken);
   } else {
     // No token in URL, see if we have one in localStorage
     const idToken = localStorage.getItem("id_token");
     if (idToken) {
-      console.log("Session found in localStorage. Redirecting after short delay...");
+      console.log(
+        "Session found in localStorage. Redirecting after short delay..."
+      );
       greetUserIfPossible(idToken);
-      setTimeout(() => {
-        redirectToRolePage(idToken);
-      }, 3000);
+
+      // Fetch data and redirect once completed
+      fetchDataAndRedirect(idToken);
     } else {
       // No tokens found anywhere, go back to index
       console.log("No valid session. Going back to index.");
       window.location.href = "index.html";
     }
+  }
+}
+
+// Fetch Data Logic
+async function fetchDataAndRedirect(idToken) {
+  try {
+    const response = await fetch(
+      "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines"
+    ); // הכנס את ה-API שלך
+    const data = await response.json();
+    console.log("Fetched data:", data);
+
+    // Once fetch is complete, redirect based on role
+    redirectToRolePage(idToken);
+  } catch (error) {
+    console.error("Error during fetch:", error);
   }
 }
 
@@ -133,12 +153,16 @@ function displayUserInfo(pageType) {
   if (pageType === "trainer") {
     const trainerInfo = document.getElementById("trainer-info");
     if (trainerInfo) {
-      trainerInfo.innerText = `Hello, ${payload.email || payload["cognito:username"]}`;
+      trainerInfo.innerText = `Hello, ${
+        payload.email || payload["cognito:username"]
+      }`;
     }
   } else if (pageType === "trainees") {
     const traineeInfo = document.getElementById("trainee-info");
     if (traineeInfo) {
-      traineeInfo.innerText = `Hello, ${payload.email || payload["cognito:username"]}`;
+      traineeInfo.innerText = `Hello, ${
+        payload.email || payload["cognito:username"]
+      }`;
     }
   }
 }
