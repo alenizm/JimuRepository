@@ -1,0 +1,174 @@
+:root {
+    --primary-color: #4CAF50;
+    --primary-dark: #388E3C;
+    --background-dark: #1a1a1a;
+    --card-background: #2d2d2d;
+    --text-light: #ffffff;
+    --text-gray: #a3a3a3;
+    --danger-color: #dc2626;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--card-background);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logOut {
+    background-color: var(--danger-color);
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.logOut:hover {
+    background-color: #b91c1c;
+}
+
+main {
+    padding: 2rem;
+}
+
+.machines-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.machine-card {
+    background-color: var(--card-background);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.machine-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.machine-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.machine-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.machine-title h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+}
+
+.machine-type {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.workout-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.input-group label {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+input {
+    background-color: #404040;
+    border: 1px solid #505050;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    color: var(--text-light);
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.save-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: var(--primary-dark);
+}
+
+@media (max-width: 768px) {
+    .workout-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    .machine-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .machine-thumbnail {
+        width: 120px;
+        height: 120px;
+    }
+}
