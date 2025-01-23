@@ -1,174 +1,122 @@
 :root {
-    --primary-color: #4CAF50;
-    --primary-dark: #388E3C;
-    --background-dark: #1a1a1a;
-    --card-background: #2d2d2d;
-    --text-light: #ffffff;
-    --text-gray: #a3a3a3;
-    --danger-color: #dc2626;
-}
-
-* {
+    --primary-color: #4caf50;
+    --secondary-color: #333;
+    --background-color: #f4f4f4;
+    --card-background: #fff;
+    --text-color: #222;
+    --button-color: #4caf50;
+    --button-hover: #388e3c;
+  }
+  
+  body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background-color: var(--background-dark);
-    color: var(--text-light);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
     line-height: 1.6;
-}
-
-header {
-    background-color: var(--card-background);
+  }
+  
+  header {
+    background-color: var(--secondary-color);
+    color: white;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.logo {
+  }
+  
+  .logo {
     font-size: 1.8rem;
     font-weight: bold;
-    color: var(--primary-color);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.logOut {
-    background-color: var(--danger-color);
-    color: var(--text-light);
-    padding: 0.5rem 1rem;
+  }
+  
+  .logo i {
+    font-size: 1.5rem;
+  }
+  
+  .logOut {
+    background-color: var(--button-color);
+    color: white;
     border: none;
-    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.logOut:hover {
-    background-color: #b91c1c;
-}
-
-main {
-    padding: 2rem;
-}
-
-.machines-container {
+  }
+  
+  .logOut:hover {
+    background-color: var(--button-hover);
+  }
+  
+  .page-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 2rem 0;
+    color: var(--secondary-color);
+  }
+  
+  .machines-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-}
-
-.machine-card {
+    padding: 1rem;
+  }
+  
+  .machine-card {
     background-color: var(--card-background);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.machine-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.machine-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.machine-thumbnail {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.machine-title h2 {
-    font-size: 1.4rem;
-    margin-bottom: 0.25rem;
-    color: var(--primary-color);
-}
-
-.machine-type {
-    color: var(--text-gray);
-    font-size: 0.9rem;
-}
-
-.workout-inputs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.input-group {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-}
-
-.input-group label {
-    color: var(--text-gray);
-    font-size: 0.9rem;
-}
-
-input {
-    background-color: #404040;
-    border: 1px solid #505050;
-    border-radius: 0.25rem;
-    padding: 0.5rem;
-    color: var(--text-light);
-    transition: border-color 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-.save-button {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    padding: 0.75rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .machine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .machine-image {
+    height: 200px;
     width: 100%;
-    font-weight: 500;
+    object-fit: cover;
+  }
+  
+  .machine-details {
+    padding: 1rem;
+    flex: 1;
+  }
+  
+  .machine-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+  
+  .machine-weight {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+  }
+  
+  .update-button {
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-    background-color: var(--primary-dark);
-}
-
-@media (max-width: 768px) {
-    .workout-inputs {
-        grid-template-columns: 1fr;
-    }
-    
-    .machine-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .machine-thumbnail {
-        width: 120px;
-        height: 120px;
-    }
-}
+  }
+  
+  .update-button:hover {
+    background-color: var(--button-hover);
+  }

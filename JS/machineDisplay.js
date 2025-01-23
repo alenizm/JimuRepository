@@ -1,192 +1,108 @@
-function parseJwt(token) {
+// כתובת ה-API Gateway
+const MACHINES_API_ENDPOINT = "https://<your-api-gateway-url>/machines";
+
+// פונקציה למשיכת המידע של המכשירים
+async function fetchMachines() {
   try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => 
-          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-      return JSON.parse(jsonPayload);
-  } catch (e) {
-      console.error('Invalid token', e);
-      return null;
-  }
-}
+    const response = await fetch(MACHINES_API_ENDPOINT, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
 
-function getTrainerName() {
-  const accessToken = localStorage.getItem('access_token');
-  if (!accessToken) {
-      showError('No access token found. Please log in.');
-      window.location.href = 'index.html';
-      return null;
-  }
+    if (!response.ok) throw new Error("Failed to fetch machines");
 
-  const decodedToken = parseJwt(accessToken);
-  if (!decodedToken) {
-      showError('Failed to decode token.');
-      return null;
-  }
+    const responseBody = await response.json();
 
-  return decodedToken.name || decodedToken.username || decodedToken.sub || 
-         decodedToken.preferred_username || decodedToken.email;
-}
+    // בדיקה אם ה-body הוא מחרוזת JSON או אובייקט
+    const machines =
+      typeof responseBody.body === "string"
+        ? JSON.parse(responseBody.body)
+        : responseBody.body;
 
-function showError(message) {
-  Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: message,
-      background: '#2d2d2d',
-      color: '#ffffff',
-      confirmButtonColor: '#4CAF50'
-  });
-}
+    console.log("Machines fetched:", machines);
 
-function showSuccess(message) {
-  Swal.fire({
-      icon: 'success',
-      title: 'Success',
-      text: message,
-      background: '#2d2d2d',
-      color: '#ffffff',
-      confirmButtonColor: '#4CAF50'
-  });
-}
-
-function createMachineElement(machine) {
-  const div = document.createElement('div');
-  div.className = 'machine-card';
-  
-  div.innerHTML = `
-      <div class="machine-header">
-          <img src="${machine.ImageURL || 'placeholder-image.jpg'}" 
-               alt="${machine.Name}" 
-               class="machine-thumbnail"
-               onerror="this.src='placeholder-image.jpg'">
-          <div class="machine-title">
-              <h2>${machine.Name}</h2>
-              <p class="machine-type">
-                  ${machine.Type} | ${machine.Brand} | ${machine.TargetBodyPart}
-              </p>
-          </div>
-      </div>
-      <div class="workout-inputs">
-          <div class="input-group">
-              <label>Weight (kg)</label>
-              <input type="number" class="weight-input" min="0" step="0.5">
-          </div>
-          <div class="input-group">
-              <label>Reps</label>
-              <input type="number" class="reps-input" min="1">
-          </div>
-          <div class="input-group">
-              <label>Sets</label>
-              <input type="number" class="sets-input" min="1">
-          </div>
-          <div class="input-group">
-              <label>Duration (min)</label>
-              <input type="number" class="duration-input" min="1">
-          </div>
-      </div>
-      <button class="save-button" data-machine-id="${machine.MachineID}">
-          Save Workout
-      </button>
-  `;
-
-  setupMachineCardListeners(div, machine);
-  return div;
-}
-
-function setupMachineCardListeners(cardElement, machine) {
-  const saveButton = cardElement.querySelector('.save-button');
-  const inputs = cardElement.querySelectorAll('input');
-
-  inputs.forEach(input => {
-      input.addEventListener('input', validateInput);
-  });
-
-  saveButton.addEventListener('click', () => {
-      const workoutData = {
-          UserID: userID,
-          MachineID: machine.MachineID,
-          Weight: inputs[0].value,
-          Repetitions: inputs[1].value,
-          Set: inputs[2].value,
-          Duration: inputs[3].value
-      };
-
-      if (validateWorkoutData(workoutData)) {
-          saveWorkout(workoutData);
-      }
-  });
-}
-
-function validateInput(event) {
-  const input = event.target;
-  const value = parseFloat(input.value);
-  
-  if (isNaN(value) || value < 0) {
-      input.value = '';
-  }
-}
-
-function validateWorkoutData(data) {
-  if (!data.Weight || !data.Repetitions || !data.Set || !data.Duration) {
-      showError('Please fill in all fields');
-      return false;
-  }
-  
-  if (data.Weight < 0 || data.Repetitions < 1 || data.Set < 1 || data.Duration < 1) {
-      showError('Please enter valid positive numbers');
-      return false;
-  }
-  
-  return true;
-}
-
-async function saveWorkout(data) {
-  try {
-      const response = await fetch('https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-      });
-
-      if (!response.ok) throw new Error('Network response was not ok');
-      
-      const result = await response.json();
-      showSuccess('Workout saved successfully!');
-      
-      // Clear inputs after successful save
-      const machineCard = document.querySelector(`[data-machine-id="${data.MachineID}"]`).closest('.machine-card');
-      machineCard.querySelectorAll('input').forEach(input => input.value = '');
+    renderMachines(machines);
   } catch (error) {
-      console.error('Error:', error);
-      showError('Failed to save workout');
+    console.error("Error fetching machines:", error);
+    Swal.fire("Error", "Failed to load machines.", "error");
   }
 }
 
-function logout() {
-  localStorage.removeItem('access_token');
-  showSuccess('Logged out successfully').then(() => {
-      window.location.href = 'index.html';
+// פונקציה לרינדור המכשירים בעמוד
+function renderMachines(machines) {
+  const machinesContainer = document.querySelector(".machines-container");
+  machinesContainer.innerHTML = ""; // ניקוי תוכן קודם
+
+  machines.forEach((machine) => {
+    const machineCard = document.createElement("div");
+    machineCard.classList.add("machine-card");
+
+    // טיפול במקרה שבו אין תמונה
+    const imageSrc = machine.image && machine.image.trim() !== "" ? machine.image : "default-image.jpg";
+
+    machineCard.innerHTML = `
+      <img src="${imageSrc}" alt="${machine.name}" class="machine-image" onerror="this.src='default-image.jpg'">
+      <div class="machine-details">
+        <h2 class="machine-title">${machine.name || "Unnamed Machine"}</h2>
+        <p class="machine-weight">Last Weight: ${machine.weight || "N/A"}</p>
+        <button class="update-button" data-id="${machine.id}">Update Weight</button>
+      </div>
+    `;
+
+    machinesContainer.appendChild(machineCard);
   });
 }
 
-let userID = getTrainerName();
-
-document.addEventListener('DOMContentLoaded', async () => {
+// פונקציה לעדכון המשקל של מכשיר
+async function updateMachineWeight(machineId, newWeight) {
   try {
-      const response = await fetch('https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines');
-      const data = await response.json();
-      const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
-      
-      const container = document.querySelector('.machines-container');
-      machines.forEach(machine => {
-          container.appendChild(createMachineElement(machine));
-      });
-  } catch (error) {
-      console.error('Error fetching machines:', error);
-      showError('Failed to load machines');
-  }
+    const updateResponse = await fetch(`${MACHINES_API_ENDPOINT}/${machineId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ weight: newWeight }),
+    });
 
-  document.querySelector('.logOut').addEventListener('click', logout);
+    if (!updateResponse.ok) throw new Error("Failed to update weight");
+
+    console.log(`Machine ${machineId} updated to weight: ${newWeight}`);
+    Swal.fire("Success!", "Weight updated successfully!", "success");
+
+    // רענון נתוני המכשירים
+    fetchMachines();
+  } catch (error) {
+    console.error("Error updating weight:", error);
+    Swal.fire("Error", "Failed to update weight.", "error");
+  }
+}
+
+// הוספת אירועי לחיצה לכפתורי "עדכון"
+document.addEventListener("DOMContentLoaded", () => {
+  fetchMachines(); // משיכת נתוני המכשירים בעת טעינת הדף
+
+  const machinesContainer = document.querySelector(".machines-container");
+
+  machinesContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("update-button")) {
+      const machineId = e.target.getAttribute("data-id");
+      Swal.fire({
+        title: "Update Weight",
+        input: "text",
+        inputLabel: "Enter new weight (kg):",
+        inputValidator: (value) => {
+          if (!value || isNaN(value) || value <= 0) {
+            return "Please enter a valid positive number";
+          }
+        },
+        showCancelButton: true,
+        confirmButtonText: "Update",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const newWeight = result.value;
+          updateMachineWeight(machineId, newWeight);
+        }
+      });
+    }
+  });
 });
