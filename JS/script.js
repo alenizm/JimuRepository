@@ -1,9 +1,10 @@
 // Cognito Configuration
-const cognitoDomain =
-  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
+const cognitoDomain = "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
-const redirectUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after login
-const logoutUri = "https://alenizm.github.io/JimuRepository/index.html"; // Redirect after logout
+
+// 1) Change callback to your new loading page
+const redirectUri = "https://alenizm.github.io/JimuRepository/loading.html"; 
+const logoutUri = "https://alenizm.github.io/JimuRepository/index.html"; 
 
 // Cognito URLs
 const cognitoLoginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${encodeURIComponent(
@@ -50,7 +51,7 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 }
 
-// Redirect user based on their role
+// This function determines the user role and redirects accordingly
 function redirectToRolePage(idToken) {
   const payload = parseJwt(idToken);
   const groups = payload["cognito:groups"] || [];
@@ -67,26 +68,39 @@ function redirectToRolePage(idToken) {
   }
 }
 
-// Handle session initialization without redirecting to login
-function initializeSession() {
+/**
+ * 2) We only run initializeSession on the loading page (where the user lands after Cognito).
+ *    - Extract tokens from URL
+ *    - Store them
+ *    - Clear the hash
+ *    - Then do a small delay before final redirect
+ */
+function initializeSessionOnLoadingPage() {
   const tokens = getTokensFromUrl();
   if (tokens.idToken) {
-    console.log("Token found in URL. Initializing session...");
+    console.log("Token found in URL on loading page. Initializing session...");
     localStorage.setItem("id_token", tokens.idToken);
     localStorage.setItem("access_token", tokens.accessToken);
 
-    // Redirect based on the user's role
-    redirectToRolePage(tokens.idToken);
-
     // Clear URL hash to clean up
     window.history.replaceState({}, document.title, window.location.pathname);
+
+    // Optional: Show a short delay on loading page before redirecting
+    setTimeout(() => {
+      redirectToRolePage(tokens.idToken);
+    }, 3000); // 3 second delay
   } else {
-    console.log("No tokens found in URL. Checking localStorage...");
+    // No token in the URL: check if we have an existing session
     const idToken = localStorage.getItem("id_token");
     if (idToken) {
-      redirectToRolePage(idToken);
+      console.log("Session found in localStorage. Redirecting based on token.");
+      setTimeout(() => {
+        redirectToRolePage(idToken);
+      }, 3000);
     } else {
-      console.log("No valid session. Waiting for user to log in...");
+      // No tokens found anywhere, send user back to index or prompt login
+      console.log("No valid session. Going back to index.");
+      window.location.href = "index.html";
     }
   }
 }
@@ -130,8 +144,12 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutButton.addEventListener("click", logout);
   }
 
-  if (window.location.pathname.includes("index.html")) {
-    initializeSession();
+  /**
+   * 3) If we are on loading.html, we run initializeSessionOnLoadingPage().
+   *    If we are on trainers.html or trainees.html, we display the user info.
+   */
+  if (window.location.pathname.includes("loading.html")) {
+    initializeSessionOnLoadingPage();
   }
 
   if (window.location.pathname.includes("trainers.html")) {
