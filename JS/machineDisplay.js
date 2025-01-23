@@ -332,3 +332,43 @@ document.body.addEventListener("click", (event) => {
     };
   }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const logoutButton = document.querySelector(".logOut");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logout);
+  } else {
+    console.error("Logout button not found");
+  }
+});
+
+window.addEventListener("load", function () {
+  const logoutButton = document.querySelector(".logOut");
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logout);
+  } else {
+    console.error("Logout button not found");
+  }
+});
+
+function logout() {
+  // מסיר את ה-token
+  localStorage.removeItem("access_token");
+
+  // פידבק למשתמש
+  Swal.fire({
+    icon: "success",
+    title: "Logged Out",
+    text: "You have successfully logged out.",
+    confirmButtonText: "OK",
+    background: "#222222",
+    color: "#ffffff",
+    confirmButtonColor: "#4CAF50",
+    iconColor: "#4CAF50",
+  }).then(() => {
+    // מפנה את המשתמש לדף התחברות או דף הבית
+    window.location.href = "index.html"; // או דף הבית שלך
+  });
+}

@@ -15,10 +15,10 @@ const COGNITO_GROUP_NAME = "trainees";
 /*******************************
  * GLOBAL VARIABLES
  *******************************/
-let selectedUserEmail = ""; 
-let selectedUserSub = "";   // Store the trainee's sub (UserID)
+let selectedUserEmail = "";
+let selectedUserSub = ""; // Store the trainee's sub (UserID)
 
-let trainingProgram = [];   // [{ machine, sets: [{ weight, reps }, ...] }]
+let trainingProgram = []; // [{ machine, sets: [{ weight, reps }, ...] }]
 
 // For handling sets of the *currently selected machine*
 let currentSets = [];
@@ -101,7 +101,11 @@ async function fetchTrainees() {
     });
   } catch (error) {
     console.error("Error fetching trainees:", error);
-    Swal.fire("Error", "Failed to fetch trainees. Please try again later.", "error");
+    Swal.fire(
+      "Error",
+      "Failed to fetch trainees. Please try again later.",
+      "error"
+    );
   }
 }
 
@@ -142,7 +146,9 @@ async function fetchMachines() {
  * FILTER TRAINEES (Search)
  *******************************/
 function filterTrainees() {
-  const searchTerm = document.getElementById("trainee-search").value.toLowerCase();
+  const searchTerm = document
+    .getElementById("trainee-search")
+    .value.toLowerCase();
   const traineeCards = document.querySelectorAll(".trainee-card");
 
   traineeCards.forEach((card) => {
@@ -240,11 +246,13 @@ function displayCurrentSet() {
     currentSetIndex = currentSets.length - 1;
   }
 
-  document.getElementById("set-title").textContent = 
-    `Set ${currentSetIndex + 1} of ${currentSets.length}`;
-    
+  document.getElementById("set-title").textContent = `Set ${
+    currentSetIndex + 1
+  } of ${currentSets.length}`;
+
   document.getElementById("weight").value = currentSets[currentSetIndex].weight;
-  document.getElementById("repetitions").value = currentSets[currentSetIndex].reps;
+  document.getElementById("repetitions").value =
+    currentSets[currentSetIndex].reps;
 }
 
 /*******************************
@@ -311,7 +319,10 @@ function saveMachineSets() {
       if (existingIndex >= 0) {
         trainingProgram[existingIndex].sets = [...currentSets];
       } else {
-        trainingProgram.push({ machine: machineSelect, sets: [...currentSets] });
+        trainingProgram.push({
+          machine: machineSelect,
+          sets: [...currentSets],
+        });
       }
 
       updateProgramPreview();
@@ -402,7 +413,11 @@ function editSet(machineName, setIndex) {
 async function submitProgram() {
   // Must have at least one machine + sets
   if (trainingProgram.length === 0) {
-    Swal.fire("Error", "Add at least one machine and one set before submitting.", "error");
+    Swal.fire(
+      "Error",
+      "Add at least one machine and one set before submitting.",
+      "error"
+    );
     return;
   }
   // Must have a selected user
@@ -417,13 +432,11 @@ async function submitProgram() {
 
   // Body payload for the API
   const bodyPayload = {
-    UserEmail: selectedUserEmail,  // The trainee's email
-    UserID: selectedUserSub,       // The trainee's sub
-    TrainerID: trainerSub,          // The trainer's sub
-    PlanDetails : trainingProgram
+    UserEmail: selectedUserEmail, // The trainee's email
+    UserID: selectedUserSub, // The trainee's sub
+    TrainerID: trainerSub, // The trainer's sub
+    PlanDetails: trainingProgram,
   };
-
-
 
   // Build URL
   const url = `${TRAINING_PROGRAM_API_ENDPOINT}`;
@@ -447,9 +460,12 @@ async function submitProgram() {
     selectedUserSub = "";
     updateProgramPreview();
     closeProgramModal();
-
   } catch (error) {
     console.error("Error submitting program:", error);
-    Swal.fire("Error", "Failed to submit training program. Please try again.", "error");
+    Swal.fire(
+      "Error",
+      "Failed to submit training program. Please try again.",
+      "error"
+    );
   }
 }
