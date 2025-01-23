@@ -4,12 +4,56 @@
 <head>
   <meta charset="UTF-8" />
   <title>Loading...</title>
+  <style>
+    /* Basic styling to center content vertically and horizontally */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #f6f8fa;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+
+    .loading-container h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .loading-container .loader-img {
+      width: 150px;  /* Adjust size as needed */
+      height: 150px; /* Adjust size as needed */
+      margin-bottom: 1rem;
+    }
+
+    .loading-container p {
+      font-size: 1.2rem;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>Please wait...</h1>
-  <p>You will be redirected shortly...</p>
+  <div class="loading-container">
+    <!-- Greet the user here -->
+    <h1 id="loading-greeting">Hello!</h1>
 
-  <!-- Include the same index.js (or shared JS) so we can reuse parseJwt, displayUserInfo, etc. -->
+    <!-- Replace with your actual GIF URL or path -->
+    <img src="images/Spinner@1x-1.7s-200px-200px.gif"
+         alt="Loading..."
+         class="loader-img" />
+
+    <p>Please wait while we prepare your environment...</p>
+  </div>
+
+  <!-- Include your main JS file (e.g., index.js) -->
   <script src="JS/script.js"></script>
 </body>
 </html>
