@@ -1,5 +1,5 @@
 // כתובת ה-API Gateway
-const MACHINES_API_ENDPOINT = "https://<your-api-gateway-url>/machines";
+const MACHINES_API_ENDPOINT = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
 
 // פונקציה למשיכת המידע של המכשירים
 async function fetchMachines() {
