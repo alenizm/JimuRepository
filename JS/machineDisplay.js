@@ -1,7 +1,6 @@
 const ENDPOINTS = {
     MACHINES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
-    TRAINEES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees",
-    TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans"
+    TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records"
  };
  
  function parseJwt(token) {
@@ -74,7 +73,7 @@ const ENDPOINTS = {
     }
  }
  
- async function getLastWorkout(machineId) {
+ /* async function getLastWorkout(machineId) {
     try {
         const userID = getTrainerName();
         if (!userID) return null;
@@ -93,8 +92,9 @@ const ENDPOINTS = {
         return null;
     }
  }
+*/
  
- async function createMachineCard(machine) {
+async function createMachineCard(machine) {
     const div = document.createElement('div');
     div.className = 'machine-card';
     
@@ -115,7 +115,7 @@ const ENDPOINTS = {
                 ${lastWorkout ? 
                     `<div class="last-update">
                         <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
-                        <p>Weight: ${lastWorkout.Weight}kg</p>
+                        <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
                     </div>` : 
                     '<div class="no-updates">No previous workouts recorded</div>'
                 }
@@ -123,11 +123,19 @@ const ENDPOINTS = {
         </div>
         <div class="workout-controls">
             <div class="input-group">
-                <label>New Weight (kg)</label>
+                <label>Weight (kg)</label>
                 <input type="number" class="weight-input" min="0" step="0.5" value="${lastWorkout?.Weight || ''}">
             </div>
+            <div class="input-group">
+                <label>Sets</label>
+                <input type="number" class="set-input" min="1" value="${lastWorkout?.Set || ''}">
+            </div>
+            <div class="input-group">
+                <label>Reps</label>
+                <input type="number" class="rep-input" min="1" value="${lastWorkout?.Repetitions || ''}">
+            </div>
             <button class="update-button" data-machine-id="${machine.MachineID}">
-                <i class="fas fa-sync-alt"></i> Update Weight
+                <i class="fas fa-sync-alt"></i> Update Workout
             </button>
         </div>
     `;
@@ -136,86 +144,42 @@ const ENDPOINTS = {
     return div;
  }
  
- async function displayMachines(machines) {
-    const container = document.querySelector('.machines-container');
-    container.innerHTML = '';
-    
-    for (const machine of machines) {
-        const card = await createMachineCard(machine);
-        container.appendChild(card);
-    }
- }
- 
- function updateFilters(machines) {
-    const types = [...new Set(machines.map(m => m.Type))];
-    const targets = [...new Set(machines.map(m => m.TargetBodyPart))];
-    
-    const typeSelect = document.getElementById('filterType');
-    const targetSelect = document.getElementById('filterTarget');
-    
-    typeSelect.innerHTML = '<option value="">All Types</option>';
-    targetSelect.innerHTML = '<option value="">All Target Areas</option>';
-    
-    types.forEach(type => {
-        if(type) {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
-        }
-    });
-    
-    targets.forEach(target => {
-        if(target) {
-            const option = document.createElement('option');
-            option.value = target;
-            option.textContent = target;
-            targetSelect.appendChild(option);
-        }
-    });
- }
- 
- function filterMachines() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const selectedType = document.getElementById('filterType').value;
-    const selectedTarget = document.getElementById('filterTarget').value;
-    
-    const cards = document.querySelectorAll('.machine-card');
-    
-    cards.forEach(card => {
-        const name = card.querySelector('h2').textContent.toLowerCase();
-        const type = card.querySelector('.machine-type').textContent;
-        
-        const matchesSearch = name.includes(searchTerm);
-        const matchesType = !selectedType || type.includes(selectedType);
-        const matchesTarget = !selectedTarget || type.includes(selectedTarget);
-        
-        card.style.display = matchesSearch && matchesType && matchesTarget ? 'block' : 'none';
-    });
- }
- 
  function setupMachineCardListeners(cardElement, machine) {
     const updateButton = cardElement.querySelector('.update-button');
     const weightInput = cardElement.querySelector('.weight-input');
+    const setInput = cardElement.querySelector('.set-input');
+    const repInput = cardElement.querySelector('.rep-input');
  
     updateButton.addEventListener('click', async () => {
         const weight = parseFloat(weightInput.value);
+        const sets = parseInt(setInput.value);
+        const reps = parseInt(repInput.value);
+ 
         if (!weight || weight <= 0) {
             showError('Please enter a valid weight');
             return;
         }
-        await updateWeight(machine.MachineID, weight);
+        if (!sets || sets <= 0) {
+            showError('Please enter valid sets');
+            return;
+        }
+        if (!reps || reps <= 0) {
+            showError('Please enter valid reps');
+            return;
+        }
+        
+        await updateWorkout(machine.MachineID, weight, sets, reps);
     });
  }
  
- async function updateWeight(machineId, weight) {
+ async function updateWorkout(machineId, weight, sets, reps) {
     try {
         const workoutData = {
             UserID: getTrainerName(),
             MachineID: machineId,
             Weight: weight,
-            Repetitions: 0,
-            Set: 0,
+            Set: sets,
+            Repetitions: reps,
             Duration: 0
         };
  
@@ -225,13 +189,13 @@ const ENDPOINTS = {
             body: JSON.stringify(workoutData)
         });
  
-        if (!response.ok) throw new Error('Failed to update weight');
+        if (!response.ok) throw new Error('Failed to update workout');
         
-        await showSuccess('Weight updated successfully!');
+        await showSuccess('Workout updated successfully!');
         location.reload();
     } catch (error) {
-        console.error('Error updating weight:', error);
-        showError('Failed to update weight');
+        console.error('Error updating workout:', error);
+        showError('Failed to update workout');
     }
  }
  
