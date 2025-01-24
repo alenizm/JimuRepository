@@ -209,11 +209,11 @@ const ENDPOINTS = {
             showError('Please enter a valid weight');
             return;
         }
-        if (!sets || sets <= 0) {
+        if (!sets || sets < 0) {
             showError('Please enter valid sets');
             return;
         }
-        if (!reps || reps <= 0) {
+        if (!reps || reps < 0) {
             showError('Please enter valid reps');
             return;
         }
