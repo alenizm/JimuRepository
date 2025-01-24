@@ -23,9 +23,7 @@ const ENDPOINTS = {
     }
   }
   
-  /**
-   * Returns the user's Cognito 'sub' (unique ID) from the access_token.
-   */
+  /** Returns the user's Cognito 'sub' (unique ID) from the access_token. */
   function getUserSub() {
     const token = localStorage.getItem("access_token");
     if (!token) return null;
@@ -33,9 +31,7 @@ const ENDPOINTS = {
     return decoded?.sub || null;
   }
   
-  /**
-   * (Optional) Used for greeting by name or username.
-   */
+  /** (Optional) used for greeting by name or username. */
   function getTrainerName() {
     const token = localStorage.getItem("access_token");
     if (!token) return null;
@@ -49,7 +45,6 @@ const ENDPOINTS = {
       logout();
       return;
     }
-  
     const payload = parseJwt(idToken);
     const username = payload.username || payload["cognito:username"];
   
@@ -66,7 +61,7 @@ const ENDPOINTS = {
     try {
       const container = document.querySelector(".machines-container");
       container.innerHTML =
-        '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading machines...</div>';
   
       const response = await fetch(ENDPOINTS.MACHINES);
       if (!response.ok) throw new Error("Failed to fetch machines");
@@ -91,7 +86,6 @@ const ENDPOINTS = {
     const div = document.createElement("div");
     div.className = "machine-card";
   
-    // Simple HTML structure (no last update logic)
     div.innerHTML = `
       <div class="machine-header">
         <div class="machine-image-container">
@@ -117,7 +111,7 @@ const ENDPOINTS = {
             class="weight-input"
             min="0"
             step="0.5"
-            value=""
+            required
           >
         </div>
         <div class="input-group">
@@ -126,7 +120,7 @@ const ENDPOINTS = {
             type="number"
             class="set-input"
             min="1"
-            value=""
+            required
           >
         </div>
         <div class="input-group">
@@ -135,7 +129,7 @@ const ENDPOINTS = {
             type="number"
             class="rep-input"
             min="1"
-            value=""
+            required
           >
         </div>
         <button class="update-button" data-machine-id="${machine.MachineID}">
@@ -224,15 +218,16 @@ const ENDPOINTS = {
       const sets = parseInt(setInput.value);
       const reps = parseInt(repInput.value);
   
+      // Basic numeric checks before API call
       if (!weight || weight <= 0) {
         showError("Please enter a valid weight");
         return;
       }
-      if (!sets || sets < 0) {
+      if (!sets || sets < 1) {
         showError("Please enter valid sets");
         return;
       }
-      if (!reps || reps < 0) {
+      if (!reps || reps < 1) {
         showError("Please enter valid reps");
         return;
       }
