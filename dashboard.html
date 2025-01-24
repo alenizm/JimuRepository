@@ -8,27 +8,49 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-dark">
-    <header>
+<body>
+    <header class="main-header">
         <a href="dashboard.html" class="logo">
             <i class="fas fa-dumbbell"></i>
-            Jimu
+            <span>Jimu Fitness</span>
         </a>
         <nav>
-            <span class="user-greeting">Hello, User!</span>
-            <button class="logOut">Log Out</button>
+            <span class="user-greeting">Welcome back, <strong>User</strong></span>
+            <button class="btn logOut">Log Out</button>
         </nav>
     </header>
-    <main>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search machines...">
-            <select id="filterType"><option value="">All Types</option></select>
-            <select id="filterTarget"><option value="">All Target Areas</option></select>
-        </div>
-        <div class="machines-container">
-            <div class="loading-spinner">Loading machines...</div>
-        </div>
+    
+    <main class="main-content">
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search for machines...">
+                <select id="filterType" class="filter-select">
+                    <option value="">All Types</option>
+                </select>
+                <select id="filterTarget" class="filter-select">
+                    <option value="">All Target Areas</option>
+                </select>
+            </div>
+        </section>
+    
+        <section class="machines-container">
+            <!-- Machine cards will be dynamically inserted here -->
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                Loading machines...
+            </div>
+        </section>
     </main>
+
+    <!-- Machine Details Modal -->
+    <div id="machineModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Machine Details</h2>
+            <div class="machine-details"></div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
     <script src="JS/machineDisplay.js"></script>
 </body>
