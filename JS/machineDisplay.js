@@ -34,7 +34,7 @@ const ENDPOINTS = {
   }
   
   /**
-   * Optional: used for greeting the trainer by name or username.
+   * (Optional) Used for greeting by name or username.
    */
   function getTrainerName() {
     const token = localStorage.getItem("access_token");
@@ -87,39 +87,11 @@ const ENDPOINTS = {
     }
   }
   
-  /* 
-  // COMMENTING OUT getLastWorkout logic
-  async function getLastWorkout(machineId) {
-    try {
-      const userSub = getUserSub();
-      if (!userSub) return null;
-  
-      const response = await fetch(
-        `${ENDPOINTS.TRAINING}?UserID=${userSub}&MachineID=${machineId}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch workout history");
-  
-      const data = await response.json();
-      const records =
-        typeof data.body === "string" ? JSON.parse(data.body) : data.body;
-  
-      if (!records || records.length === 0) return null;
-  
-      return records.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))[0];
-    } catch (error) {
-      console.error("Error fetching workout history:", error);
-      return null;
-    }
-  }
-  */
-  
   async function createMachineCard(machine) {
     const div = document.createElement("div");
     div.className = "machine-card";
   
-    // Comment out lastWorkout fetch and usage:
-    // const lastWorkout = await getLastWorkout(machine.MachineID);
-  
+    // Simple HTML structure (no last update logic)
     div.innerHTML = `
       <div class="machine-header">
         <div class="machine-image-container">
@@ -135,18 +107,6 @@ const ENDPOINTS = {
           <p class="machine-type">
             ${machine.Type} | ${machine.TargetBodyPart}
           </p>
-          <!-- 
-            // lastWorkout logic commented out:
-            ${
-              /* lastWorkout
-                ? `<div class="last-update">
-                     <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
-                     <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
-                   </div>`
-                : '<div class="no-updates">first time?</div>'
-              */ ""
-            }
-          -->
         </div>
       </div>
       <div class="workout-controls">
@@ -157,7 +117,6 @@ const ENDPOINTS = {
             class="weight-input"
             min="0"
             step="0.5"
-            /* value="${lastWorkout?.Weight || ''}" */
             value=""
           >
         </div>
@@ -167,7 +126,6 @@ const ENDPOINTS = {
             type="number"
             class="set-input"
             min="1"
-            /* value="${lastWorkout?.Set || ''}" */
             value=""
           >
         </div>
@@ -177,7 +135,6 @@ const ENDPOINTS = {
             type="number"
             class="rep-input"
             min="1"
-            /* value="${lastWorkout?.Repetitions || ''}" */
             value=""
           >
         </div>
@@ -284,6 +241,7 @@ const ENDPOINTS = {
     });
   }
   
+  // Sends a new workout record to the API
   async function updateWorkout(machineId, weight, sets, reps) {
     try {
       const userSub = getUserSub();
