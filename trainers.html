@@ -18,18 +18,17 @@
   <link rel="stylesheet" href="CSS/trainerNewStyle.css" />
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <a href="#" class="logo">
       <i class="fas fa-dumbbell"></i> Trainer Dashboard
     </a>
     <button id="logout-btn" class="logout-btn">Logout</button>
   </header>
-  <!-- End Header -->
 
   <!-- Trainees List Section -->
   <section class="trainees-list">
     <h1>List of Trainees</h1>
+
     <div class="search-container">
       <input
         type="text"
@@ -38,6 +37,7 @@
         onkeyup="filterTrainees()"
       />
     </div>
+
     <div id="trainees" class="trainees">
       <!-- Trainee cards will be dynamically inserted here by JS -->
     </div>

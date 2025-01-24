@@ -34,8 +34,7 @@ const ENDPOINTS = {
   }
   
   /**
-   * We can keep this function if we still want to greet the trainer by name or username.
-   * If you only need the sub, you can remove this function.
+   * Optional: used for greeting the trainer by name or username.
    */
   function getTrainerName() {
     const token = localStorage.getItem("access_token");
@@ -88,9 +87,10 @@ const ENDPOINTS = {
     }
   }
   
-  /*async function getLastWorkout(machineId) {
+  /* 
+  // COMMENTING OUT getLastWorkout logic
+  async function getLastWorkout(machineId) {
     try {
-      // Instead of trainerName, we get the user's sub.
       const userSub = getUserSub();
       if (!userSub) return null;
   
@@ -105,19 +105,20 @@ const ENDPOINTS = {
   
       if (!records || records.length === 0) return null;
   
-      // Sort by timestamp desc and return the most recent
       return records.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))[0];
     } catch (error) {
       console.error("Error fetching workout history:", error);
       return null;
     }
-  }*/
+  }
+  */
   
   async function createMachineCard(machine) {
     const div = document.createElement("div");
     div.className = "machine-card";
   
-    const lastWorkout = await getLastWorkout(machine.MachineID);
+    // Comment out lastWorkout fetch and usage:
+    // const lastWorkout = await getLastWorkout(machine.MachineID);
   
     div.innerHTML = `
       <div class="machine-header">
@@ -134,14 +135,18 @@ const ENDPOINTS = {
           <p class="machine-type">
             ${machine.Type} | ${machine.TargetBodyPart}
           </p>
-          ${
-            lastWorkout
-              ? `<div class="last-update">
-                   <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
-                   <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
-                 </div>`
-              : '<div class="no-updates">first time?</div>'
-          }
+          <!-- 
+            // lastWorkout logic commented out:
+            ${
+              /* lastWorkout
+                ? `<div class="last-update">
+                     <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
+                     <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
+                   </div>`
+                : '<div class="no-updates">first time?</div>'
+              */ ""
+            }
+          -->
         </div>
       </div>
       <div class="workout-controls">
@@ -152,7 +157,8 @@ const ENDPOINTS = {
             class="weight-input"
             min="0"
             step="0.5"
-            value="${lastWorkout?.Weight || ''}"
+            /* value="${lastWorkout?.Weight || ''}" */
+            value=""
           >
         </div>
         <div class="input-group">
@@ -161,7 +167,8 @@ const ENDPOINTS = {
             type="number"
             class="set-input"
             min="1"
-            value="${lastWorkout?.Set || ''}"
+            /* value="${lastWorkout?.Set || ''}" */
+            value=""
           >
         </div>
         <div class="input-group">
@@ -170,7 +177,8 @@ const ENDPOINTS = {
             type="number"
             class="rep-input"
             min="1"
-            value="${lastWorkout?.Repetitions || ''}"
+            /* value="${lastWorkout?.Repetitions || ''}" */
+            value=""
           >
         </div>
         <button class="update-button" data-machine-id="${machine.MachineID}">
@@ -278,7 +286,6 @@ const ENDPOINTS = {
   
   async function updateWorkout(machineId, weight, sets, reps) {
     try {
-      // Instead of trainerName, use userSub
       const userSub = getUserSub();
       if (!userSub) {
         showError("User ID not found in token");

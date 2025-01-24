@@ -295,7 +295,7 @@ function addNewSet() {
   const form = document.getElementById("sets-form");
   // Check if required fields are valid
   if (!form.checkValidity()) {
-    form.reportValidity(); // This triggers browser's default "Please fill out..." prompt
+    form.reportValidity(); // This triggers the browser's default validation UI
     return;
   }
 
@@ -303,7 +303,6 @@ function addNewSet() {
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
-  // Prompt user with Swal to confirm adding a new set
   Swal.fire({
     title: "Add Another Set?",
     text: "Are you sure you want to add a new set?",
@@ -313,7 +312,6 @@ function addNewSet() {
     cancelButtonText: "Cancel",
   }).then((result) => {
     if (result.isConfirmed) {
-      // Create a fresh, empty set
       currentSets.push({ weight: "", reps: "" });
       currentSetIndex = currentSets.length - 1;
       displayCurrentSet();
@@ -335,8 +333,7 @@ function saveMachineSets() {
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
-  const machineSelectElem = document.getElementById("machine-select");
-  const machineName = machineSelectElem.value;
+  const machineName = document.getElementById("machine-select").value;
 
   if (!machineName) {
     Swal.fire("Error", "Please select a machine first.", "error");
@@ -417,7 +414,6 @@ function deleteSet(machineName, setIndex) {
     trainingProgram = trainingProgram.filter((m) => m.machine !== machineName);
 
     const machineSelect = document.getElementById("machine-select");
-    // If the removed machine was currently selected, reset the dropdown
     if (machineSelect.value === machineName) {
       machineSelect.value = "";
       currentSets = [];
@@ -443,7 +439,7 @@ function editSet(machineName, setIndex) {
   // Re-open the modal if it's closed
   document.getElementById("programModal").style.display = "flex";
 
-  // Switch the machine select
+  // Switch the machine-select
   const machineSelect = document.getElementById("machine-select");
   machineSelect.value = machineName;
 
@@ -474,9 +470,9 @@ async function submitProgram() {
 
   // Build the request payload
   const bodyPayload = {
-    UserEmail: selectedUserEmail, // The trainee's email
-    UserID: selectedUserSub,      // The trainee's sub
-    TrainerID: trainerSub,        // The trainer's sub
+    UserEmail: selectedUserEmail,
+    UserID: selectedUserSub,
+    TrainerID: trainerSub,
     PlanDetails: trainingProgram,
   };
 
@@ -492,7 +488,6 @@ async function submitProgram() {
     }
 
     Swal.fire("Success", "Training program submitted successfully!", "success");
-
     // Reset everything on success
     closeProgramModal();
 
