@@ -21,6 +21,7 @@ let selectedUserSub = ""; // Store the trainee's sub (UserID)
 let trainingProgram = []; // [{ machine, sets: [{ weight, reps }, ...] }]
 let currentSets = [];
 let currentSetIndex = 0;
+let username;
 
 /********************************
  * user greeting by user name
@@ -40,7 +41,7 @@ function displayUserInfo() {
     return;
   }
   const payload = parseJwt(idToken);
-  const username = payload.username || payload["cognito:username"];
+  username = payload.username || payload["cognito:username"];
 
   const userGreeting = document.querySelector(".user-greeting");
   if (userGreeting) {
@@ -501,6 +502,7 @@ async function submitProgram() {
 
   // Build the request payload
   const bodyPayload = {
+    TrainerName: username,
     UserEmail: selectedUserEmail,
     UserID: selectedUserSub,
     TrainerID: trainerSub,
