@@ -332,3 +332,25 @@ body {
     justify-content: center;
   }
 }
+/* 1) Ensure the text in .set-info can break on very long words/numbers */
+.set-info {
+  word-wrap: break-word;     /* older name */
+  overflow-wrap: break-word; /* modern name */
+  word-break: break-word;    /* ensures wrapping for extremely long words */
+}
+
+/* 2) If you prefer to be more precise, you can target just the span:
+   e.g. .set-info span { overflow-wrap: break-word; }
+   This keeps your buttons from also wrapping in unexpected ways. */
+
+.set-info span {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* 3) Also consider preventing horizontal scroll in the modal content if you want. */
+.modal-content {
+  overflow-x: hidden; /* so the content doesn’t push horizontally */
+}
+
