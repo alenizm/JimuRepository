@@ -36,7 +36,7 @@ const ENDPOINTS = {
         const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
         
         if (machines && machines.length > 0) {
-            displayMachines(machines);
+            await displayMachines(machines);
             updateFilters(machines);
         } else {
             container.innerHTML = '<p class="no-results">No machines found</p>';
@@ -47,57 +47,76 @@ const ENDPOINTS = {
     }
  }
  
- function createMachineCard(machine) {
+ async function getLastWorkout(machineId) {
+    try {
+        const userID = getTrainerName();
+        if (!userID) return null;
+ 
+        const response = await fetch(`${ENDPOINTS.TRAINING}?UserID=${userID}&MachineID=${machineId}`);
+        if (!response.ok) throw new Error('Failed to fetch workout history');
+        
+        const data = await response.json();
+        const records = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+        
+        if (!records || records.length === 0) return null;
+        
+        return records.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))[0];
+    } catch (error) {
+        console.error('Error fetching workout history:', error);
+        return null;
+    }
+ }
+ 
+ async function createMachineCard(machine) {
     const div = document.createElement('div');
     div.className = 'machine-card';
     
+    const lastWorkout = await getLastWorkout(machine.MachineID);
+    
     div.innerHTML = `
-        <div class="machine-image-container">
-            <img src="${machine.ImageURL || 'images/placeholder.jpg'}" 
-                alt="${machine.Name}" 
-                class="machine-image"
-                onerror="this.src='images/placeholder.jpg'; this.onerror=null;"
-                loading="lazy">
-        </div>
-        <div class="machine-info">
-            <h2>${machine.Name}</h2>
-            <p class="machine-type">
-                ${machine.Type} | ${machine.Brand} | ${machine.TargetBodyPart}
-            </p>
-        </div>
-        <div class="workout-inputs">
-            <div class="input-group">
-                <label>Weight (kg)</label>
-                <input type="number" class="weight-input" min="0" step="0.5">
+        <div class="machine-header">
+            <div class="machine-image-container">
+                <img src="${machine.ImageURL}" 
+                     alt="${machine.Name}" 
+                     class="machine-thumbnail"
+                     onerror="this.src='images/placeholder.jpg'; this.onerror=null;"
+                     loading="lazy">
             </div>
-            <div class="input-group">
-                <label>Reps</label>
-                <input type="number" class="reps-input" min="1">
-            </div>
-            <div class="input-group">
-                <label>Sets</label>
-                <input type="number" class="sets-input" min="1">
-            </div>
-            <div class="input-group">
-                <label>Duration (min)</label>
-                <input type="number" class="duration-input" min="1">
+            <div class="machine-info">
+                <h2>${machine.Name}</h2>
+                <p class="machine-type">${machine.Type} | ${machine.Brand} | ${machine.TargetBodyPart}</p>
+                ${lastWorkout ? 
+                    `<div class="last-update">
+                        <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
+                        <p>Weight: ${lastWorkout.Weight}kg</p>
+                    </div>` : 
+                    '<div class="no-updates">No previous workouts recorded</div>'
+                }
             </div>
         </div>
-        <button class="save-button" data-machine-id="${machine.MachineID}">
-            <i class="fas fa-save"></i> Save Workout
-        </button>
+        <div class="workout-controls">
+            <div class="input-group">
+                <label>New Weight (kg)</label>
+                <input type="number" class="weight-input" min="0" step="0.5" value="${lastWorkout?.Weight || ''}">
+            </div>
+            <button class="update-button" data-machine-id="${machine.MachineID}">
+                <i class="fas fa-sync-alt"></i> Update Weight
+            </button>
+        </div>
     `;
  
     setupMachineCardListeners(div, machine);
     return div;
  }
  
- function displayMachines(machines) {
+ async function displayMachines(machines) {
     const container = document.querySelector('.machines-container');
     container.innerHTML = '';
-    machines.forEach(machine => {
-        container.appendChild(createMachineCard(machine));
-    });
+    
+    for (const machine of machines) {
+        const card = await createMachineCard(machine);
+        container.appendChild(card);
+    }
  }
  
  function updateFilters(machines) {
@@ -149,65 +168,43 @@ const ENDPOINTS = {
  }
  
  function setupMachineCardListeners(cardElement, machine) {
-    const saveButton = cardElement.querySelector('.save-button');
-    const inputs = cardElement.querySelectorAll('input');
-    
-    inputs.forEach(input => {
-        input.addEventListener('input', validateInput);
+    const updateButton = cardElement.querySelector('.update-button');
+    const weightInput = cardElement.querySelector('.weight-input');
+ 
+    updateButton.addEventListener('click', async () => {
+        const weight = parseFloat(weightInput.value);
+        if (!weight || weight <= 0) {
+            showError('Please enter a valid weight');
+            return;
+        }
+        await updateWeight(machine.MachineID, weight);
     });
-    
-    saveButton.addEventListener('click', () => {
+ }
+ 
+ async function updateWeight(machineId, weight) {
+    try {
         const workoutData = {
             UserID: getTrainerName(),
-            MachineID: machine.MachineID,
-            Weight: parseFloat(cardElement.querySelector('.weight-input').value) || 0,
-            Repetitions: parseInt(cardElement.querySelector('.reps-input').value) || 0,
-            Set: parseInt(cardElement.querySelector('.sets-input').value) || 0,
-            Duration: parseInt(cardElement.querySelector('.duration-input').value) || 0
+            MachineID: machineId,
+            Weight: weight,
+            Repetitions: 0,
+            Set: 0,
+            Duration: 0
         };
-        
-        if (validateWorkoutData(workoutData)) {
-            saveWorkout(workoutData);
-            clearInputs(cardElement);
-        }
-    });
- }
  
- function clearInputs(cardElement) {
-    cardElement.querySelectorAll('input').forEach(input => {
-        input.value = '';
-    });
- }
- 
- function validateInput(e) {
-    const input = e.target;
-    const value = parseFloat(input.value);
-    if (value < parseFloat(input.min)) {
-        input.value = input.min;
-    }
- }
- 
- function validateWorkoutData(data) {
-    if (data.Weight < 0 || data.Repetitions < 1 || data.Set < 1 || data.Duration < 1) {
-        showError('Please enter valid workout data');
-        return false;
-    }
-    return true;
- }
- 
- async function saveWorkout(data) {
-    try {
         const response = await fetch(ENDPOINTS.TRAINING, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(workoutData)
         });
  
-        if (!response.ok) throw new Error('Network response was not ok');
-        await showSuccess('Workout saved successfully!');
+        if (!response.ok) throw new Error('Failed to update weight');
+        
+        await showSuccess('Weight updated successfully!');
+        location.reload();
     } catch (error) {
-        console.error('Error:', error);
-        showError('Failed to save workout');
+        console.error('Error updating weight:', error);
+        showError('Failed to update weight');
     }
  }
  
