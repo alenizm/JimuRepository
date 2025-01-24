@@ -23,13 +23,17 @@ body {
 }
 
 /* HEADER */
-.header {
+/* Sticky header */
+.main-header {
   background-color: var(--primary-color);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo {
@@ -46,19 +50,23 @@ body {
   color: var(--secondary-color);
 }
 
-/* Logout button */
-.logout-btn {
-  background-color: var(--danger-color);
+.user-greeting {
   color: var(--text-light);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0.5rem 1rem;
-  transition: all 0.3s ease;
+  margin-right: 1rem;
+  font-size: 1rem;
 }
 
-.logout-btn:hover {
+.user-greeting strong {
+  color: var(--secondary-color);
+}
+
+.logOut {
+  background-color: var(--danger-color);
+  color: var(--text-light);
+  padding: 0.7rem 1.2rem;
+}
+
+.logOut:hover {
   background-color: #c0392b;
 }
 
