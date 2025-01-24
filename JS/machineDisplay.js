@@ -1,7 +1,7 @@
-const ENDPOINTS = {
-    MACHINES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
-    TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Training"
-};
+const MACHINES_API_ENDPOINT =
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
+const TRAINEES_API_ENDPOINT =
+  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees";
 
 // Authentication
 function parseJwt(token) {
