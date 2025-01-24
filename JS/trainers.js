@@ -22,6 +22,32 @@ let trainingProgram = []; // [{ machine, sets: [{ weight, reps }, ...] }]
 let currentSets = [];
 let currentSetIndex = 0;
 
+/********************************
+ * user greeting by user name
+ */
+ /** (Optional) used for greeting by name or username. */
+ function getTrainerName() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+  const decoded = parseJwt(token);
+  return decoded?.name || decoded?.username || decoded?.email || null;
+}
+
+function displayUserInfo(pageType) {
+  const idToken = localStorage.getItem("id_token");
+  if (!idToken) {
+    logout();
+    return;
+  }
+  const payload = parseJwt(idToken);
+  const username = payload.username || payload["cognito:username"];
+
+  const userGreeting = document.querySelector(".user-greeting");
+  if (userGreeting) {
+    userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
+  }
+}
+
 /*******************************
  * AUTH & TOKEN UTILITIES
  *******************************/
@@ -58,8 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchMachines();
   fetchTrainees();
 
-  // Logout button
-  document.getElementById("logout-btn").addEventListener("click", logout);
+  document.querySelector(".logOut")?.addEventListener("click", () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("id_token");
+    window.location.href = "index.html";
+  });
 });
 
 /*******************************
