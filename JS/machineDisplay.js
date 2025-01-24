@@ -39,7 +39,7 @@ const ENDPOINTS = {
     return decoded?.name || decoded?.username || decoded?.email || null;
   }
   
-  function displayUserInfo(pageType) {
+  function displayUserInfo() {
     const idToken = localStorage.getItem("id_token");
     if (!idToken) {
       logout();
@@ -306,7 +306,7 @@ const ENDPOINTS = {
       return;
     }
   
-    displayUserInfo("dashboard");
+    displayUserInfo();
     await loadMachines();
   
     document.getElementById("searchInput")?.addEventListener("input", filterMachines);

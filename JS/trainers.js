@@ -33,7 +33,7 @@ let currentSetIndex = 0;
   return decoded?.name || decoded?.username || decoded?.email || null;
 }
 
-function displayUserInfo(pageType) {
+function displayUserInfo() {
   const idToken = localStorage.getItem("id_token");
   if (!idToken) {
     logout();
@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fetch from server
   fetchMachines();
   fetchTrainees();
+
+  displayUserInfo();
 
   document.querySelector(".logOut")?.addEventListener("click", () => {
     localStorage.removeItem("access_token");
