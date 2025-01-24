@@ -110,8 +110,11 @@ function initializeSessionOnLoadingPage() {
 async function fetchDataAndRedirect(idToken) {
     try {
         const response = await fetch(ENDPOINTS.MACHINES);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
         const data = await response.json();
-        console.log("Fetched data:", data);
+        if (!data) throw new Error('No data received');
+        
         redirectToRolePage(idToken);
     } catch (error) {
         console.error("Error during fetch:", error);

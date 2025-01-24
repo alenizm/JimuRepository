@@ -1,77 +1,48 @@
-/* Adding to your existing CSS */
+:root {
+  --primary-color: #4CAF50;
+  --primary-dark: #388E3C;
+  --background-dark: #1a1a1a;
+  --card-background: #2d2d2d;
+  --text-light: #ffffff;
+  --text-gray: #a3a3a3;
+  --danger-color: #dc2626;
+}
+
+body {
+  background-color: var(--background-dark);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.machines-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.machine-card {
+  background: var(--card-background);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.machine-thumbnail {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
 
 .user-greeting {
   color: var(--text-light);
   margin-right: 1rem;
-  font-size: 1.1rem;
 }
 
-.search-container {
-  max-width: 1400px;
-  margin: 0 auto 2rem;
-  display: flex;
-  gap: 1rem;
-  padding: 0 1rem;
-}
-
-#searchInput, select {
-  background-color: var(--card-background);
-  border: 1px solid #505050;
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
+.loading-spinner {
   color: var(--text-light);
-  flex: 1;
-}
-
-.logo {
-  text-decoration: none;
-  color: var(--primary-color);
-}
-
-.machine-thumbnail {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  background-color: #404040;
-  padding: 0.5rem;
-}
-
-.loading-spinner {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.5rem;
-  color: var(--text-gray);
-}
-
-.machine-availability {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.8rem;
-}
-
-.available {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.unavailable {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-.machine-card {
-  position: relative;
-}
-
-.bg-dark {
-  background-color: #1a1a1a;
-}
-
-.loading-spinner {
-  color: white;
-  text-align: center;
-  padding: 20px;
 }
