@@ -232,12 +232,11 @@ const ENDPOINTS = {
         return;
       }
   
-      await updateWorkout(machine.MachineID, weight, sets, reps);
+      await updateWorkout(machine.MachineID, weight, sets, reps, weightInput, setInput, repInput);
     });
   }
   
-  // Sends a new workout record to the API
-  async function updateWorkout(machineId, weight, sets, reps) {
+  async function updateWorkout(machineId, weight, sets, reps, weightInput, setInput, repInput) {
     try {
       const userSub = getUserSub();
       if (!userSub) {
@@ -252,6 +251,7 @@ const ENDPOINTS = {
         Set: sets,
         Repetitions: reps
       };
+      console.log(workoutData);
   
       const response = await fetch(ENDPOINTS.TRAINING, {
         method: "POST",
@@ -262,12 +262,17 @@ const ENDPOINTS = {
       if (!response.ok) throw new Error("Failed to update workout");
   
       await showSuccess("Workout updated successfully!");
-      location.reload();
+      // INSTEAD OF location.reload(), clear the inputs:
+      weightInput.value = "";
+      setInput.value = "";
+      repInput.value = "";
+  
     } catch (error) {
       console.error("Error updating workout:", error);
       showError("Failed to update workout");
     }
   }
+  
   
   // ======================================================
   // NOTIFICATIONS
