@@ -32,7 +32,7 @@ const ENDPOINTS = {
     }
  
     const payload = parseJwt(idToken);
-    const username = payload.email || payload["cognito:username"];
+    const username = payload.username || payload["cognito:username"];
  
     const userGreeting = document.querySelector('.user-greeting');
     if (userGreeting) {
