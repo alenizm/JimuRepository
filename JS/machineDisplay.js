@@ -23,6 +23,33 @@ const ENDPOINTS = {
     const decoded = parseJwt(token);
     return decoded?.name || decoded?.username || decoded?.email || null;
  }
+
+ function displayUserInfo(pageType) {
+    const idToken = localStorage.getItem("id_token");
+    if (!idToken) {
+        logout();
+        return;
+    }
+
+    const payload = parseJwt(idToken);
+    const username = payload.email || payload["cognito:username"];
+
+    switch(pageType) {
+        case "trainer":
+            const trainerInfo = document.getElementById("trainer-info");
+            if (trainerInfo) {
+                trainerInfo.innerText = `Welcome back, ${username}`;
+            }
+            break;
+        case "dashboard":
+            const userGreeting = document.querySelector('.user-greeting');
+            if (userGreeting) {
+                userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
+            }
+            updateDashboardData(username);
+            break;
+    }
+}
  
  async function loadMachines() {
     try {
