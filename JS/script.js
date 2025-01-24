@@ -113,7 +113,8 @@ async function fetchDataAndRedirect(idToken) {
         if (!response.ok) throw new Error('Network response was not ok');
         
         const data = await response.json();
-        if (!data) throw new Error('No data received');
+        const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+        if (!machines) throw new Error('No data received');
         
         redirectToRolePage(idToken);
     } catch (error) {

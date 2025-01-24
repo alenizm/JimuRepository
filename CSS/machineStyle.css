@@ -109,7 +109,7 @@ body {
 .machines-container {
  display: grid;
  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
- gap: 1.5rem;
+ gap: 4.5rem;
  padding: 1.5rem;
  max-width: 1400px;
  margin: 0 auto;
