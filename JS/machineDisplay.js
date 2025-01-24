@@ -3,6 +3,7 @@ const ENDPOINTS = {
     TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records"
  };
  
+ // Auth & User Functions 
  function parseJwt(token) {
     try {
         const base64Url = token.split(".")[1];
@@ -22,34 +23,24 @@ const ENDPOINTS = {
     const decoded = parseJwt(token);
     return decoded?.name || decoded?.username || decoded?.email || null;
  }
-
+ 
  function displayUserInfo(pageType) {
     const idToken = localStorage.getItem("id_token");
     if (!idToken) {
         logout();
         return;
     }
-
-    const payload = parseJwt(idToken);
-    const username = payload.email || payload["cognito:username"];
-
-    switch(pageType) {
-        case "trainer":
-            const trainerInfo = document.getElementById("trainer-info");
-            if (trainerInfo) {
-                trainerInfo.innerText = `Welcome back, ${username}`;
-            }
-            break;
-        case "dashboard":
-            const userGreeting = document.querySelector('.user-greeting');
-            if (userGreeting) {
-                userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
-            }
-            updateDashboardData(username);
-            break;
-    }
-}
  
+    const payload = parseJwt(idToken);
+    const username = payload.username || payload["cognito:username"];
+ 
+    const userGreeting = document.querySelector('.user-greeting');
+    if (userGreeting) {
+        userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
+    }
+ }
+ 
+ // Machine Loading & Display
  async function loadMachines() {
     try {
         const container = document.querySelector('.machines-container');
@@ -73,7 +64,7 @@ const ENDPOINTS = {
     }
  }
  
- /* async function getLastWorkout(machineId) {
+ async function getLastWorkout(machineId) {
     try {
         const userID = getTrainerName();
         if (!userID) return null;
@@ -92,9 +83,8 @@ const ENDPOINTS = {
         return null;
     }
  }
-*/
  
-async function createMachineCard(machine) {
+ async function createMachineCard(machine) {
     const div = document.createElement('div');
     div.className = 'machine-card';
     
@@ -117,7 +107,7 @@ async function createMachineCard(machine) {
                         <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
                         <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
                     </div>` : 
-                    '<div class="no-updates">No previous workouts recorded</div>'
+                    '<div class="no-updates">first time?</div>'
                 }
             </div>
         </div>
@@ -135,7 +125,7 @@ async function createMachineCard(machine) {
                 <input type="number" class="rep-input" min="1" value="${lastWorkout?.Repetitions || ''}">
             </div>
             <button class="update-button" data-machine-id="${machine.MachineID}">
-                <i class="fas fa-sync-alt"></i> Update Workout
+                <i class="fas fa-sync-alt"></i> Update
             </button>
         </div>
     `;
@@ -144,6 +134,66 @@ async function createMachineCard(machine) {
     return div;
  }
  
+ async function displayMachines(machines) {
+    const container = document.querySelector('.machines-container');
+    container.innerHTML = '';
+    
+    for (const machine of machines) {
+        const card = await createMachineCard(machine);
+        container.appendChild(card);
+    }
+ }
+ 
+ // Filters & Search
+ function updateFilters(machines) {
+    const types = [...new Set(machines.map(m => m.Type))];
+    const targets = [...new Set(machines.map(m => m.TargetBodyPart))];
+    
+    const typeSelect = document.getElementById('filterType');
+    const targetSelect = document.getElementById('filterTarget');
+    
+    typeSelect.innerHTML = '<option value="">All Types</option>';
+    targetSelect.innerHTML = '<option value="">All Target Areas</option>';
+    
+    types.forEach(type => {
+        if(type) {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            typeSelect.appendChild(option);
+        }
+    });
+    
+    targets.forEach(target => {
+        if(target) {
+            const option = document.createElement('option');
+            option.value = target;
+            option.textContent = target;
+            targetSelect.appendChild(option);
+        }
+    });
+ }
+ 
+ function filterMachines() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const selectedType = document.getElementById('filterType').value;
+    const selectedTarget = document.getElementById('filterTarget').value;
+    
+    const cards = document.querySelectorAll('.machine-card');
+    
+    cards.forEach(card => {
+        const name = card.querySelector('h2').textContent.toLowerCase();
+        const typeInfo = card.querySelector('.machine-type').textContent;
+        
+        const matchesSearch = name.includes(searchTerm);
+        const matchesType = !selectedType || typeInfo.includes(selectedType);
+        const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
+        
+        card.style.display = matchesSearch && matchesType && matchesTarget ? 'flex' : 'none';
+    });
+ }
+ 
+ // Event Listeners
  function setupMachineCardListeners(cardElement, machine) {
     const updateButton = cardElement.querySelector('.update-button');
     const weightInput = cardElement.querySelector('.weight-input');
@@ -159,11 +209,11 @@ async function createMachineCard(machine) {
             showError('Please enter a valid weight');
             return;
         }
-        if (!sets || sets <= 0) {
+        if (!sets || sets < 0) {
             showError('Please enter valid sets');
             return;
         }
-        if (!reps || reps <= 0) {
+        if (!reps || reps < 0) {
             showError('Please enter valid reps');
             return;
         }
@@ -199,6 +249,7 @@ async function createMachineCard(machine) {
     }
  }
  
+ // Notifications
  function showError(message) {
     Swal.fire({
         icon: 'error',
@@ -219,29 +270,22 @@ async function createMachineCard(machine) {
     });
  }
  
+ // Initialization
  document.addEventListener('DOMContentLoaded', async () => {
     if (!localStorage.getItem('access_token')) {
         window.location.href = 'index.html';
         return;
     }
-    
-    function filterMachines() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const selectedType = document.getElementById('filterType').value;
-        const selectedTarget = document.getElementById('filterTarget').value;
-        
-        const cards = document.querySelectorAll('.machine-card');
-        
-        cards.forEach(card => {
-            const name = card.querySelector('h2').textContent.toLowerCase();
-            const typeInfo = card.querySelector('.machine-type').textContent;
-            
-            const matchesSearch = name.includes(searchTerm);
-            const matchesType = !selectedType || typeInfo.includes(selectedType);
-            const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
-            
-            card.style.display = matchesSearch && matchesType && matchesTarget ? 'grid' : 'none';
-        });
-    }
-    });
  
+    displayUserInfo('dashboard');
+    await loadMachines();
+ 
+    document.getElementById('searchInput')?.addEventListener('input', filterMachines);
+    document.getElementById('filterType')?.addEventListener('change', filterMachines);
+    document.getElementById('filterTarget')?.addEventListener('change', filterMachines);
+    
+    document.querySelector('.logOut')?.addEventListener('click', () => {
+        localStorage.removeItem('access_token');
+        window.location.href = 'index.html';
+    });
+ });

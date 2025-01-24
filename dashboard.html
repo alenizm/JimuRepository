@@ -1,57 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jimu - Dashboard</title>
-    <link rel="stylesheet" href="CSS/machineStyle.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Jimu - Dashboard</title>
+   <link rel="stylesheet" href="CSS/machineStyle.css">
+   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="main-header">
-        <a href="dashboard.html" class="logo">
-            <i class="fas fa-dumbbell"></i>
-            <span>JIMU</span>
-        </a>
-        <nav>
-            <span class="user-greeting">Welcome back, <strong><span class="user-greeting"></span></strong></span>
-            <button class="btn logOut">Log Out</button>
-        </nav>
-    </header>
-    
-    <main class="main-content">
-        <section class="search-section">
-            <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search for machines...">
-                <select id="filterType" class="filter-select">
-                    <option value="">All Types</option>
-                </select>
-                <select id="filterTarget" class="filter-select">
-                    <option value="">All Target Areas</option>
-                </select>
-            </div>
-        </section>
-    
-        <section class="machines-container">
-            <!-- Machine cards will be dynamically inserted here -->
-            <div class="loading-spinner">
-                <i class="fas fa-spinner fa-spin"></i>
-                Loading machines...
-            </div>
-        </section>
-    </main>
+   <header class="main-header">
+       <a href="dashboard.html" class="logo">
+           <i class="fas fa-dumbbell"></i>
+           <span>JIMU</span>
+       </a>
+       <nav>
+           <span class="user-greeting"></span>
+           <button class="btn logOut">
+               <i class="fas fa-sign-out-alt"></i>
+               Log Out
+           </button>
+       </nav>
+   </header>
+   
+   <main class="main-content">
+       <section class="search-section">
+           <div class="search-container">
+               <div class="search-wrapper">
+                   <i class="fas fa-search search-icon"></i>
+                   <input type="text" 
+                          id="searchInput" 
+                          class="search-input" 
+                          placeholder="Search for machines...">
+               </div>
+               <select id="filterType" class="filter-select">
+                   <option value="">All Types</option>
+               </select>
+               <select id="filterTarget" class="filter-select">
+                   <option value="">All Target Areas</option>
+               </select>
+           </div>
+       </section>
+   
+       <section class="machines-container">
+           <div class="loading-spinner">
+               <i class="fas fa-spinner fa-spin"></i>
+               <span>Loading machines...</span>
+           </div>
+       </section>
+   </main>
 
-    <!-- Machine Details Modal -->
-    <div id="machineModal" class="modal">
-        <div class="modal-content">
-            <button class="close-modal">&times;</button>
-            <h2>Machine Details</h2>
-            <div class="machine-details"></div>
-        </div>
-    </div>
+   <!-- Machine Details Modal -->
+   <div id="machineModal" class="modal">
+       <div class="modal-content">
+           <button class="close-modal">
+               <i class="fas fa-times"></i>
+           </button>
+           <h2>Machine Details</h2>
+           <div class="machine-details"></div>
+       </div>
+   </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
-    <script src="JS/machineDisplay.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+   <script src="JS/machineDisplay.js"></script>
 </body>
 </html>
