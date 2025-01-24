@@ -88,7 +88,7 @@ const ENDPOINTS = {
     }
   }
   
-  async function getLastWorkout(machineId) {
+  /*async function getLastWorkout(machineId) {
     try {
       // Instead of trainerName, we get the user's sub.
       const userSub = getUserSub();
@@ -111,7 +111,7 @@ const ENDPOINTS = {
       console.error("Error fetching workout history:", error);
       return null;
     }
-  }
+  }*/
   
   async function createMachineCard(machine) {
     const div = document.createElement("div");
@@ -127,13 +127,12 @@ const ENDPOINTS = {
             alt="${machine.Name}"
             class="machine-thumbnail"
             onerror="this.src='images/placeholder.jpg'; this.onerror=null;"
-            loading="lazy"
           >
         </div>
         <div class="machine-info">
           <h2>${machine.Name}</h2>
           <p class="machine-type">
-            ${machine.Type} | ${machine.Brand} | ${machine.TargetBodyPart}
+            ${machine.Type} | ${machine.TargetBodyPart}
           </p>
           ${
             lastWorkout
