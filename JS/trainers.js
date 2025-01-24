@@ -93,7 +93,7 @@ async function fetchTrainees() {
 
       card.innerHTML = `
         <h3>${trainee.username}</h3>
-        <p>Email: ${trainee.email}</p>
+        <p>Email:<br>${trainee.email}</p>
         <!-- Pass both email and sub to selectUser() -->
         <button onclick="selectUser('${trainee.email}', '${trainee.sub}')">Create Program</button>
       `;
@@ -133,7 +133,7 @@ async function fetchMachines() {
     machines.forEach((machine) => {
       const option = document.createElement("option");
       option.value = machine.Name;
-      option.textContent = `${machine.Name} (${machine.Location})`;
+      option.textContent = `${machine.Name}`;
       machineSelect.appendChild(option);
     });
   } catch (error) {
