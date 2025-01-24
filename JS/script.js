@@ -1,7 +1,8 @@
 // ------------------------------------
 // Cognito Configuration (unchanged except redirectUri):
 // ------------------------------------
-const cognitoDomain = "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
+const cognitoDomain =
+  "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
 
 // 1) Use loading.html as the Cognito callback
@@ -45,7 +46,7 @@ function parseJwt(token) {
   const jsonPayload = decodeURIComponent(
     atob(base64)
       .split("")
-      .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+      .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
       .join("")
   );
   return JSON.parse(jsonPayload);
@@ -53,8 +54,7 @@ function parseJwt(token) {
 
 // ------------------------------------
 // Role-based Redirection
-// ------------------------------------
-function redirectToRolePage(idToken) {
+async function redirectToRolePage(idToken) {
   const payload = parseJwt(idToken);
   const groups = payload["cognito:groups"] || [];
   console.log("User groups:", groups);
@@ -62,10 +62,32 @@ function redirectToRolePage(idToken) {
   if (groups.includes("trainer")) {
     window.location.href = "trainers.html"; // Redirect trainers
   } else if (groups.includes("trainees")) {
-    window.location.href = "trainessNew.html"; // Redirect trainees
+    // בדיקה והמתנה עד שה-`fetch` יסתיים בדף trainessNew.html
+    await redirectToTraineesPage();
   } else {
     alert("You are not authorized to access this application.");
     logout();
+  }
+}
+
+async function redirectToTraineesPage() {
+  try {
+    const response = await fetch(
+      "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines"
+    );
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Fetch successful, proceeding to trainees page", data);
+
+      // לאחר שסיימנו את ה-fetch, נבצע את המעבר לדף
+      window.location.href = "trainessNew.html"; // מעבר לדף החדש
+    } else {
+      throw new Error("Failed to fetch trainees data.");
+    }
+  } catch (error) {
+    console.error("Error in fetching trainees data:", error);
+    alert("An error occurred while fetching data.");
   }
 }
 
@@ -99,12 +121,14 @@ function initializeSessionOnLoadingPage() {
     // Delay for 3 seconds, then redirect based on role
     setTimeout(() => {
       redirectToRolePage(tokens.idToken);
-    }, 3000); 
+    }, 3000);
   } else {
     // No token in URL, see if we have one in localStorage
     const idToken = localStorage.getItem("id_token");
     if (idToken) {
-      console.log("Session found in localStorage. Redirecting after short delay...");
+      console.log(
+        "Session found in localStorage. Redirecting after short delay..."
+      );
       greetUserIfPossible(idToken);
       setTimeout(() => {
         redirectToRolePage(idToken);
@@ -133,12 +157,16 @@ function displayUserInfo(pageType) {
   if (pageType === "trainer") {
     const trainerInfo = document.getElementById("trainer-info");
     if (trainerInfo) {
-      trainerInfo.innerText = `Hello, ${payload.email || payload["cognito:username"]}`;
+      trainerInfo.innerText = `Hello, ${
+        payload.email || payload["cognito:username"]
+      }`;
     }
   } else if (pageType === "trainees") {
     const traineeInfo = document.getElementById("trainee-info");
     if (traineeInfo) {
-      traineeInfo.innerText = `Hello, ${payload.email || payload["cognito:username"]}`;
+      traineeInfo.innerText = `Hello, ${
+        payload.email || payload["cognito:username"]
+      }`;
     }
   }
 }

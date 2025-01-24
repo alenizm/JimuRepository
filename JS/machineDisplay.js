@@ -75,7 +75,7 @@ fetch("https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines")
       const imageUrl = machine.ImageURL || "default-image.jpg"; // תמונה ברירת מחדל
 
       itemElement.innerHTML = `
-        <img src="${imageUrl}" alt="${machine.Name}" />
+        <img src="${imageUrl}" alt="${machine.Name} " />
         <div class="introduce">
             <div class="title">MACHINE SELECTION</div>
             <div class="topic">${machine.Name}</div>
