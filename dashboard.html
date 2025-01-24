@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jimu - Dashboard</title>
+    <link rel="stylesheet" href="CSS/machineStyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark">
+    <header>
+        <a href="dashboard.html" class="logo">
+            <i class="fas fa-dumbbell"></i>
+            Jimu
+        </a>
+        <nav>
+            <span class="user-greeting"></span>
+            <button class="logOut">Log Out</button>
+        </nav>
+    </header>
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search machines...">
+            <select id="filterType"><option value="">All Types</option></select>
+            <select id="filterTarget"><option value="">All Target Areas</option></select>
+        </div>
+        <div class="machines-container">
+            <div class="loading-spinner">Loading machines...</div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+    <script src="JS/machineDisplay.js"></script>
+</body>
+</html>

@@ -4,23 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jimu - Your Fitness Companion</title>
-    <!-- Font Awesome CDN -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="CSS/style.css" />
   </head>
   <body>
-    <!-- Header -->
     <header class="header">
-      <a href="#" class="logo"> <i class="fas fa-dumbbell"></i>Jimu</a>
-      <nav class="navbar"></nav>
+      <a href="index.html" class="logo"><i class="fas fa-dumbbell"></i>Jimu</a>
+      <nav class="navbar">
+        <div id="user-status"></div>
+      </nav>
     </header>
-    <!-- End Header -->
 
-    <!-- Home Section -->
     <section class="home">
       <div class="content">
         <h3>
@@ -32,18 +27,17 @@
           Jimu is your ultimate fitness companion. Track your workouts, connect
           with trainers, and achieve your fitness goals today!
         </p>
-        <button id="login-btn" class="btn">Login to Get Started</button>
+        <button id="login-btn" class="btn">
+          <i class="fas fa-sign-in-alt"></i> Login to Get Started
+        </button>
       </div>
     </section>
-    <!-- End Home Section -->
 
-    <!-- Footer -->
     <footer class="footer">
-      <p>© 2023 Jimu. All Rights Reserved.</p>
+      <p>© 2024 Jimu. All Rights Reserved.</p>
     </footer>
-    <!-- End Footer -->
 
-    <!-- Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
     <script src="JS/script.js"></script>
   </body>
 </html>

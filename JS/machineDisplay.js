@@ -101,9 +101,15 @@ function filterMachines() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const userID = getTrainerName();
-  if (userID) {
-      updateUserGreeting(userID);
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+      window.location.href = 'index.html';
+      return;
+  }
+
+  const username = getTrainerName();
+  if (username) {
+      document.querySelector('.user-greeting').textContent = `Hello, ${username}`;
   }
 
   try {
@@ -112,25 +118,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
       
       const container = document.querySelector('.machines-container');
-      container.innerHTML = ''; // Clear loading spinner
+      container.innerHTML = '';
       
       machines.forEach(machine => {
           container.appendChild(createMachineElement(machine));
       });
       
       setupFilters(machines);
-      
-      // Setup search and filter listeners
-      document.getElementById('searchInput').addEventListener('input', filterMachines);
-      document.getElementById('filterType').addEventListener('change', filterMachines);
-      document.getElementById('filterTarget').addEventListener('change', filterMachines);
-      
   } catch (error) {
-      console.error('Error fetching machines:', error);
+      console.error('Error:', error);
       showError('Failed to load machines');
   }
 
   document.querySelector('.logOut').addEventListener('click', logout);
 });
 
-// Rest of your existing code remains the same
+function logout() {
+  localStorage.removeItem('access_token');
+  showSuccess('Logged out successfully').then(() => {
+      window.location.href = 'index.html';
+  });
+}

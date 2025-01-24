@@ -66,4 +66,12 @@
   position: relative;
 }
 
-/* Your existing CSS remains the same */
+.bg-dark {
+  background-color: #1a1a1a;
+}
+
+.loading-spinner {
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
