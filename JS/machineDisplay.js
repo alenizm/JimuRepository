@@ -1,10 +1,10 @@
-const MACHINES_API_ENDPOINT =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
-const TRAINEES_API_ENDPOINT =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees";
-
-// Authentication
-function parseJwt(token) {
+const ENDPOINTS = {
+    MACHINES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
+    TRAINEES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees",
+    TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans"
+ };
+ 
+ function parseJwt(token) {
     try {
         const base64Url = token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -15,36 +15,49 @@ function parseJwt(token) {
         console.error("Invalid token", e);
         return null;
     }
-}
-
-function getTrainerName() {
+ }
+ 
+ function getTrainerName() {
     const token = localStorage.getItem("access_token");
     if (!token) return null;
     const decoded = parseJwt(token);
     return decoded?.name || decoded?.username || decoded?.email || null;
-}
-
-// Machine Loading and Display
-async function loadMachines() {
+ }
+ 
+ async function loadMachines() {
     try {
-        const response = await fetch(MACHINES_API_ENDPOINT);
+        const container = document.querySelector('.machines-container');
+        container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        
+        const response = await fetch(ENDPOINTS.MACHINES);
         if (!response.ok) throw new Error('Failed to fetch machines');
         
-        const machines = await response.json();
-        displayMachines(machines);
-        updateFilters(machines);
+        const data = await response.json();
+        const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+        
+        if (machines && machines.length > 0) {
+            displayMachines(machines);
+            updateFilters(machines);
+        } else {
+            container.innerHTML = '<p class="no-results">No machines found</p>';
+        }
     } catch (error) {
+        console.error('Error:', error);
         showError('Failed to load machines');
     }
-}
-
-function createMachineCard(machine) {
+ }
+ 
+ function createMachineCard(machine) {
     const div = document.createElement('div');
     div.className = 'machine-card';
     
     div.innerHTML = `
         <div class="machine-image-container">
-            <img src="${machine.ImageUrl}" alt="${machine.Name}" class="machine-image">
+            <img src="${machine.ImageURL || 'images/placeholder.jpg'}" 
+                alt="${machine.Name}" 
+                class="machine-image"
+                onerror="this.src='images/placeholder.jpg'; this.onerror=null;"
+                loading="lazy">
         </div>
         <div class="machine-info">
             <h2>${machine.Name}</h2>
@@ -74,49 +87,49 @@ function createMachineCard(machine) {
             <i class="fas fa-save"></i> Save Workout
         </button>
     `;
-
+ 
     setupMachineCardListeners(div, machine);
     return div;
-}
-
-function displayMachines(machines) {
+ }
+ 
+ function displayMachines(machines) {
     const container = document.querySelector('.machines-container');
     container.innerHTML = '';
-    
-    if (machines.length === 0) {
-        container.innerHTML = '<p class="no-results">No machines found</p>';
-        return;
-    }
-    
     machines.forEach(machine => {
         container.appendChild(createMachineCard(machine));
     });
-}
-
-// Filters
-function updateFilters(machines) {
+ }
+ 
+ function updateFilters(machines) {
     const types = [...new Set(machines.map(m => m.Type))];
     const targets = [...new Set(machines.map(m => m.TargetBodyPart))];
     
     const typeSelect = document.getElementById('filterType');
     const targetSelect = document.getElementById('filterTarget');
     
+    typeSelect.innerHTML = '<option value="">All Types</option>';
+    targetSelect.innerHTML = '<option value="">All Target Areas</option>';
+    
     types.forEach(type => {
-        const option = document.createElement('option');
-        option.value = type;
-        option.textContent = type;
-        typeSelect.appendChild(option);
+        if(type) {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            typeSelect.appendChild(option);
+        }
     });
     
     targets.forEach(target => {
-        const option = document.createElement('option');
-        option.value = target;
-        option.textContent = target;
-        targetSelect.appendChild(option);
+        if(target) {
+            const option = document.createElement('option');
+            option.value = target;
+            option.textContent = target;
+            targetSelect.appendChild(option);
+        }
     });
-}
-
-function filterMachines() {
+ }
+ 
+ function filterMachines() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const selectedType = document.getElementById('filterType').value;
     const selectedTarget = document.getElementById('filterTarget').value;
@@ -133,10 +146,9 @@ function filterMachines() {
         
         card.style.display = matchesSearch && matchesType && matchesTarget ? 'block' : 'none';
     });
-}
-
-// Event Listeners
-function setupMachineCardListeners(cardElement, machine) {
+ }
+ 
+ function setupMachineCardListeners(cardElement, machine) {
     const saveButton = cardElement.querySelector('.save-button');
     const inputs = cardElement.querySelectorAll('input');
     
@@ -146,55 +158,60 @@ function setupMachineCardListeners(cardElement, machine) {
     
     saveButton.addEventListener('click', () => {
         const workoutData = {
-            machineId: machine.MachineID,
-            weight: parseFloat(cardElement.querySelector('.weight-input').value) || 0,
-            reps: parseInt(cardElement.querySelector('.reps-input').value) || 0,
-            sets: parseInt(cardElement.querySelector('.sets-input').value) || 0,
-            duration: parseInt(cardElement.querySelector('.duration-input').value) || 0
+            UserID: getTrainerName(),
+            MachineID: machine.MachineID,
+            Weight: parseFloat(cardElement.querySelector('.weight-input').value) || 0,
+            Repetitions: parseInt(cardElement.querySelector('.reps-input').value) || 0,
+            Set: parseInt(cardElement.querySelector('.sets-input').value) || 0,
+            Duration: parseInt(cardElement.querySelector('.duration-input').value) || 0
         };
         
         if (validateWorkoutData(workoutData)) {
             saveWorkout(workoutData);
+            clearInputs(cardElement);
         }
     });
-}
-
-// Validation
-function validateInput(e) {
+ }
+ 
+ function clearInputs(cardElement) {
+    cardElement.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+ }
+ 
+ function validateInput(e) {
     const input = e.target;
     const value = parseFloat(input.value);
     if (value < parseFloat(input.min)) {
         input.value = input.min;
     }
-}
-
-function validateWorkoutData(data) {
-    if (data.weight < 0 || data.reps < 1 || data.sets < 1) {
+ }
+ 
+ function validateWorkoutData(data) {
+    if (data.Weight < 0 || data.Repetitions < 1 || data.Set < 1 || data.Duration < 1) {
         showError('Please enter valid workout data');
         return false;
     }
     return true;
-}
-
-// API Calls
-async function saveWorkout(data) {
+ }
+ 
+ async function saveWorkout(data) {
     try {
         const response = await fetch(ENDPOINTS.TRAINING, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-
+ 
         if (!response.ok) throw new Error('Network response was not ok');
-        
         await showSuccess('Workout saved successfully!');
     } catch (error) {
+        console.error('Error:', error);
         showError('Failed to save workout');
     }
-}
-
-// Notifications
-function showError(message) {
+ }
+ 
+ function showError(message) {
     Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -202,9 +219,9 @@ function showError(message) {
         background: '#2d2d2d',
         color: '#ffffff'
     });
-}
-
-function showSuccess(message) {
+ }
+ 
+ function showSuccess(message) {
     return Swal.fire({
         icon: 'success',
         title: 'Success',
@@ -212,20 +229,22 @@ function showSuccess(message) {
         background: '#2d2d2d',
         color: '#ffffff'
     });
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    loadMachines();
+ }
+ 
+ document.addEventListener('DOMContentLoaded', async () => {
+    if (!localStorage.getItem('access_token')) {
+        window.location.href = 'index.html';
+        return;
+    }
     
-    // Setup search and filter listeners
-    document.getElementById('searchInput').addEventListener('input', filterMachines);
-    document.getElementById('filterType').addEventListener('change', filterMachines);
-    document.getElementById('filterTarget').addEventListener('change', filterMachines);
+    await loadMachines();
     
-    // Setup logout
-    document.querySelector('.logOut').addEventListener('click', () => {
+    document.getElementById('searchInput')?.addEventListener('input', filterMachines);
+    document.getElementById('filterType')?.addEventListener('change', filterMachines);
+    document.getElementById('filterTarget')?.addEventListener('change', filterMachines);
+    
+    document.querySelector('.logOut')?.addEventListener('click', () => {
         localStorage.removeItem('access_token');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     });
-});
+ });
