@@ -479,9 +479,8 @@ function editSet(machineName, setIndex) {
   displayCurrentSet();
 }
 
-
 /*******************************
- * SUBMIT PROGRAM (with confirmation & loading state)
+ * SUBMIT PROGRAM
  *******************************/
 async function submitProgram() {
   // Must have at least one machine + at least one set
@@ -496,7 +495,7 @@ async function submitProgram() {
     return;
   }
 
-  // Get trainer's sub from localStorage
+  // Trainer's sub from localStorage
   const trainerSub = getTrainerSub();
   if (!trainerSub) return;
 
@@ -509,49 +508,23 @@ async function submitProgram() {
     PlanDetails: trainingProgram,
   };
 
-  // Prompt confirmation before actually sending
-  Swal.fire({
-    title: "Submit Training Program?",
-    text: "Are you sure you want to submit this program?",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Submit",
-    cancelButtonText: "Cancel",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      // Show a loading state while the fetch is in progress
-      Swal.fire({
-        title: "Submitting Program...",
-        text: "Please wait while we submit the training program.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+  try {
+    const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bodyPayload),
+    });
 
-      try {
-        const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(bodyPayload),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to submit training program");
-        }
-
-        // Close the loading alert
-        Swal.close();
-
-        // Show success message
-        Swal.fire("Success", "Training program submitted successfully!", "success").then(() => {
-          // Reset everything on success
-          closeProgramModal();
-        });
-      } catch (error) {
-        console.error("Error submitting program:", error);
-        Swal.fire("Error", "Failed to submit training program. Please try again.", "error");
-      }
+    if (!response.ok) {
+      throw new Error("Failed to submit training program");
     }
-  });
+
+    Swal.fire("Success", "Training program submitted successfully!", "success");
+    // Reset everything on success
+    closeProgramModal();
+
+  } catch (error) {
+    console.error("Error submitting program:", error);
+    Swal.fire("Error", "Failed to submit training program. Please try again.", "error");
+  }
 }
