@@ -8,7 +8,7 @@
   --text-dark: #2c3e50;
   --text-light: #ffffff;
   --text-gray: #7f8c8d;
-  --accent-color: #3498db; /* Blue for "edit" button as well */
+  --accent-color: #3498db;
   --danger-color: #e74c3c;
   --border-color: #ecf0f1;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -155,9 +155,10 @@ body {
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  padding: 2rem;      /* extra padding so there's space around edges */
-  max-height: 90vh;   /* scroll if very tall */
+  padding: 2rem;          /* extra padding around edges */
+  max-height: 90vh;       /* scroll if very tall */
   overflow-y: auto;
+  overflow-x: hidden;     /* prevent horizontal scroll if text is too long */
 }
 
 .close-modal {
@@ -236,17 +237,22 @@ body {
   font-weight: 600;
 }
 
-/* Program preview container */
+/* 
+  Program preview container:
+  Removed the border & box-shadow here, 
+  so only the .program-box has borders.
+*/
 .program-preview {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #fff;
   border-radius: 6px;
-  border: 1px solid #ddd;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  /* No border or box-shadow */
 }
 
-/* Each machine's box in the preview */
+/* Each machine's box in the preview:
+   This retains a visible border & slight shadow.
+*/
 .program-box {
   margin-bottom: 1rem;
   padding: 1rem;
@@ -257,8 +263,10 @@ body {
 }
 
 /* 
-   Layout for the line "Set x: ... " plus the two buttons on the right
-   so the delete & edit buttons align consistently
+   Layout for each set line: 
+   1) The text 
+   2) Delete button 
+   3) Edit button
 */
 .set-info {
   display: grid;
@@ -266,12 +274,23 @@ body {
   align-items: center;
   gap: 1rem;
   margin-bottom: 0.5rem;
+
+  /* 
+    Force wrapping for extremely long words/strings 
+    so buttons won't be pushed out of the modal.
+  */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
-/* Delete & Edit button styling:
-   - Delete is red
-   - Edit is the accent (blue)
-*/
+.set-info span {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Delete & Edit button styling */
 .btn-delete {
   background-color: var(--danger-color);
   color: var(--text-light);
@@ -300,7 +319,7 @@ body {
   background-color: #2980b9;
 }
 
-/* Spinner or loading states if any */
+/* Spinner or loading states (if any) */
 .loading-spinner {
   text-align: center;
   padding: 2rem;
@@ -332,25 +351,3 @@ body {
     justify-content: center;
   }
 }
-/* 1) Ensure the text in .set-info can break on very long words/numbers */
-.set-info {
-  word-wrap: break-word;     /* older name */
-  overflow-wrap: break-word; /* modern name */
-  word-break: break-word;    /* ensures wrapping for extremely long words */
-}
-
-/* 2) If you prefer to be more precise, you can target just the span:
-   e.g. .set-info span { overflow-wrap: break-word; }
-   This keeps your buttons from also wrapping in unexpected ways. */
-
-.set-info span {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-}
-
-/* 3) Also consider preventing horizontal scroll in the modal content if you want. */
-.modal-content {
-  overflow-x: hidden; /* so the content doesn’t push horizontally */
-}
-
