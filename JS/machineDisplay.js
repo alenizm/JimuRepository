@@ -27,7 +27,7 @@ function getTrainerName() {
 // Machine Loading and Display
 async function loadMachines() {
     try {
-        const response = await fetch(ENDPOINTS.MACHINES);
+        const response = await fetch(MACHINES_API_ENDPOINT);
         if (!response.ok) throw new Error('Failed to fetch machines');
         
         const machines = await response.json();
