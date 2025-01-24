@@ -1,108 +1,136 @@
-// כתובת ה-API Gateway
-const MACHINES_API_ENDPOINT = "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines";
+const ENDPOINTS = {
+  MACHINES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
+  TRAINEES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees",
+  TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans"
+};
 
-// פונקציה למשיכת המידע של המכשירים
-async function fetchMachines() {
-  try {
-    const response = await fetch(MACHINES_API_ENDPOINT, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+// Your existing parseJwt and other utility functions remain the same
 
-    if (!response.ok) throw new Error("Failed to fetch machines");
-
-    const responseBody = await response.json();
-
-    // בדיקה אם ה-body הוא מחרוזת JSON או אובייקט
-    const machines =
-      typeof responseBody.body === "string"
-        ? JSON.parse(responseBody.body)
-        : responseBody.body;
-
-    console.log("Machines fetched:", machines);
-
-    renderMachines(machines);
-  } catch (error) {
-    console.error("Error fetching machines:", error);
-    Swal.fire("Error", "Failed to load machines.", "error");
-  }
+function updateUserGreeting(username) {
+  const greetingElement = document.querySelector('.user-greeting');
+  greetingElement.textContent = `Hello, ${username}`;
 }
 
-// פונקציה לרינדור המכשירים בעמוד
-function renderMachines(machines) {
-  const machinesContainer = document.querySelector(".machines-container");
-  machinesContainer.innerHTML = ""; // ניקוי תוכן קודם
-
-  machines.forEach((machine) => {
-    const machineCard = document.createElement("div");
-    machineCard.classList.add("machine-card");
-
-    // טיפול במקרה שבו אין תמונה
-    const imageSrc = machine.image && machine.image.trim() !== "" ? machine.image : "default-image.jpg";
-
-    machineCard.innerHTML = `
-      <img src="${imageSrc}" alt="${machine.name}" class="machine-image" onerror="this.src='default-image.jpg'">
-      <div class="machine-details">
-        <h2 class="machine-title">${machine.name || "Unnamed Machine"}</h2>
-        <p class="machine-weight">Last Weight: ${machine.weight || "N/A"}</p>
-        <button class="update-button" data-id="${machine.id}">Update Weight</button>
+function createMachineElement(machine) {
+  const div = document.createElement('div');
+  div.className = 'machine-card';
+  
+  const availabilityClass = machine.Availability === 'true' ? 'available' : 'unavailable';
+  const availabilityText = machine.Availability === 'true' ? 'Available' : 'In Use';
+  
+  div.innerHTML = `
+      <span class="machine-availability ${availabilityClass}">${availabilityText}</span>
+      <div class="machine-header">
+          <img src="${machine.ImageURL}" 
+               alt="${machine.Name}" 
+               class="machine-thumbnail"
+               onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+          <div class="machine-title">
+              <h2>${machine.Name}</h2>
+              <p class="machine-type">
+                  ${machine.Type} | ${machine.Brand} | ${machine.TargetBodyPart}
+              </p>
+          </div>
       </div>
-    `;
+      <div class="workout-inputs">
+          <div class="input-group">
+              <label>Weight (kg)</label>
+              <input type="number" class="weight-input" min="0" step="0.5">
+          </div>
+          <div class="input-group">
+              <label>Reps</label>
+              <input type="number" class="reps-input" min="1">
+          </div>
+          <div class="input-group">
+              <label>Sets</label>
+              <input type="number" class="sets-input" min="1">
+          </div>
+          <div class="input-group">
+              <label>Duration (min)</label>
+              <input type="number" class="duration-input" min="1">
+          </div>
+      </div>
+      <button class="save-button" data-machine-id="${machine.MachineID}">
+          <i class="fas fa-save"></i> Save Workout
+      </button>
+  `;
 
-    machinesContainer.appendChild(machineCard);
+  setupMachineCardListeners(div, machine);
+  return div;
+}
+
+function setupFilters(machines) {
+  const types = new Set(machines.map(m => m.Type));
+  const targets = new Set(machines.map(m => m.TargetBodyPart));
+  
+  const typeSelect = document.getElementById('filterType');
+  const targetSelect = document.getElementById('filterTarget');
+  
+  types.forEach(type => {
+      const option = document.createElement('option');
+      option.value = type;
+      option.textContent = type;
+      typeSelect.appendChild(option);
+  });
+  
+  targets.forEach(target => {
+      const option = document.createElement('option');
+      option.value = target;
+      option.textContent = target;
+      targetSelect.appendChild(option);
   });
 }
 
-// פונקציה לעדכון המשקל של מכשיר
-async function updateMachineWeight(machineId, newWeight) {
-  try {
-    const updateResponse = await fetch(`${MACHINES_API_ENDPOINT}/${machineId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ weight: newWeight }),
-    });
+function filterMachines() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const selectedType = document.getElementById('filterType').value;
+  const selectedTarget = document.getElementById('filterTarget').value;
+  
+  const cards = document.querySelectorAll('.machine-card');
+  
+  cards.forEach(card => {
+      const name = card.querySelector('h2').textContent.toLowerCase();
+      const type = card.querySelector('.machine-type').textContent;
+      
+      const matchesSearch = name.includes(searchTerm);
+      const matchesType = !selectedType || type.includes(selectedType);
+      const matchesTarget = !selectedTarget || type.includes(selectedTarget);
+      
+      card.style.display = matchesSearch && matchesType && matchesTarget ? 'block' : 'none';
+  });
+}
 
-    if (!updateResponse.ok) throw new Error("Failed to update weight");
-
-    console.log(`Machine ${machineId} updated to weight: ${newWeight}`);
-    Swal.fire("Success!", "Weight updated successfully!", "success");
-
-    // רענון נתוני המכשירים
-    fetchMachines();
-  } catch (error) {
-    console.error("Error updating weight:", error);
-    Swal.fire("Error", "Failed to update weight.", "error");
+document.addEventListener('DOMContentLoaded', async () => {
+  const userID = getTrainerName();
+  if (userID) {
+      updateUserGreeting(userID);
   }
-}
 
-// הוספת אירועי לחיצה לכפתורי "עדכון"
-document.addEventListener("DOMContentLoaded", () => {
-  fetchMachines(); // משיכת נתוני המכשירים בעת טעינת הדף
-
-  const machinesContainer = document.querySelector(".machines-container");
-
-  machinesContainer.addEventListener("click", (e) => {
-    if (e.target.classList.contains("update-button")) {
-      const machineId = e.target.getAttribute("data-id");
-      Swal.fire({
-        title: "Update Weight",
-        input: "text",
-        inputLabel: "Enter new weight (kg):",
-        inputValidator: (value) => {
-          if (!value || isNaN(value) || value <= 0) {
-            return "Please enter a valid positive number";
-          }
-        },
-        showCancelButton: true,
-        confirmButtonText: "Update",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const newWeight = result.value;
-          updateMachineWeight(machineId, newWeight);
-        }
+  try {
+      const response = await fetch(ENDPOINTS.MACHINES);
+      const data = await response.json();
+      const machines = typeof data.body === 'string' ? JSON.parse(data.body) : data.body;
+      
+      const container = document.querySelector('.machines-container');
+      container.innerHTML = ''; // Clear loading spinner
+      
+      machines.forEach(machine => {
+          container.appendChild(createMachineElement(machine));
       });
-    }
-  });
+      
+      setupFilters(machines);
+      
+      // Setup search and filter listeners
+      document.getElementById('searchInput').addEventListener('input', filterMachines);
+      document.getElementById('filterType').addEventListener('change', filterMachines);
+      document.getElementById('filterTarget').addEventListener('change', filterMachines);
+      
+  } catch (error) {
+      console.error('Error fetching machines:', error);
+      showError('Failed to load machines');
+  }
+
+  document.querySelector('.logOut').addEventListener('click', logout);
 });
+
+// Rest of your existing code remains the same
