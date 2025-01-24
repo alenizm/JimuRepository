@@ -107,7 +107,7 @@ const ENDPOINTS = {
                         <p>Last Update: ${new Date(lastWorkout.Timestamp).toLocaleDateString()}</p>
                         <p>Weight: ${lastWorkout.Weight}kg | Sets: ${lastWorkout.Set} | Reps: ${lastWorkout.Repetitions}</p>
                     </div>` : 
-                    '<div class="no-updates">No previous workouts recorded</div>'
+                    '<div class="no-updates">first time?</div>'
                 }
             </div>
         </div>
@@ -125,7 +125,7 @@ const ENDPOINTS = {
                 <input type="number" class="rep-input" min="1" value="${lastWorkout?.Repetitions || ''}">
             </div>
             <button class="update-button" data-machine-id="${machine.MachineID}">
-                <i class="fas fa-sync-alt"></i> Update Workout
+                <i class="fas fa-sync-alt"></i> Update
             </button>
         </div>
     `;
