@@ -225,14 +225,23 @@ async function createMachineCard(machine) {
         return;
     }
     
-    await loadMachines();
-    
-    document.getElementById('searchInput')?.addEventListener('input', filterMachines);
-    document.getElementById('filterType')?.addEventListener('change', filterMachines);
-    document.getElementById('filterTarget')?.addEventListener('change', filterMachines);
-    
-    document.querySelector('.logOut')?.addEventListener('click', () => {
-        localStorage.removeItem('access_token');
-        window.location.href = 'index.html';
+    function filterMachines() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const selectedType = document.getElementById('filterType').value;
+        const selectedTarget = document.getElementById('filterTarget').value;
+        
+        const cards = document.querySelectorAll('.machine-card');
+        
+        cards.forEach(card => {
+            const name = card.querySelector('h2').textContent.toLowerCase();
+            const typeInfo = card.querySelector('.machine-type').textContent;
+            
+            const matchesSearch = name.includes(searchTerm);
+            const matchesType = !selectedType || typeInfo.includes(selectedType);
+            const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
+            
+            card.style.display = matchesSearch && matchesType && matchesTarget ? 'grid' : 'none';
+        });
+    }
     });
- });
+ 
