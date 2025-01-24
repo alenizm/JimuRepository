@@ -19,8 +19,6 @@ let selectedUserEmail = "";
 let selectedUserSub = ""; // Store the trainee's sub (UserID)
 
 let trainingProgram = []; // [{ machine, sets: [{ weight, reps }, ...] }]
-
-// For handling sets of the *currently selected machine*
 let currentSets = [];
 let currentSetIndex = 0;
 
@@ -94,18 +92,13 @@ async function fetchTrainees() {
       card.innerHTML = `
         <h3>${trainee.username}</h3>
         <p>Email:<br>${trainee.email}</p>
-        <!-- Pass both email and sub to selectUser() -->
         <button onclick="selectUser('${trainee.email}', '${trainee.sub}')">Create Program</button>
       `;
       traineesList.appendChild(card);
     });
   } catch (error) {
     console.error("Error fetching trainees:", error);
-    Swal.fire(
-      "Error",
-      "Failed to fetch trainees. Please try again later.",
-      "error"
-    );
+    Swal.fire("Error", "Failed to fetch trainees. Please try again later.", "error");
   }
 }
 
@@ -130,10 +123,11 @@ async function fetchMachines() {
     console.log("Machines fetched:", machines);
 
     const machineSelect = document.getElementById("machine-select");
+    // machineSelect has default <option value="">-- Select a Machine --</option>
     machines.forEach((machine) => {
       const option = document.createElement("option");
       option.value = machine.Name;
-      option.textContent = `${machine.Name}`;
+      option.textContent = machine.Name;
       machineSelect.appendChild(option);
     });
   } catch (error) {
@@ -146,9 +140,7 @@ async function fetchMachines() {
  * FILTER TRAINEES (Search)
  *******************************/
 function filterTrainees() {
-  const searchTerm = document
-    .getElementById("trainee-search")
-    .value.toLowerCase();
+  const searchTerm = document.getElementById("trainee-search").value.toLowerCase();
   const traineeCards = document.querySelectorAll(".trainee-card");
 
   traineeCards.forEach((card) => {
@@ -162,8 +154,11 @@ function filterTrainees() {
  * SELECT A TRAINEE
  *******************************/
 function selectUser(email, sub) {
+  // Reset the program state for a new trainee
+  resetProgram();
+
   selectedUserEmail = email;
-  selectedUserSub = sub; // Store the trainee's Cognito sub (UserID)
+  selectedUserSub = sub;
   openProgramModal();
 }
 
@@ -176,17 +171,45 @@ function openProgramModal() {
 
 function closeProgramModal() {
   document.getElementById("programModal").style.display = "none";
+  // Also reset the program on close
+  resetProgram();
 }
 
 /*******************************
  * LOGOUT HANDLER (Optional)
  *******************************/
 function logout() {
-  // Clear tokens if stored
   localStorage.removeItem("access_token");
-  localStorage.removeItem("id_token")
-  // Redirect
+  localStorage.removeItem("id_token");
   window.location.href = "index.html";
+}
+
+/*******************************
+ * RESET PROGRAM
+ *******************************/
+function resetProgram() {
+  trainingProgram = [];
+  currentSets = [];
+  currentSetIndex = 0;
+
+  // Clear selected user
+  selectedUserEmail = "";
+  selectedUserSub = "";
+
+  // Clear preview
+  updateProgramPreview();
+
+  // Reset machine <select>
+  const machineSelect = document.getElementById("machine-select");
+  if (machineSelect) {
+    machineSelect.value = "";
+  }
+
+  // Hide sets container
+  const setsContainer = document.getElementById("sets-container");
+  if (setsContainer) {
+    setsContainer.style.display = "none";
+  }
 }
 
 /*******************************
@@ -201,7 +224,7 @@ function machineSelected() {
     return;
   }
 
-  // Check if this machine already in trainingProgram
+  // Check if this machine is already in trainingProgram
   const existingMachine = trainingProgram.find(
     (item) => item.machine === machineSelect
   );
@@ -217,7 +240,7 @@ function machineSelected() {
  * NAVIGATE SET
  *******************************/
 function navigateSet(direction) {
-  // Save current inputs before moving
+  // Update current set fields before navigating
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
@@ -227,7 +250,6 @@ function navigateSet(direction) {
     if (currentSetIndex < currentSets.length - 1) {
       currentSetIndex++;
     }
-    // else { addNewSet(); } // optional auto-add
   }
 
   displayCurrentSet();
@@ -241,18 +263,17 @@ function displayCurrentSet() {
     currentSets.push({ weight: "", reps: "" });
     currentSetIndex = 0;
   }
-  if (currentSetIndex < 0) currentSetIndex = 0;
+  if (currentSetIndex < 0) {
+    currentSetIndex = 0;
+  }
   if (currentSetIndex >= currentSets.length) {
     currentSetIndex = currentSets.length - 1;
   }
 
-  document.getElementById("set-title").textContent = `Set ${
-    currentSetIndex + 1
-  } of ${currentSets.length}`;
+  document.getElementById("set-title").textContent = `Set ${currentSetIndex + 1} of ${currentSets.length}`;
 
   document.getElementById("weight").value = currentSets[currentSetIndex].weight;
-  document.getElementById("repetitions").value =
-    currentSets[currentSetIndex].reps;
+  document.getElementById("repetitions").value = currentSets[currentSetIndex].reps;
 }
 
 /*******************************
@@ -271,18 +292,28 @@ function updateCurrentSet(field, value) {
  * ADD NEW SET
  *******************************/
 function addNewSet() {
+  const form = document.getElementById("sets-form");
+  // Check if required fields are valid
+  if (!form.checkValidity()) {
+    form.reportValidity(); // This triggers browser's default "Please fill out..." prompt
+    return;
+  }
+
+  // Update the current set data
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
+  // Prompt user with Swal to confirm adding a new set
   Swal.fire({
     title: "Add Another Set?",
     text: "Are you sure you want to add a new set?",
     icon: "question",
     showCancelButton: true,
-    confirmButtonText: "Yes, Add Set",
+    confirmButtonText: "Yes, Add",
     cancelButtonText: "Cancel",
   }).then((result) => {
     if (result.isConfirmed) {
+      // Create a fresh, empty set
       currentSets.push({ weight: "", reps: "" });
       currentSetIndex = currentSets.length - 1;
       displayCurrentSet();
@@ -294,39 +325,48 @@ function addNewSet() {
  * SAVE MACHINE SETS
  *******************************/
 function saveMachineSets() {
+  const form = document.getElementById("sets-form");
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  // Update current set with user input
   updateCurrentSet("weight", document.getElementById("weight").value);
   updateCurrentSet("reps", document.getElementById("repetitions").value);
 
-  const machineSelect = document.getElementById("machine-select").value;
-  if (!machineSelect) {
+  const machineSelectElem = document.getElementById("machine-select");
+  const machineName = machineSelectElem.value;
+
+  if (!machineName) {
     Swal.fire("Error", "Please select a machine first.", "error");
     return;
   }
 
   Swal.fire({
-    title: "Add Machine to Program?",
-    text: "This will save the current sets for the selected machine.",
-    icon: "warning",
+    title: "Save Sets for Machine?",
+    text: "This will save or update the current sets for the selected machine.",
+    icon: "info",
     showCancelButton: true,
-    confirmButtonText: "Yes, Save",
+    confirmButtonText: "Save",
     cancelButtonText: "Cancel",
   }).then((result) => {
     if (result.isConfirmed) {
       const existingIndex = trainingProgram.findIndex(
-        (item) => item.machine === machineSelect
+        (item) => item.machine === machineName
       );
 
       if (existingIndex >= 0) {
         trainingProgram[existingIndex].sets = [...currentSets];
       } else {
         trainingProgram.push({
-          machine: machineSelect,
+          machine: machineName,
           sets: [...currentSets],
         });
       }
 
       updateProgramPreview();
-      Swal.fire("Success", "Machine and sets added/updated!", "success");
+      Swal.fire("Success", "Machine and sets saved/updated!", "success");
     }
   });
 }
@@ -336,6 +376,7 @@ function saveMachineSets() {
  *******************************/
 function updateProgramPreview() {
   const previewContainer = document.getElementById("program-preview");
+  if (!previewContainer) return;
   previewContainer.innerHTML = "";
 
   trainingProgram.forEach((entry) => {
@@ -371,20 +412,24 @@ function deleteSet(machineName, setIndex) {
 
   machineObj.sets.splice(setIndex, 1);
 
-  // If no sets left, remove machine entirely
+  // If no sets remain, remove that machine from the program
   if (machineObj.sets.length === 0) {
     trainingProgram = trainingProgram.filter((m) => m.machine !== machineName);
-  }
 
-  // If we're currently editing that machine
-  const selectedMachine = document.getElementById("machine-select").value;
-  if (machineName === selectedMachine) {
-    currentSets = machineObj.sets || [];
-    currentSetIndex = 0;
-    if (currentSets.length > 0) {
-      displayCurrentSet();
-    } else {
+    const machineSelect = document.getElementById("machine-select");
+    // If the removed machine was currently selected, reset the dropdown
+    if (machineSelect.value === machineName) {
+      machineSelect.value = "";
+      currentSets = [];
+      currentSetIndex = 0;
       document.getElementById("sets-container").style.display = "none";
+    }
+  } else {
+    // If we're currently editing that machine, update currentSets
+    if (machineName === document.getElementById("machine-select").value) {
+      currentSets = machineObj.sets;
+      currentSetIndex = 0;
+      displayCurrentSet();
     }
   }
 
@@ -398,11 +443,11 @@ function editSet(machineName, setIndex) {
   // Re-open the modal if it's closed
   document.getElementById("programModal").style.display = "flex";
 
-  // Switch the machine-select
+  // Switch the machine select
   const machineSelect = document.getElementById("machine-select");
   machineSelect.value = machineName;
 
-  machineSelected(); // Reload sets
+  machineSelected(); // Reload the sets
   currentSetIndex = setIndex;
   displayCurrentSet();
 }
@@ -411,38 +456,32 @@ function editSet(machineName, setIndex) {
  * SUBMIT PROGRAM
  *******************************/
 async function submitProgram() {
-  // Must have at least one machine + sets
+  // Must have at least one machine + at least one set
   if (trainingProgram.length === 0) {
-    Swal.fire(
-      "Error",
-      "Add at least one machine and one set before submitting.",
-      "error"
-    );
-    return;
-  }
-  // Must have a selected user
-  if (!selectedUserEmail || !selectedUserSub) {
-    Swal.fire("Error", "No user selected for the training program.", "error");
+    Swal.fire("Error", "Add at least one machine and one set before submitting.", "error");
     return;
   }
 
-  // Trainer's sub from localStorage token
+  // Must have a selected user
+  if (!selectedUserEmail || !selectedUserSub) {
+    Swal.fire("Error", "No user selected for this training program.", "error");
+    return;
+  }
+
+  // Trainer's sub from localStorage
   const trainerSub = getTrainerSub();
   if (!trainerSub) return;
 
-  // Body payload for the API
+  // Build the request payload
   const bodyPayload = {
     UserEmail: selectedUserEmail, // The trainee's email
-    UserID: selectedUserSub, // The trainee's sub
-    TrainerID: trainerSub, // The trainer's sub
+    UserID: selectedUserSub,      // The trainee's sub
+    TrainerID: trainerSub,        // The trainer's sub
     PlanDetails: trainingProgram,
   };
 
-  // Build URL
-  const url = `${TRAINING_PROGRAM_API_ENDPOINT}`;
-
   try {
-    const response = await fetch(url, {
+    const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(bodyPayload),
@@ -454,18 +493,11 @@ async function submitProgram() {
 
     Swal.fire("Success", "Training program submitted successfully!", "success");
 
-    // Clear everything
-    trainingProgram = [];
-    selectedUserEmail = "";
-    selectedUserSub = "";
-    updateProgramPreview();
+    // Reset everything on success
     closeProgramModal();
+
   } catch (error) {
     console.error("Error submitting program:", error);
-    Swal.fire(
-      "Error",
-      "Failed to submit training program. Please try again.",
-      "error"
-    );
+    Swal.fire("Error", "Failed to submit training program. Please try again.", "error");
   }
 }
