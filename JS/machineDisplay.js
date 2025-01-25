@@ -326,6 +326,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   displayUserInfo();
   await loadMachines();
+  // Call the fetch function to initialize the DataTable
+  await fetchDataAndPopulateTable();
 
   document
     .getElementById("searchInput")
@@ -344,140 +346,67 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// ======================================================
-// INITIALIZATION - Records Table
-// ======================================================
-document.addEventListener("DOMContentLoaded", function () {
-  const table = new DataTable("#recordsTable", {
-    paging: true,
-    searching: true,
-    lengthChange: false,
-    info: false,
-    order: [[2, "desc"]],
-    columnDefs: [
-      {
-        targets: 4,
-        orderable: false,
-      },
-    ],
+// Function to populate the DataTable dynamically
+function populateTable(records) {
+  // Reference to the table body
+  const tableBody = document.getElementById("data-table-body");
+
+  // Clear existing rows
+  tableBody.innerHTML = "";
+
+  // Populate the table with records
+  records.forEach((record) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${record.recordId}</td>
+      <td>${record.set}</td>
+      <td>${record.repetitions}</td>
+      <td>${record.weight.toFixed(2)}</td>
+      <td>${record.timestamp}</td>
+      <td>
+        <button class="edit-btn" data-recordid="${record.recordId}">Edit</button>
+        <button class="delete-btn" data-recordid="${record.recordId}">Delete</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
   });
+}
 
-  const userSub = getUserSub();
-  if (!userSub) {
-    console.log("No user sub found. Please log in.");
-    return;
+// Add event listeners for Edit and Delete buttons
+function setupEventListeners(records) {
+  document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("edit-btn")) {
+      const recordId = event.target.getAttribute("data-recordid");
+      const record = records.find((r) => r.recordId === recordId);
+      if (record) {
+        // Populate the form fields for editing
+        document.getElementById("set-input").value = record.set;
+        document.getElementById("repetitions-input").value = record.repetitions;
+        document.getElementById("weight-input").value = record.weight;
+        document.getElementById("timestamp-input").value = record.timestamp;
+        document.getElementById("record-id-input").value = record.recordId;
+      }
+    }
+
+    if (event.target.classList.contains("delete-btn")) {
+      const recordId = event.target.getAttribute("data-recordid");
+      // Perform delete logic here (e.g., call an API to delete the record)
+      console.log(`Delete record with ID: ${recordId}`);
+    }
+  });
+}
+
+// Fetch data dynamically and populate the table
+async function fetchDataAndPopulateTable() {
+  try {
+    const response = await fetch("YOUR_API_ENDPOINT"); // Replace with your API endpoint
+    const data = await response.json();
+    const records = data.records;
+
+    // Populate the table and set up event listeners
+    populateTable(records);
+    setupEventListeners(records);
+  } catch (error) {
+    console.error("Error fetching data:", error);
   }
-  console.log("User sub:", userSub);
-
-  const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`;
-
-  fetch(trainingUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      // בדיקה אם יש נתונים תחת 'records'
-      if (data && data.records && Array.isArray(data.records)) {
-        if (data.records.length > 0) {
-          data.records.forEach((record) => {
-            table.row
-              .add([
-                record.repetitions,
-                record.set,
-                record.timestamp,
-                record.weight,
-                '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
-              ])
-              .draw(false);
-          });
-        } else {
-          console.log("No records available.");
-          table.row.add(["No records available", "", "", "", ""]).draw(false);
-        }
-      } else {
-        console.log("No 'records' found or invalid data format.");
-        table.row.add(["Error fetching records", "", "", "", ""]).draw(false);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching records:", error);
-      table.row.add(["Error fetching data", "", "", "", ""]).draw(false);
-    });
-
-  // Handle Edit and Delete actions in a single event listener
-  document
-    .querySelector("#recordsTable")
-    .addEventListener("click", function (event) {
-      if (event.target.classList.contains("delete-action")) {
-        const row = event.target.closest("tr");
-        table.row(row).remove().draw();
-      } else if (event.target.classList.contains("edit-action")) {
-        const row = event.target.closest("tr");
-        const data = table.row(row).data();
-
-        // Fill the input fields with current data
-        document.querySelector("#repetitionsInput").value = data[0];
-        document.querySelector("#setInput").value = data[1];
-        document.querySelector("#weightInput").value = data[3];
-
-        document.querySelector("#addRecordBtn").style.display = "none";
-        document.querySelector("#updateRecordBtn").style.display = "block";
-
-        const updateBtn = document.querySelector("#updateRecordBtn");
-        updateBtn.addEventListener("click", function handleUpdate() {
-          const updatedRepetitions =
-            document.querySelector("#repetitionsInput").value;
-          const updatedSet = document.querySelector("#setInput").value;
-          const updatedWeight = document.querySelector("#weightInput").value;
-
-          table
-            .row(row)
-            .data([
-              updatedRepetitions,
-              updatedSet,
-              data[2], // Keep the original timestamp
-              updatedWeight,
-              '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
-            ])
-            .draw();
-
-          // Reset the input fields and toggle buttons
-          document.querySelector("#repetitionsInput").value = "";
-          document.querySelector("#setInput").value = "";
-          document.querySelector("#weightInput").value = "";
-          document.querySelector("#updateRecordBtn").style.display = "none";
-          document.querySelector("#addRecordBtn").style.display = "block";
-
-          // Remove the event listener after handling the update
-          updateBtn.removeEventListener("click", handleUpdate);
-        });
-      }
-    });
-
-  // Handle Add Record action
-  document
-    .querySelector("#addRecordBtn")
-    .addEventListener("click", function () {
-      const newRepetitions = document.querySelector("#repetitionsInput").value;
-      const newSet = document.querySelector("#setInput").value;
-      const newWeight = document.querySelector("#weightInput").value;
-
-      if (newRepetitions && newSet && newWeight) {
-        const timestamp = new Date().toLocaleString(); // Get a more readable timestamp
-        table.row
-          .add([
-            newRepetitions,
-            newSet,
-            timestamp,
-            newWeight,
-            '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
-          ])
-          .draw(false);
-
-        // Clear the input fields
-        document.querySelector("#repetitionsInput").value = "";
-        document.querySelector("#setInput").value = "";
-        document.querySelector("#weightInput").value = "";
-      } else {
-        alert("Please fill all fields to add a new record.");
-      }
-    });
-});
+}
