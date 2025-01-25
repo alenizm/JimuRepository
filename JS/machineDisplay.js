@@ -399,7 +399,8 @@ function setupEventListeners(records) {
 // Fetch data dynamically and populate the table
 async function fetchDataAndPopulateTable() {
   try {
-    const response = await fetch("YOUR_API_ENDPOINT"); // Replace with your API endpoint
+    const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`
+    const response = await fetch(trainingUrl); // Replace with your API endpoint
     const data = await response.json();
     const records = data.records;
 
