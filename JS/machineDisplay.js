@@ -403,7 +403,9 @@ async function fetchDataAndPopulateTable() {
     const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`
     const response = await fetch(trainingUrl); // Replace with your API endpoint
     const data = await response.json();
-    const records = data.records;
+    console.log(data);
+    const body = data.body;
+    const records = body.records;
 
     // Populate the table and set up event listeners
     populateTable(records);
