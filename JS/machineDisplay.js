@@ -1,92 +1,94 @@
 const ENDPOINTS = {
-    MACHINES: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
-    TRAINING: "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records"
-  };
-  
-  // ======================================================
-  // AUTH & USER FUNCTIONS
-  // ======================================================
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
-      );
-      return JSON.parse(jsonPayload);
-    } catch (e) {
-      console.error("Invalid token", e);
-      return null;
+  MACHINES:
+    "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
+  TRAINING:
+    "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records",
+};
+
+// ======================================================
+// AUTH & USER FUNCTIONS
+// ======================================================
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
+}
+
+/** Returns the user's Cognito 'sub' (unique ID) from the access_token. */
+function getUserSub() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+  const decoded = parseJwt(token);
+  return decoded?.sub || null;
+}
+
+/** (Optional) used for greeting by name or username. */
+function getTrainerName() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+  const decoded = parseJwt(token);
+  return decoded?.name || decoded?.username || decoded?.email || null;
+}
+
+function displayUserInfo() {
+  const idToken = localStorage.getItem("id_token");
+  if (!idToken) {
+    logout();
+    return;
+  }
+  const payload = parseJwt(idToken);
+  const username = payload.username || payload["cognito:username"];
+
+  const userGreeting = document.querySelector(".user-greeting");
+  if (userGreeting) {
+    userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
+  }
+}
+
+// ======================================================
+// MACHINE LOADING & DISPLAY
+// ======================================================
+async function loadMachines() {
+  try {
+    const container = document.querySelector(".machines-container");
+    container.innerHTML =
+      '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading machines...</div>';
+
+    const response = await fetch(ENDPOINTS.MACHINES);
+    if (!response.ok) throw new Error("Failed to fetch machines");
+
+    const data = await response.json();
+    const machines =
+      typeof data.body === "string" ? JSON.parse(data.body) : data.body;
+
+    if (machines && machines.length > 0) {
+      await displayMachines(machines);
+      updateFilters(machines);
+    } else {
+      container.innerHTML = '<p class="no-results">No machines found</p>';
     }
+  } catch (error) {
+    console.error("Error:", error);
+    showError("Failed to load machines");
   }
-  
-  /** Returns the user's Cognito 'sub' (unique ID) from the access_token. */
-  function getUserSub() {
-    const token = localStorage.getItem("access_token");
-    if (!token) return null;
-    const decoded = parseJwt(token);
-    return decoded?.sub || null;
-  }
-  
-  /** (Optional) used for greeting by name or username. */
-  function getTrainerName() {
-    const token = localStorage.getItem("access_token");
-    if (!token) return null;
-    const decoded = parseJwt(token);
-    return decoded?.name || decoded?.username || decoded?.email || null;
-  }
-  
-  function displayUserInfo() {
-    const idToken = localStorage.getItem("id_token");
-    if (!idToken) {
-      logout();
-      return;
-    }
-    const payload = parseJwt(idToken);
-    const username = payload.username || payload["cognito:username"];
-  
-    const userGreeting = document.querySelector(".user-greeting");
-    if (userGreeting) {
-      userGreeting.innerHTML = `Welcome back, <strong>${username}</strong>`;
-    }
-  }
-  
-  // ======================================================
-  // MACHINE LOADING & DISPLAY
-  // ======================================================
-  async function loadMachines() {
-    try {
-      const container = document.querySelector(".machines-container");
-      container.innerHTML =
-        '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading machines...</div>';
-  
-      const response = await fetch(ENDPOINTS.MACHINES);
-      if (!response.ok) throw new Error("Failed to fetch machines");
-  
-      const data = await response.json();
-      const machines =
-        typeof data.body === "string" ? JSON.parse(data.body) : data.body;
-  
-      if (machines && machines.length > 0) {
-        await displayMachines(machines);
-        updateFilters(machines);
-      } else {
-        container.innerHTML = '<p class="no-results">No machines found</p>';
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      showError("Failed to load machines");
-    }
-  }
-  
-  async function createMachineCard(machine) {
-    const div = document.createElement("div");
-    div.className = "machine-card";
-  
-    div.innerHTML = `
+}
+
+async function createMachineCard(machine) {
+  const div = document.createElement("div");
+  div.className = "machine-card";
+
+  div.innerHTML = `
       <div class="machine-header">
         <div class="machine-image-container">
           <img
@@ -137,186 +139,310 @@ const ENDPOINTS = {
         </button>
       </div>
     `;
-  
-    setupMachineCardListeners(div, machine);
-    return div;
+
+  setupMachineCardListeners(div, machine);
+  return div;
+}
+
+async function displayMachines(machines) {
+  const container = document.querySelector(".machines-container");
+  container.innerHTML = "";
+
+  for (const machine of machines) {
+    const card = await createMachineCard(machine);
+    container.appendChild(card);
   }
-  
-  async function displayMachines(machines) {
-    const container = document.querySelector(".machines-container");
-    container.innerHTML = "";
-  
-    for (const machine of machines) {
-      const card = await createMachineCard(machine);
-      container.appendChild(card);
+}
+
+// ======================================================
+// FILTERS & SEARCH
+// ======================================================
+function updateFilters(machines) {
+  const types = [...new Set(machines.map((m) => m.Type))];
+  const targets = [...new Set(machines.map((m) => m.TargetBodyPart))];
+
+  const typeSelect = document.getElementById("filterType");
+  const targetSelect = document.getElementById("filterTarget");
+
+  typeSelect.innerHTML = '<option value="">All Types</option>';
+  targetSelect.innerHTML = '<option value="">All Target Areas</option>';
+
+  types.forEach((type) => {
+    if (type) {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      typeSelect.appendChild(option);
     }
-  }
-  
-  // ======================================================
-  // FILTERS & SEARCH
-  // ======================================================
-  function updateFilters(machines) {
-    const types = [...new Set(machines.map((m) => m.Type))];
-    const targets = [...new Set(machines.map((m) => m.TargetBodyPart))];
-  
-    const typeSelect = document.getElementById("filterType");
-    const targetSelect = document.getElementById("filterTarget");
-  
-    typeSelect.innerHTML = '<option value="">All Types</option>';
-    targetSelect.innerHTML = '<option value="">All Target Areas</option>';
-  
-    types.forEach((type) => {
-      if (type) {
-        const option = document.createElement("option");
-        option.value = type;
-        option.textContent = type;
-        typeSelect.appendChild(option);
-      }
-    });
-  
-    targets.forEach((target) => {
-      if (target) {
-        const option = document.createElement("option");
-        option.value = target;
-        option.textContent = target;
-        targetSelect.appendChild(option);
-      }
-    });
-  }
-  
-  function filterMachines() {
-    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-    const selectedType = document.getElementById("filterType").value;
-    const selectedTarget = document.getElementById("filterTarget").value;
-  
-    const cards = document.querySelectorAll(".machine-card");
-  
-    cards.forEach((card) => {
-      const name = card.querySelector("h2").textContent.toLowerCase();
-      const typeInfo = card.querySelector(".machine-type").textContent;
-  
-      const matchesSearch = name.includes(searchTerm);
-      const matchesType = !selectedType || typeInfo.includes(selectedType);
-      const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
-  
-      card.style.display =
-        matchesSearch && matchesType && matchesTarget ? "flex" : "none";
-    });
-  }
-  
-  // ======================================================
-  // EVENT LISTENERS
-  // ======================================================
-  function setupMachineCardListeners(cardElement, machine) {
-    const updateButton = cardElement.querySelector(".update-button");
-    const weightInput = cardElement.querySelector(".weight-input");
-    const setInput = cardElement.querySelector(".set-input");
-    const repInput = cardElement.querySelector(".rep-input");
-  
-    updateButton.addEventListener("click", async () => {
-      const weight = parseFloat(weightInput.value);
-      const sets = parseInt(setInput.value);
-      const reps = parseInt(repInput.value);
-  
-      // Basic numeric checks before API call
-      if (!weight || weight <= 0) {
-        showError("Please enter a valid weight");
-        return;
-      }
-      if (!sets || sets < 1) {
-        showError("Please enter valid sets");
-        return;
-      }
-      if (!reps || reps < 1) {
-        showError("Please enter valid reps");
-        return;
-      }
-  
-      await updateWorkout(machine.MachineID, weight, sets, reps, weightInput, setInput, repInput);
-    });
-  }
-  
-  async function updateWorkout(machineId, weight, sets, reps, weightInput, setInput, repInput) {
-    try {
-      const userSub = getUserSub();
-      if (!userSub) {
-        showError("User ID not found in token");
-        return;
-      }
-  
-      const workoutData = {
-        UserID: userSub,
-        MachineID: machineId,
-        Weight: weight,
-        Set: sets,
-        Repetitions: reps
-      };
-      console.log(workoutData);
-  
-      const response = await fetch(ENDPOINTS.TRAINING, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(workoutData)
-      });
-  
-      if (!response.ok) throw new Error("Failed to update workout");
-  
-      await showSuccess("Workout updated successfully!");
-      // INSTEAD OF location.reload(), clear the inputs:
-      weightInput.value = "";
-      setInput.value = "";
-      repInput.value = "";
-  
-    } catch (error) {
-      console.error("Error updating workout:", error);
-      showError("Failed to update workout");
+  });
+
+  targets.forEach((target) => {
+    if (target) {
+      const option = document.createElement("option");
+      option.value = target;
+      option.textContent = target;
+      targetSelect.appendChild(option);
     }
-  }
-  
-  
-  // ======================================================
-  // NOTIFICATIONS
-  // ======================================================
-  function showError(message) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: message,
-      background: "#2d2d2d",
-      color: "#ffffff",
-    });
-  }
-  
-  function showSuccess(message) {
-    return Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: message,
-      background: "#2d2d2d",
-      color: "#ffffff",
-    });
-  }
-  
-  // ======================================================
-  // INITIALIZATION
-  // ======================================================
-  document.addEventListener("DOMContentLoaded", async () => {
-    if (!localStorage.getItem("access_token")) {
-      window.location.href = "index.html";
+  });
+}
+
+function filterMachines() {
+  const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+  const selectedType = document.getElementById("filterType").value;
+  const selectedTarget = document.getElementById("filterTarget").value;
+
+  const cards = document.querySelectorAll(".machine-card");
+
+  cards.forEach((card) => {
+    const name = card.querySelector("h2").textContent.toLowerCase();
+    const typeInfo = card.querySelector(".machine-type").textContent;
+
+    const matchesSearch = name.includes(searchTerm);
+    const matchesType = !selectedType || typeInfo.includes(selectedType);
+    const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
+
+    card.style.display =
+      matchesSearch && matchesType && matchesTarget ? "flex" : "none";
+  });
+}
+
+// ======================================================
+// EVENT LISTENERS
+// ======================================================
+function setupMachineCardListeners(cardElement, machine) {
+  const updateButton = cardElement.querySelector(".update-button");
+  const weightInput = cardElement.querySelector(".weight-input");
+  const setInput = cardElement.querySelector(".set-input");
+  const repInput = cardElement.querySelector(".rep-input");
+
+  updateButton.addEventListener("click", async () => {
+    const weight = parseFloat(weightInput.value);
+    const sets = parseInt(setInput.value);
+    const reps = parseInt(repInput.value);
+
+    // Basic numeric checks before API call
+    if (!weight || weight <= 0) {
+      showError("Please enter a valid weight");
       return;
     }
-  
-    displayUserInfo();
-    await loadMachines();
-  
-    document.getElementById("searchInput")?.addEventListener("input", filterMachines);
-    document.getElementById("filterType")?.addEventListener("change", filterMachines);
-    document.getElementById("filterTarget")?.addEventListener("change", filterMachines);
-  
-    document.querySelector(".logOut")?.addEventListener("click", () => {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("id_token");
-      window.location.href = "index.html";
-    });
+    if (!sets || sets < 1) {
+      showError("Please enter valid sets");
+      return;
+    }
+    if (!reps || reps < 1) {
+      showError("Please enter valid reps");
+      return;
+    }
+
+    await updateWorkout(
+      machine.MachineID,
+      weight,
+      sets,
+      reps,
+      weightInput,
+      setInput,
+      repInput
+    );
   });
-  
+}
+
+async function updateWorkout(
+  machineId,
+  weight,
+  sets,
+  reps,
+  weightInput,
+  setInput,
+  repInput
+) {
+  try {
+    const userSub = getUserSub();
+    if (!userSub) {
+      showError("User ID not found in token");
+      return;
+    }
+
+    const workoutData = {
+      UserID: userSub,
+      MachineID: machineId,
+      Weight: weight,
+      Set: sets,
+      Repetitions: reps,
+    };
+    console.log(workoutData);
+
+    const response = await fetch(ENDPOINTS.TRAINING, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(workoutData),
+    });
+
+    if (!response.ok) throw new Error("Failed to update workout");
+
+    await showSuccess("Workout updated successfully!");
+    // INSTEAD OF location.reload(), clear the inputs:
+    weightInput.value = "";
+    setInput.value = "";
+    repInput.value = "";
+  } catch (error) {
+    console.error("Error updating workout:", error);
+    showError("Failed to update workout");
+  }
+}
+
+// ======================================================
+// NOTIFICATIONS
+// ======================================================
+function showError(message) {
+  Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: message,
+    background: "#2d2d2d",
+    color: "#ffffff",
+  });
+}
+
+function showSuccess(message) {
+  return Swal.fire({
+    icon: "success",
+    title: "Success",
+    text: message,
+    background: "#2d2d2d",
+    color: "#ffffff",
+  });
+}
+
+// ======================================================
+// INITIALIZATION
+// ======================================================
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!localStorage.getItem("access_token")) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  displayUserInfo();
+  await loadMachines();
+
+  document
+    .getElementById("searchInput")
+    ?.addEventListener("input", filterMachines);
+  document
+    .getElementById("filterType")
+    ?.addEventListener("change", filterMachines);
+  document
+    .getElementById("filterTarget")
+    ?.addEventListener("change", filterMachines);
+
+  document.querySelector(".logOut")?.addEventListener("click", () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("id_token");
+    window.location.href = "index.html";
+  });
+});
+
+// ======================================================
+// INITIALIZATION - Records Table
+// ======================================================
+document.addEventListener("DOMContentLoaded", function () {
+  // אתחול ה-DataTable
+  const table = new DataTable("#recordsTable", {
+    paging: true, // הפעלת פייג'ינציה
+    searching: true, // הפעלת חיפוש
+    lengthChange: false, // השבתת שינוי מספר השורות לעמוד
+    info: false, // השבתת הצגת מידע על הטבלה
+    order: [[2, "desc"]], // מיון ברירת מחדל לפי Timestamp (עמודה 2)
+    columnDefs: [
+      {
+        targets: 4,
+        orderable: false, // השבתת מיון לעמודת "Actions"
+      },
+    ],
+  });
+
+  // קבלת נתונים מה-API
+  fetch("ENDPOINTS.TRAINING")
+    .then((response) => response.json())
+    .then((data) => {
+      // קבלת ה-userSub (מזהה ייחודי למשתמש)
+      const userSub = getUserSub();
+
+      if (userSub) {
+        console.log("User sub:", userSub);
+        // הוספת רשומות לטבלה
+        data.records.forEach((record) => {
+          table.row
+            .add([
+              record.repetitions, // עמודת Repetitions
+              record.set, // עמודת Set
+              record.timestamp, // עמודת Timestamp
+              record.weight, // עמודת Weight
+              '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>', // עמודת Actions
+            ])
+            .draw(false);
+        });
+      } else {
+        console.log("No user sub found. Please log in.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching records:", error);
+    });
+
+  // טיפול בלחיצה על "Delete"
+  document
+    .querySelector("#recordsTable")
+    .addEventListener("click", function (event) {
+      if (event.target.classList.contains("delete-action")) {
+        const row = event.target.closest("tr");
+        table.row(row).remove().draw(); // הסרת השורה
+      }
+    });
+
+  // טיפול בלחיצה על "Edit"
+  document
+    .querySelector("#recordsTable")
+    .addEventListener("click", function (event) {
+      if (event.target.classList.contains("edit-action")) {
+        const row = event.target.closest("tr");
+        const data = table.row(row).data();
+
+        // מילוי השדות עם הנתונים מהשורה הנבחרת
+        document.querySelector("#repetitionsInput").value = data[0];
+        document.querySelector("#setInput").value = data[1];
+        document.querySelector("#weightInput").value = data[3];
+
+        // הצגת כפתור עדכון והסתרת כפתור הוספה
+        document.querySelector("#addRecordBtn").style.display = "none";
+        document.querySelector("#updateRecordBtn").style.display = "block";
+
+        document
+          .querySelector("#updateRecordBtn")
+          .addEventListener("click", function () {
+            const updatedRepetitions =
+              document.querySelector("#repetitionsInput").value;
+            const updatedSet = document.querySelector("#setInput").value;
+            const updatedWeight = document.querySelector("#weightInput").value;
+
+            table
+              .row(row)
+              .data([
+                updatedRepetitions,
+                updatedSet,
+                data[2],
+                updatedWeight,
+                '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
+              ])
+              .draw();
+
+            // ניקוי השדות והסתרת כפתור העדכון
+            document.querySelector("#repetitionsInput").value = "";
+            document.querySelector("#setInput").value = "";
+            document.querySelector("#weightInput").value = "";
+            document.querySelector("#updateRecordBtn").style.display = "none";
+            document.querySelector("#addRecordBtn").style.display = "block";
+          });
+      }
+    });
+});

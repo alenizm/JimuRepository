@@ -26,8 +26,8 @@ let username;
 /********************************
  * user greeting by user name
  */
- /** (Optional) used for greeting by name or username. */
- function getTrainerName() {
+/** (Optional) used for greeting by name or username. */
+function getTrainerName() {
   const token = localStorage.getItem("access_token");
   if (!token) return null;
   const decoded = parseJwt(token);
@@ -130,7 +130,11 @@ async function fetchTrainees() {
     });
   } catch (error) {
     console.error("Error fetching trainees:", error);
-    Swal.fire("Error", "Failed to fetch trainees. Please try again later.", "error");
+    Swal.fire(
+      "Error",
+      "Failed to fetch trainees. Please try again later.",
+      "error"
+    );
   }
 }
 
@@ -172,7 +176,9 @@ async function fetchMachines() {
  * FILTER TRAINEES (Search)
  *******************************/
 function filterTrainees() {
-  const searchTerm = document.getElementById("trainee-search").value.toLowerCase();
+  const searchTerm = document
+    .getElementById("trainee-search")
+    .value.toLowerCase();
   const traineeCards = document.querySelectorAll(".trainee-card");
 
   traineeCards.forEach((card) => {
@@ -302,10 +308,13 @@ function displayCurrentSet() {
     currentSetIndex = currentSets.length - 1;
   }
 
-  document.getElementById("set-title").textContent = `Set ${currentSetIndex + 1} of ${currentSets.length}`;
+  document.getElementById("set-title").textContent = `Set ${
+    currentSetIndex + 1
+  } of ${currentSets.length}`;
 
   document.getElementById("weight").value = currentSets[currentSetIndex].weight;
-  document.getElementById("repetitions").value = currentSets[currentSetIndex].reps;
+  document.getElementById("repetitions").value =
+    currentSets[currentSetIndex].reps;
 }
 
 /*******************************
@@ -479,14 +488,17 @@ function editSet(machineName, setIndex) {
   displayCurrentSet();
 }
 
-
 /*******************************
  * SUBMIT PROGRAM (with confirmation & loading state)
  *******************************/
 async function submitProgram() {
   // Must have at least one machine + at least one set
   if (trainingProgram.length === 0) {
-    Swal.fire("Error", "Add at least one machine and one set before submitting.", "error");
+    Swal.fire(
+      "Error",
+      "Add at least one machine and one set before submitting.",
+      "error"
+    );
     return;
   }
 
@@ -544,13 +556,21 @@ async function submitProgram() {
         Swal.close();
 
         // Show success message
-        Swal.fire("Success", "Training program submitted successfully!", "success").then(() => {
+        Swal.fire(
+          "Success",
+          "Training program submitted successfully!",
+          "success"
+        ).then(() => {
           // Reset everything on success
           closeProgramModal();
         });
       } catch (error) {
         console.error("Error submitting program:", error);
-        Swal.fire("Error", "Failed to submit training program. Please try again.", "error");
+        Swal.fire(
+          "Error",
+          "Failed to submit training program. Please try again.",
+          "error"
+        );
       }
     }
   });

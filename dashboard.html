@@ -1,58 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jimu - Gym Management System</title>
-  <!-- Link to our custom CSS -->
-  <link rel="stylesheet" href="CSS/machineStyle.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jimu - Gym Management System</title>
+    <!-- Link to our custom CSS -->
+    <link rel="stylesheet" href="CSS/machineStyle.css" />
 
-  <!-- SweetAlert2 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet" />
+    <!-- SweetAlert2 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-</head>
-<body>
-  <!-- Header -->
-  <header class="main-header">
-    <a href="trainessNew.html" class="logo">
-      <i class="fas fa-dumbbell"></i>
-      Jimu
-    </a>
-    <nav>
-      <span class="user-greeting"></span>
-      <button class="logOut">
-        <i class="fas fa-sign-out-alt"></i> Log Out
-      </button>
-    </nav>
-  </header>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
 
-  <!-- Main Content -->
-  <main>
-    <!-- Search & Filters -->
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search machines..." />
-      <select id="filterType">
-        <option value="">All Types</option>
-      </select>
-      <select id="filterTarget">
-        <option value="">All Target Areas</option>
-      </select>
-    </div>
+    <!-- DataTables CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="main-header">
+      <a href="trainessNew.html" class="logo">
+        <i class="fas fa-dumbbell"></i>
+        Jimu
+      </a>
+      <nav>
+        <span class="user-greeting"></span>
+        <button class="logOut">
+          <i class="fas fa-sign-out-alt"></i> Log Out
+        </button>
+      </nav>
+    </header>
 
-    <!-- Machines Grid -->
-    <div class="machines-container">
-      <div class="loading-spinner">
-        <i class="fas fa-spinner fa-spin"></i>
-        Loading machines...
+    <!-- Main Content -->
+    <main>
+      <!-- Search & Filters -->
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search machines..." />
+        <select id="filterType">
+          <option value="">All Types</option>
+        </select>
+        <select id="filterTarget">
+          <option value="">All Target Areas</option>
+        </select>
       </div>
-    </div>
-  </main>
 
-  <!-- SweetAlert2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
-  <!-- Main JS Logic -->
-  <script src="JS/machineDisplay.js"></script>
-</body>
+      <!-- Machines Grid -->
+      <div class="machines-container">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          Loading machines...
+        </div>
+      </div>
+
+      <!-- DataTable for displaying records -->
+      <div class="records-container">
+        <table id="recordsTable" class="display">
+          <thead>
+            <tr>
+              <th>Repetitions</th>
+              <th>Set</th>
+              <th>Timestamp</th>
+              <th>Weight</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be dynamically populated here -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"
+    ></script>
+    <script src="JS/machineDisplay.js"></script>
+  </body>
 </html>
