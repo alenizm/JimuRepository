@@ -1,3 +1,5 @@
+const { Endpoint } = require("aws-sdk");
+
 const ENDPOINTS = {
   MACHINES:
     "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Machines",
@@ -278,8 +280,9 @@ async function updateWorkout(
     });
 
     if (!response.ok) throw new Error("Failed to update workout");
-
-    await showSuccess("Workout updated successfully!");
+    {
+      await showSuccess("Workout updated successfully!");
+    }
     // INSTEAD OF location.reload(), clear the inputs:
     weightInput.value = "";
     setInput.value = "";
@@ -346,103 +349,136 @@ document.addEventListener("DOMContentLoaded", async () => {
 // INITIALIZATION - Records Table
 // ======================================================
 document.addEventListener("DOMContentLoaded", function () {
-  // אתחול ה-DataTable
   const table = new DataTable("#recordsTable", {
-    paging: true, // הפעלת פייג'ינציה
-    searching: true, // הפעלת חיפוש
-    lengthChange: false, // השבתת שינוי מספר השורות לעמוד
-    info: false, // השבתת הצגת מידע על הטבלה
-    order: [[2, "desc"]], // מיון ברירת מחדל לפי Timestamp (עמודה 2)
+    paging: true,
+    searching: true,
+    lengthChange: false,
+    info: false,
+    order: [[2, "desc"]],
     columnDefs: [
       {
         targets: 4,
-        orderable: false, // השבתת מיון לעמודת "Actions"
+        orderable: false,
       },
     ],
   });
-  const userSub = getUserSub(); // קבלת ה-userSub
-  console.log("User sub:", userSub); // כדי לבדוק את הערך של userSub
+
+  const userSub = getUserSub();
+  if (!userSub) {
+    console.log("No user sub found. Please log in.");
+    return;
+  }
+  console.log("User sub:", userSub);
+
   const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`;
-  // קבלת נתונים מה-API
+
   fetch(trainingUrl)
     .then((response) => response.json())
     .then((data) => {
-      if (userSub) {
-        console.log("User sub:", userSub);
-
-        // הוספת רשומות לטבלה
-        data.records.forEach((record) => {
-          table.row
-            .add([
-              record.repetitions, // עמודת Repetitions
-              record.set, // עמודת Set
-              record.timestamp, // עמודת Timestamp
-              record.weight, // עמודת Weight
-              '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>', // עמודת Actions
-            ])
-            .draw(false);
-        });
+      // בדיקה אם יש נתונים תחת 'records'
+      if (data && data.records && Array.isArray(data.records)) {
+        if (data.records.length > 0) {
+          data.records.forEach((record) => {
+            table.row
+              .add([
+                record.repetitions,
+                record.set,
+                record.timestamp,
+                record.weight,
+                '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
+              ])
+              .draw(false);
+          });
+        } else {
+          console.log("No records available.");
+          table.row.add(["No records available", "", "", "", ""]).draw(false);
+        }
       } else {
-        console.log("No user sub found. Please log in.");
+        console.log("No 'records' found or invalid data format.");
+        table.row.add(["Error fetching records", "", "", "", ""]).draw(false);
       }
     })
     .catch((error) => {
       console.error("Error fetching records:", error);
+      table.row.add(["Error fetching data", "", "", "", ""]).draw(false);
     });
 
-  // טיפול בלחיצה על "Delete"
+  // Handle Edit and Delete actions in a single event listener
   document
     .querySelector("#recordsTable")
     .addEventListener("click", function (event) {
       if (event.target.classList.contains("delete-action")) {
         const row = event.target.closest("tr");
-        table.row(row).remove().draw(); // הסרת השורה
-      }
-    });
-
-  // טיפול בלחיצה על "Edit"
-  document
-    .querySelector("#recordsTable")
-    .addEventListener("click", function (event) {
-      if (event.target.classList.contains("edit-action")) {
+        table.row(row).remove().draw();
+      } else if (event.target.classList.contains("edit-action")) {
         const row = event.target.closest("tr");
         const data = table.row(row).data();
 
-        // מילוי השדות עם הנתונים מהשורה הנבחרת
+        // Fill the input fields with current data
         document.querySelector("#repetitionsInput").value = data[0];
         document.querySelector("#setInput").value = data[1];
         document.querySelector("#weightInput").value = data[3];
 
-        // הצגת כפתור עדכון והסתרת כפתור הוספה
         document.querySelector("#addRecordBtn").style.display = "none";
         document.querySelector("#updateRecordBtn").style.display = "block";
 
-        document
-          .querySelector("#updateRecordBtn")
-          .addEventListener("click", function () {
-            const updatedRepetitions =
-              document.querySelector("#repetitionsInput").value;
-            const updatedSet = document.querySelector("#setInput").value;
-            const updatedWeight = document.querySelector("#weightInput").value;
+        const updateBtn = document.querySelector("#updateRecordBtn");
+        updateBtn.addEventListener("click", function handleUpdate() {
+          const updatedRepetitions =
+            document.querySelector("#repetitionsInput").value;
+          const updatedSet = document.querySelector("#setInput").value;
+          const updatedWeight = document.querySelector("#weightInput").value;
 
-            table
-              .row(row)
-              .data([
-                updatedRepetitions,
-                updatedSet,
-                data[2],
-                updatedWeight,
-                '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
-              ])
-              .draw();
+          table
+            .row(row)
+            .data([
+              updatedRepetitions,
+              updatedSet,
+              data[2], // Keep the original timestamp
+              updatedWeight,
+              '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
+            ])
+            .draw();
 
-            // ניקוי השדות והסתרת כפתור העדכון
-            document.querySelector("#repetitionsInput").value = "";
-            document.querySelector("#setInput").value = "";
-            document.querySelector("#weightInput").value = "";
-            document.querySelector("#updateRecordBtn").style.display = "none";
-            document.querySelector("#addRecordBtn").style.display = "block";
-          });
+          // Reset the input fields and toggle buttons
+          document.querySelector("#repetitionsInput").value = "";
+          document.querySelector("#setInput").value = "";
+          document.querySelector("#weightInput").value = "";
+          document.querySelector("#updateRecordBtn").style.display = "none";
+          document.querySelector("#addRecordBtn").style.display = "block";
+
+          // Remove the event listener after handling the update
+          updateBtn.removeEventListener("click", handleUpdate);
+        });
+      }
+    });
+
+  // Handle Add Record action
+  document
+    .querySelector("#addRecordBtn")
+    .addEventListener("click", function () {
+      const newRepetitions = document.querySelector("#repetitionsInput").value;
+      const newSet = document.querySelector("#setInput").value;
+      const newWeight = document.querySelector("#weightInput").value;
+
+      if (newRepetitions && newSet && newWeight) {
+        const timestamp = new Date().toLocaleString(); // Get a more readable timestamp
+        table.row
+          .add([
+            newRepetitions,
+            newSet,
+            timestamp,
+            newWeight,
+            '<a href="#" class="edit-action">✏️</a><a href="#" class="delete-action">🗑️</a>',
+          ])
+          .draw(false);
+
+        // Clear the input fields
+        document.querySelector("#repetitionsInput").value = "";
+        document.querySelector("#setInput").value = "";
+        document.querySelector("#weightInput").value = "";
+      } else {
+        alert("Please fill all fields to add a new record.");
       }
     });
 });
