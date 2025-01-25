@@ -360,16 +360,16 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     ],
   });
-
+  const userSub = getUserSub(); // קבלת ה-userSub
+  console.log("User sub:", userSub); // כדי לבדוק את הערך של userSub
+  const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`;
   // קבלת נתונים מה-API
-  fetch("ENDPOINTS.TRAINING")
+  fetch(trainingUrl)
     .then((response) => response.json())
     .then((data) => {
-      // קבלת ה-userSub (מזהה ייחודי למשתמש)
-      const userSub = getUserSub();
-
       if (userSub) {
         console.log("User sub:", userSub);
+
         // הוספת רשומות לטבלה
         data.records.forEach((record) => {
           table.row

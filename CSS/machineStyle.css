@@ -300,59 +300,60 @@ body {
 }
 
 /* DataTables Custom Styles */
+/* DataTables Custom Styles for #recordsTable */
 
-table.dataTable {
+#recordsTable {
   width: 100%;
   border-collapse: collapse;
   margin-top: 2rem;
 }
 
-table.dataTable thead {
+#recordsTable thead {
   background-color: var(--primary-color);
   color: var(--text-light);
   font-weight: 600;
 }
 
-table.dataTable thead th {
+#recordsTable thead th {
   padding: 1rem;
   text-align: left;
   font-size: 1rem;
   border-bottom: 2px solid var(--border-color);
 }
 
-table.dataTable tbody {
+#recordsTable tbody {
   background-color: var(--card-background);
 }
 
-table.dataTable tbody tr:nth-child(even) {
+#recordsTable tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-table.dataTable tbody td {
+#recordsTable tbody td {
   padding: 1rem;
   font-size: 0.9rem;
   border-bottom: 1px solid var(--border-color);
 }
 
-table.dataTable tbody td a {
+#recordsTable tbody td a {
   color: var(--accent-color);
   text-decoration: none;
 }
 
-table.dataTable tbody td a:hover {
+#recordsTable tbody td a:hover {
   text-decoration: underline;
 }
 
-table.dataTable .dataTables_wrapper {
+#recordsTable .dataTables_wrapper {
   padding: 0 1.5rem;
 }
 
-table.dataTable .dataTables_paginate {
+#recordsTable .dataTables_paginate {
   margin-top: 1rem;
   text-align: center;
 }
 
-table.dataTable .dataTables_paginate a {
+#recordsTable .dataTables_paginate a {
   background-color: var(--accent-color);
   color: var(--text-light);
   padding: 0.5rem 1rem;
@@ -361,24 +362,26 @@ table.dataTable .dataTables_paginate a {
   text-decoration: none;
 }
 
-table.dataTable .dataTables_paginate a:hover {
+#recordsTable .dataTables_paginate a:hover {
   background-color: #2980b9;
 }
 
-table.dataTable_filter input {
+#recordsTable_filter input {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 25px;
   font-size: 0.9rem;
 }
 
-table.dataTable_filter input:focus {
+#recordsTable_filter input:focus {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
 }
-table.dataTable tbody tr {
+
+#recordsTable tbody tr {
   height: 50px;
 }
+
 .edit-action,
 .delete-action {
   margin: 0 5px;
