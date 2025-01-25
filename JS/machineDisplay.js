@@ -1,4 +1,3 @@
-const { Endpoint } = require("aws-sdk");
 
 const ENDPOINTS = {
   MACHINES:
