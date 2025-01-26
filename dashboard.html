@@ -54,41 +54,41 @@
       </div>
     </div>
 
-    <!-- DataTable -->
-    <table id="data-table">
+    <table>
       <thead>
         <tr>
           <th>Record ID</th>
           <th>Set</th>
           <th>Repetitions</th>
-          <th>Weight</th>
+          <th>Weight (kg)</th>
           <th>Timestamp</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="data-table-body"></tbody>
+      <tbody id="data-table-body">
+        <!-- Populated dynamically by JavaScript -->
+      </tbody>
     </table>
 
-    <!-- Form for Editing -->
-    <form id="edit-form">
+    <!-- Form to Add or Edit a record -->
+    <h3>Add / Edit a Record</h3>
+    <form id="record-form">
+      <!-- Hidden field for recordId so we know if we're editing or adding -->
       <input type="hidden" id="record-id-input" />
-      <div>
-        <label for="set-input">Set</label>
-        <input type="number" id="set-input" />
-      </div>
-      <div>
-        <label for="repetitions-input">Repetitions</label>
-        <input type="number" id="repetitions-input" />
-      </div>
-      <div>
-        <label for="weight-input">Weight</label>
-        <input type="number" id="weight-input" step="0.01" />
-      </div>
-      <div>
-        <label for="timestamp-input">Timestamp</label>
-        <input type="text" id="timestamp-input" />
-      </div>
-      <button type="submit">Save</button>
+
+      <label for="set-input">Set:</label>
+      <input type="number" id="set-input" min="1" required />
+
+      <label for="repetitions-input">Repetitions:</label>
+      <input type="number" id="repetitions-input" min="1" required />
+
+      <label for="weight-input">Weight (kg):</label>
+      <input type="number" id="weight-input" step="0.5" min="0" required />
+
+      <label for="timestamp-input">Timestamp:</label>
+      <input type="datetime-local" id="timestamp-input" />
+
+      <button type="submit">Save Record</button>
     </form>
   </main>
 
