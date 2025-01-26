@@ -302,8 +302,9 @@
         const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`;
         const response = await fetch(trainingUrl);
         if (!response.ok) throw new Error("Failed to fetch training records");
-
+        
         const data = await response.json();
+        console.log(data);
         const body = typeof data.body === "string" ? JSON.parse(data.body) : data.body;
         const records = body.records;
         if (!Array.isArray(records)) throw new Error("Records data is not an array");
@@ -319,15 +320,15 @@
         } else {
           dataTable.clear();
         }
-
+        
         // Add each record as a row. We store recordId in the <tr> dataset.
         records.forEach((record) => {
           const rowNode = dataTable
             .row.add([
-              record.set,
-              record.repetitions,
-              Number(record.weight).toFixed(2),
-              record.timestamp || "",
+              record.Set,
+              record.Repetitions,
+              Number(record.Weight).toFixed(2),
+              record.Timestamp || "",
               `<button class="edit-btn">Edit</button>
                <button class="delete-btn">Delete</button>`,
             ])
@@ -335,7 +336,7 @@
             .node();
 
           // Attach the recordId to the row (so user never sees it)
-          rowNode.dataset.recordId = record.recordId;
+          rowNode.dataset.recordId = record.RecordID;
         });
       } catch (error) {
         console.error("Error fetching data:", error);
