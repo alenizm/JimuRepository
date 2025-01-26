@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
+
+:root {
+  --primary: #ffffff;
+  --secondary: #e91e63;
+  --accent: #ff4081;
+  --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  --gradient-bg: linear-gradient(
+    135deg,
+    rgba(18, 18, 18, 0.9),
+    rgba(31, 31, 31, 0.9)
+  );
+  --background-dark: #121212;
+}
+
+* {
+  font-family: "Nunito", "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  list-style: none;
+  transition: all 0.3s ease-in-out;
+}
+
+body {
+  background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/bg.jpg")
+    no-repeat center center fixed;
+  background-size: cover;
+  color: var(--primary);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar */
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.8);
+  border-radius: 5rem;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--secondary), var(--accent));
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent), var(--secondary));
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 10%;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: var(--shadow);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header .logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.header-title {
+  margin: 0 auto;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Centered loading content */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 80px);
+  text-align: center;
+}
+
+#loading-greeting {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  text-shadow: 0 0 15px var(--secondary);
+}
+
+.loader {
+  width: 80px;
+  height: 80px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Instructional text */
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--secondary);
+  text-shadow: 0 0 10px var(--accent);
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+  .header {
+    padding: 1rem 5%;
+  }
+
+  .header-title {
+    font-size: 1.5rem;
+  }
+
+  .loading-container {
+    height: calc(100vh - 65px);
+  }
+
+  #loading-greeting {
+    font-size: 1.5rem;
+  }
+
+  .loading-text {
+    font-size: 1.2rem;
+  }
+}
