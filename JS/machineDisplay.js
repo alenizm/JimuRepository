@@ -437,7 +437,7 @@
         });
         if (!confirmRes.isConfirmed) return;
 
-        const response = await fetch(`${ENDPOINTS.TRAINING}/${recordId}`, {
+        const response = await fetch(`${ENDPOINTS.TRAINING}?recordId=${recordId}`, {
           method: "DELETE",
         });
         if (!response.ok) throw new Error("Failed to delete record");
