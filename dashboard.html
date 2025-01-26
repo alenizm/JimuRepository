@@ -11,6 +11,9 @@
   <!-- SweetAlert2 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet" />
 
+  <!-- jQuery Library -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
@@ -78,26 +81,6 @@
       </tbody>
     </table>
 
-    <!-- Form to Add or Edit a record -->
-    <h3>Add / Edit a Record</h3>
-    <form id="record-form">
-      <!-- Hidden field for recordId so we know if we're editing or adding -->
-      <input type="hidden" id="record-id-input" />
-
-      <label for="set-input">Set:</label>
-      <input type="number" id="set-input" min="1" required />
-
-      <label for="repetitions-input">Repetitions:</label>
-      <input type="number" id="repetitions-input" min="1" required />
-
-      <label for="weight-input">Weight (kg):</label>
-      <input type="number" id="weight-input" step="0.5" min="0" required />
-
-      <label for="timestamp-input">Timestamp:</label>
-      <input type="datetime-local" id="timestamp-input" />
-
-      <button type="submit">Save Record</button>
-    </form>
   </main>
 
   <!-- SweetAlert2 JS -->
