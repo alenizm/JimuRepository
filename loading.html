@@ -1,105 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Loading...</title>
-  <style>
-    /* Reset and basic styling */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>JIMU-Loading...</title>
+    <link rel="stylesheet" href="CSS/loading.css" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="header">
+      <a href="#" class="logo"
+        ><i class="fas fa-dumbbell"></i> Trainer Dashboard</a
+      >
+      <h1 class="header-title">Your Jimu App</h1>
+    </header>
+    <!-- End Header -->
 
-    body, html {
-      font-family: Arial, sans-serif;
-      height: 100%;
-      background-color: #f6f8fa;
-    }
+    <!-- Main Loading Container -->
+    <div class="loading-container">
+      <h2 id="loading-greeting">Hello!</h2>
 
-    /* Header styling */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      background-color: #282c34;
-    }
+      <!-- The animated loader -->
+      <div class="loader"></div>
 
-    .header .logo {
-      text-decoration: none;
-      color: #fff;
-      font-size: 1.25rem;
-    }
+      <p class="loading-text">
+        Please wait while we prepare your environment...
+      </p>
+    </div>
 
-    /* "Your Jimu App" in the middle */
-    .header-title {
-      margin: 0 auto;
-      color: #fff;
-      font-size: 1.25rem;
-    }
-
-    /* Container to center loading content */
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 65px); /* subtract header height */
-      text-align: center;
-    }
-
-    /* Greeting text */
-    #loading-greeting {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #333;
-    }
-
-    .loader {
-      /* A circle that rotates */
-      width: 80px;
-      height: 80px;
-      border: 8px solid #ccc;
-      border-top-color: #3498db;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Instructional text */
-    .loading-text {
-      font-size: 1.2rem;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Header Section -->
-  <header class="header">
-    <a href="#" class="logo"><i class="fas fa-dumbbell"></i> Trainer Dashboard</a>
-    <h1 class="header-title">Your Jimu App</h1>
-  </header>
-  <!-- End Header -->
-
-  <!-- Main Loading Container -->
-  <div class="loading-container">
-    <h2 id="loading-greeting">Hello!</h2>
-
-    <!-- The animated loader -->
-    <div class="loader"></div>
-
-    <p class="loading-text">Please wait while we prepare your environment...</p>
-  </div>
-
-  <!-- Include your shared JS (index.js or similar) -->
-  <script src="JS/script.js"></script>
-</body>
+    <!-- Include your shared JS (index.js or similar) -->
+    <script src="JS/script.js"></script>
+  </body>
 </html>

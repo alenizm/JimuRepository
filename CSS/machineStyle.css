@@ -1,25 +1,31 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
 
 :root {
-  --primary-color: #2c3e50;
-  --secondary-color: #e67e22;
-  --background-light: #f4f4f4;
-  --card-background: #ffffff;
-  --text-dark: #2c3e50;
-  --text-light: #ffffff;
-  --text-gray: #7f8c8d;
-  --accent-color: #3498db;
-  --danger-color: #e74c3c;
-  --border-color: #ecf0f1;
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --primary: #333333;
+  --secondary: #ffffff;
+  --accent: #ff6347;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --gradient-bg: linear-gradient(135deg, #121212, #1f1f1f);
+}
+
+* {
+  font-family: "Nunito", "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  list-style: none;
+  transition: 0.3s ease-in-out;
 }
 
 body {
-  background-color: var(--background-light);
-  color: var(--text-dark);
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
+  background: linear-gradient(145deg, #0a0d12, #16191f);
+  color: var(--white);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* Sticky header */
