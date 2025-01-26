@@ -14,8 +14,16 @@
   <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css" />
+  <!-- DataTables CSS and JS (2.2.1) -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css" />
+  <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+
+  <style>
+    /* Minimal styling for inline editing */
+    .edit-input {
+      width: 80%;
+    }
+  </style>
 </head>
 
 <body>
@@ -54,10 +62,10 @@
       </div>
     </div>
 
-    <table>
+    <table id="recordsTable" class="display" style="width: 100%;">
       <thead>
         <tr>
-          <th>Record ID</th>
+          <!-- We do NOT show recordId in the table -->
           <th>Set</th>
           <th>Repetitions</th>
           <th>Weight (kg)</th>
@@ -65,8 +73,8 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="data-table-body">
-        <!-- Populated dynamically by JavaScript -->
+      <tbody>
+        <!-- Populated dynamically via DataTables -->
       </tbody>
     </table>
 
