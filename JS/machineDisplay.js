@@ -245,15 +245,15 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID, machine.Name, weight, sets, reps);
+    await updateWorkout(machine.MachineID, weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
     repInput.value = "";
   });
 }
-
-async function updateWorkout(machineId, machineName, weight, sets, reps) {
+let dataTable; // We'll keep a reference to our DataTable
+async function updateWorkout(machineId, weight, sets, reps) {
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -264,7 +264,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
     const workoutData = {
       UserID: userSub,
       MachineID: machineId,
-      MachineName: machineName,
       Weight: weight,
       Set: sets,
       Repetitions: reps,
@@ -292,9 +291,9 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
       workoutData.Set,
       workoutData.Repetitions,
       workoutData.Weight.toFixed(2),
-      new Date().toLocaleString(), // להוסיף timestamp נוכחי
+      formattedTimestamp, // הוספת timestamp מעודכן
       `<button class="edit-btn">Edit</button>
-       <button class="delete-btn">Delete</button>`,
+   <button class="delete-btn">Delete</button>`,
     ];
 
     // הוספת השורה ל-DataTable
@@ -308,8 +307,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 // ======================================================
 // DATA TABLE (inline editing with DataTables)
 // ======================================================
-
-let dataTable; // We'll keep a reference to our DataTable
 
 // 1. Fetch and populate data
 async function fetchDataAndPopulateTable() {
@@ -326,9 +323,11 @@ async function fetchDataAndPopulateTable() {
 
     const data = await response.json();
     console.log(data);
-    const body = typeof data.body === "string" ? JSON.parse(data.body) : data.body;
+    const body =
+      typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     const records = body.records;
-    if (!Array.isArray(records)) throw new Error("Records data is not an array");
+    if (!Array.isArray(records))
+      throw new Error("Records data is not an array");
 
     // Initialize or clear DataTable
     if (!dataTable) {
@@ -494,9 +493,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchDataAndPopulateTable();
 
   // Hook up filters for machines (if used)
-  document.getElementById("searchInput")?.addEventListener("input", filterMachines);
-  document.getElementById("filterType")?.addEventListener("change", filterMachines);
-  document.getElementById("filterTarget")?.addEventListener("change", filterMachines);
+  document
+    .getElementById("searchInput")
+    ?.addEventListener("input", filterMachines);
+  document
+    .getElementById("filterType")
+    ?.addEventListener("change", filterMachines);
+  document
+    .getElementById("filterTarget")
+    ?.addEventListener("change", filterMachines);
 
   // Logout handler
   document.querySelector(".logOut")?.addEventListener("click", () => {
