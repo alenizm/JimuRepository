@@ -25,10 +25,10 @@
 body {
   background: linear-gradient(
     145deg,
-    #4a4a4a,
-    #6b6b6b
-  ); /* גרדיאנט אפור בהיר יותר עם מראה אלגנטי */
-  color: var(--white); /* טקסט בלבן לשמירה על ניגודיות */
+    #d9d9d9,
+    #f0f0f0
+  ); /* גרדיאנט אפור-לבן בהיר עם מראה עדין ואלגנטי */
+  color: var(--black); /* טקסט בצבע כהה ליצירת ניגודיות נעימה */
   background-attachment: fixed;
   background-size: cover;
 }
