@@ -420,64 +420,26 @@ html::-webkit-scrollbar-thumb {
   border-radius: 4px;
   text-align: center;
 }
-/* עיצוב כלל עבור select */
-.dt-input {
-  width: 120px;
-  padding: 8px 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 2px solid #007bff;
-  background-color: #ffffff;
-  color: #333333;
-  outline: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
+
+/* עיצוב כללי למיכל שמכיל את כל האלמנטים */
+.dt-layout-cell {
+  background-color: #ff7f00; /* צבע רקע כתום רך */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.dt-input:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
-}
-
-.dt-input option {
-  padding: 8px 12px;
-}
-
-/* עיצוב ברקע עבור כפתור select */
-.dt-input::-ms-expand {
-  display: none; /* הסתרת החץ בדפדפן Internet Explorer */
-}
-
-.dt-input:focus::-ms-expand {
-  display: block; /* הצגת החץ רק כאשר נמצא במצב פוקוס */
-}
-
-.dt-input {
-  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"%3E%3Cpath d="M6 8L10 4H2z" fill="gray"/%3E%3C/svg%3E');
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 10px;
-}
-
-/* שינוי צבע רקע בעת ריחוף */
-.dt-input:hover {
-  background-color: #f1f1f1;
-}
-
-/* עיצוב עבור תווית הקטגוריה - Label */
-.dt-search label {
-  font-size: 16px;
-  margin-right: 10px;
-  color: #555555;
-  font-weight: 600;
-}
 /* עיצוב כללי עבור div שמכיל את הדפדוף */
 .dt-paging {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background-color: #f9f9f9;
+  background-color: #ffffff; /* רקע לבן */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -518,50 +480,98 @@ html::-webkit-scrollbar-thumb {
   cursor: not-allowed;
 }
 
-/* עיצוב הכפתורים בצורה של חצים */
-.dt-paging-button.first,
-.dt-paging-button.previous,
-.dt-paging-button.next,
-.dt-paging-button.last {
-  font-weight: bold;
+/* עיצוב עבור select */
+.dt-input {
+  width: 120px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+  background-color: #ffffff;
+  color: #333333;
+  outline: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-/* הוספת חיצים לעיצוב */
-.dt-paging-button.first::before,
-.dt-paging-button.previous::before,
-.dt-paging-button.next::before,
-.dt-paging-button.last::before {
-  font-family: "FontAwesome", sans-serif;
-  padding-right: 5px;
+/* מצב פוקוס עבור select */
+.dt-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
 }
 
-.dt-paging-button.first::before {
-  content: "\00ab"; /* Unicode עבור חץ כפול אחורה */
+/* עיצוב כפתור select */
+.dt-input::-ms-expand {
+  display: none;
 }
 
-.dt-paging-button.previous::before {
-  content: "\00a0\2190"; /* Unicode עבור חץ אחורה */
+.dt-input:focus::-ms-expand {
+  display: block;
 }
 
-.dt-paging-button.next::before {
-  content: "\2192"; /* Unicode עבור חץ קדימה */
+/* הוספת אייקון לחץ ל-select */
+.dt-input {
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"%3E%3Cpath d="M6 8L10 4H2z" fill="gray"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
 }
 
-.dt-paging-button.last::before {
-  content: "\00bb"; /* Unicode עבור חץ כפול קדימה */
+/* שינוי צבע רקע בעת ריחוף על select */
+.dt-input:hover {
+  background-color: #f1f1f1;
 }
 
-/* עיצוב ברקע כשתהיה בחירה בלחיצה על כפתור */
-.dt-paging-button:active {
-  background-color: #0056b3;
-  color: #ffffff;
-  border-color: #003b72;
+/* עיצוב עבור תווית ה-categorize - Label */
+.dt-search label {
+  font-size: 16px;
+  margin-right: 10px;
+  color: #555555;
+  font-weight: 600;
 }
 
-/* עיצוב עבור תווית הניווט */
-nav[aria-label="pagination"] {
+/* עיצוב כללי עבור div שמכיל את ה-search */
+.dt-search {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+/* עיצוב כלל עבור כל האלמנטים שמסביב */
+.dt-layout-cell .dt-search,
+.dt-layout-cell .dt-paging {
+  background-color: #fff; /* רקע לבן לכל דבר מסביב */
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+}
+
+/* עיצוב תפריט ה-select */
+.dt-input {
+  background-color: #ffffff;
+  border: 2px solid #007bff;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 80px;
+  transition: all 0.3s ease;
+}
+
+/* מצב ריחוף על select */
+.dt-input:hover {
+  background-color: #f1f1f1;
+}
+
+/* כשיש focus על select */
+.dt-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
+}
+
+/* שינוי ברקע של select */
+.dt-input:focus::-ms-expand {
+  display: none;
 }
