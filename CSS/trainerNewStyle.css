@@ -456,3 +456,15 @@ html::-webkit-scrollbar-thumb:hover {
     justify-content: center;
   }
 }
+/* שדה חיפוש עם פונט לבן יפהפה */
+.dt-input {
+  color: #ffffff; /* טקסט לבן בשדה החיפוש */
+  background-color: #333333; /* רקע כהה לשדה החיפוש כדי להדגיש את הטקסט הלבן */
+  border: 1px solid #555555; /* גבול כהה לעיצוב מסודר */
+  padding: 8px; /* ריפוד נעים לפנים השדה */
+  font-family: "Roboto", sans-serif; /* גופן נקי וקריא */
+}
+
+.dt-input::placeholder {
+  color: #aaaaaa; /* צבע בהיר יותר עבור הטקסט המהבהב בשדה החיפוש */
+}
