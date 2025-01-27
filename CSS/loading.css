@@ -27,7 +27,7 @@
 }
 
 body {
-  background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/bg.jpg")
+  background: url("https://jimu-website.s3.us-east-1.amazonaws.com/JimuRepository/images/bg.jpg")
     no-repeat center center fixed;
   background-size: cover;
   color: var(--primary);
