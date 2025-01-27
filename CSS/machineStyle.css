@@ -22,25 +22,19 @@ body {
   min-height: 100vh;
 }
 
-/* Sticky header */
+/* Sticky Header - Simple and Modern */
 .main-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 9%;
-  background: linear-gradient(90deg, #0d0d0d, #1c1c1c);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease-in-out;
+  align-items: center;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #2c2c2c, #141414); /* רקע כהה כמו התמונה */
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* אפקט עומק */
 }
 
 .logo {
-  font-size: 3rem;
+  font-size: 14px;
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
