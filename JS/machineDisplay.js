@@ -245,15 +245,15 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID, weight, sets, reps);
+    await updateWorkout(machine.MachineID, machine.Name, weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
     repInput.value = "";
   });
 }
-let dataTable; // We'll keep a reference to our DataTable
-async function updateWorkout(machineId, weight, sets, reps) {
+
+async function updateWorkout(machineId, machineName, weight, sets, reps) {
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -264,6 +264,7 @@ async function updateWorkout(machineId, weight, sets, reps) {
     const workoutData = {
       UserID: userSub,
       MachineID: machineId,
+      MachineName: machineName,
       Weight: weight,
       Set: sets,
       Repetitions: reps,
@@ -322,11 +323,9 @@ async function fetchDataAndPopulateTable() {
 
     const data = await response.json();
     console.log(data);
-    const body =
-      typeof data.body === "string" ? JSON.parse(data.body) : data.body;
+    const body = typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     const records = body.records;
-    if (!Array.isArray(records))
-      throw new Error("Records data is not an array");
+    if (!Array.isArray(records)) throw new Error("Records data is not an array");
 
     // Initialize or clear DataTable
     if (!dataTable) {
@@ -342,8 +341,8 @@ async function fetchDataAndPopulateTable() {
 
     // Add each record as a row. We store recordId in the <tr> dataset.
     records.forEach((record) => {
-      const rowNode = dataTable.row
-        .add([
+      const rowNode = dataTable
+        .row.add([
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
