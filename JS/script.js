@@ -4,8 +4,8 @@
 const cognitoDomain =
   "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
-const redirectUri = "https://alenizm.github.io/JimuRepository/loading.html";
-const logoutUri = "https://alenizm.github.io/JimuRepository/index.html";
+const redirectUri = "https://jimu-website.s3.us-east-1.amazonaws.com/JimuRepository/loading.html";
+const logoutUri = "https://jimu-website.s3.us-east-1.amazonaws.com/JimuRepository/index.html";
 
 const cognitoLoginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${encodeURIComponent(
   redirectUri
