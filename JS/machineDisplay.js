@@ -429,10 +429,10 @@ function setupDataTableEventListeners() {
         }
 
         const payload = {
-          RecorID: recordId,
-          set: Number(newSetVal),
-          repetitions: Number(newRepsVal),
-          weight: Number(newWeightVal),
+          RecordID: recordId,
+          Set: Number(newSetVal),
+          Repetitions: Number(newRepsVal),
+          Weight: Number(newWeightVal),
           // We do NOT send timestamp, the server handles it
         };
 
