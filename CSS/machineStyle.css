@@ -471,3 +471,97 @@ html::-webkit-scrollbar-thumb {
   color: #555555;
   font-weight: 600;
 }
+/* עיצוב כללי עבור div שמכיל את הדפדוף */
+.dt-paging {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* עיצוב כפתורי הדפדוף */
+.dt-paging-button {
+  padding: 10px 15px;
+  margin: 0 5px;
+  font-size: 16px;
+  background-color: #ffffff;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  color: #007bff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* עיצוב כפתור כשהוא במצב hover */
+.dt-paging-button:hover {
+  background-color: #007bff;
+  color: #ffffff;
+  border-color: #0056b3;
+}
+
+/* עיצוב כפתור שמיועד לדף נוכחי */
+.dt-paging-button.current {
+  background-color: #007bff;
+  color: #ffffff;
+  border-color: #0056b3;
+  pointer-events: none; /* לא מאפשר ללחוץ על הדף הנוכחי */
+}
+
+/* עיצוב כפתור שנמצא במצב disabled */
+.dt-paging-button.disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  border-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+/* עיצוב הכפתורים בצורה של חצים */
+.dt-paging-button.first,
+.dt-paging-button.previous,
+.dt-paging-button.next,
+.dt-paging-button.last {
+  font-weight: bold;
+}
+
+/* הוספת חיצים לעיצוב */
+.dt-paging-button.first::before,
+.dt-paging-button.previous::before,
+.dt-paging-button.next::before,
+.dt-paging-button.last::before {
+  font-family: "FontAwesome", sans-serif;
+  padding-right: 5px;
+}
+
+.dt-paging-button.first::before {
+  content: "\00ab"; /* Unicode עבור חץ כפול אחורה */
+}
+
+.dt-paging-button.previous::before {
+  content: "\00a0\2190"; /* Unicode עבור חץ אחורה */
+}
+
+.dt-paging-button.next::before {
+  content: "\2192"; /* Unicode עבור חץ קדימה */
+}
+
+.dt-paging-button.last::before {
+  content: "\00bb"; /* Unicode עבור חץ כפול קדימה */
+}
+
+/* עיצוב ברקע כשתהיה בחירה בלחיצה על כפתור */
+.dt-paging-button:active {
+  background-color: #0056b3;
+  color: #ffffff;
+  border-color: #003b72;
+}
+
+/* עיצוב עבור תווית הניווט */
+nav[aria-label="pagination"] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
