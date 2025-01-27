@@ -1,25 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
 :root {
-  --primary-color: #2c3e50;
-  --secondary-color: #e67e22;
+  --primary-color: #333333;
+  --secondary-color: #ffffff;
   --background-light: #f4f4f4;
   --card-background: #ffffff;
   --text-dark: #2c3e50;
   --text-light: #ffffff;
   --text-gray: #7f8c8d;
-  --accent-color: #3498db;
+  --accent-color: #e67e22;
   --danger-color: #e74c3c;
   --border-color: #ecf0f1;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 body {
-  background-color: var(--background-light);
-  color: var(--text-dark);
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
+  background: linear-gradient(145deg, #0a0d12, #16191f);
+  color: var(--white);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* HEADER */
@@ -163,10 +161,10 @@ body {
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  padding: 2rem;          /* extra padding around edges */
-  max-height: 90vh;       /* scroll if very tall */
+  padding: 2rem; /* extra padding around edges */
+  max-height: 90vh; /* scroll if very tall */
   overflow-y: auto;
-  overflow-x: hidden;     /* prevent horizontal scroll if text is too long */
+  overflow-x: hidden; /* prevent horizontal scroll if text is too long */
 }
 
 .close-modal {
@@ -267,7 +265,7 @@ body {
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fdfdfd;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* 
@@ -340,8 +338,12 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive tweaks */
