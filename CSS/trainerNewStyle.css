@@ -19,33 +19,72 @@ body {
   background-attachment: fixed;
   background-size: cover;
 }
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 5rem;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #707070);
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e0e0e0, #4d4d4d);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #b0b0b0);
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
 
 /* HEADER */
 /* Sticky header */
 .main-header {
-  background-color: var(--primary-color);
-  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #2c2c2c, #141414); /* רקע כהה כמו התמונה */
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* אפקט עומק */
+}
+.main-header .navbar {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.9);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .logo {
-  color: var(--text-light);
-  text-decoration: none;
-  font-size: 1.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  transition: color 0.3s ease;
 }
 
 .logo i {
-  color: var(--secondary-color);
+  padding-right: 0.5rem;
+  color: #ffffff;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.logo:hover i {
+  color: #ffffff;
+  text-shadow: 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ff80ff,
+    0 0 70px #ff80ff, 0 0 80px #ff80ff;
 }
 
 .user-greeting {
