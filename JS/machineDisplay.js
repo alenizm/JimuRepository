@@ -245,7 +245,7 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID,machine.MachineName ,weight, sets, reps);
+    await updateWorkout(machine.MachineID,machine.name ,weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
