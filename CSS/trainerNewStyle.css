@@ -161,6 +161,7 @@ body {
 .trainee-card button:hover {
   background-color: #2980b9;
 }
+
 /* Modal Styling */
 .modal {
   display: flex;
@@ -179,12 +180,12 @@ body {
   background: white;
   border-radius: 15px;
   padding: 2rem;
-  width: 40%; /* שונה ל-40% */
-  max-height: 90%; /* גובה מקסימלי */
+  width: 40%;
+  max-height: 90%;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.4s ease-out;
-  overflow-y: auto; /* גלילה אוטומטית */
+  overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -276,7 +277,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
   .modal-content {
-    width: 80%; /* שונה ל-80% במסכים קטנים */
+    width: 80%;
   }
 
   .search-container input {
@@ -313,28 +314,46 @@ body {
   margin: 1rem 0;
 }
 
+.set-navigation button {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #ff7300, #ff5100);
+  border: none;
+  border-radius: 5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.set-navigation button:hover {
+  background: linear-gradient(135deg, #ffa94d, #ff7300);
+  transform: scale(1.05);
+}
+
 #set-title {
   font-weight: 600;
 }
 
-/* Program preview container */
-.program-preview {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 6px;
-  max-height: 300px; /* הוספת גובה מקסימלי */
-  overflow-y: auto; /* גלילה אנכית */
+/* Scrollbar Styling */
+html::-webkit-scrollbar {
+  width: 10px;
 }
 
-/* Each machine's box in the preview */
-.program-box {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: #fdfdfd;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+html::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 5rem;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #707070);
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e0e0e0, #4d4d4d);
 }
 
 /* 
