@@ -209,7 +209,7 @@ body {
 }
 
 .btn-add {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-color);
 }
 
 .btn-add:hover {
