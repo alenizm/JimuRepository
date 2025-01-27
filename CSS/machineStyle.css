@@ -14,13 +14,6 @@
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-body {
-  background: linear-gradient(145deg, #0a0d12, #16191f);
-  color: var(--white);
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-}
 /* Responsive Design */
 
 body {
@@ -358,8 +351,8 @@ html::-webkit-scrollbar-thumb {
   width: 100%;
   border-collapse: collapse;
   font-family: "Arial", sans-serif;
-  background: #1e1e2f; /* רקע כהה */
-  color: #ffffff; /* טקסט לבן */
+  background: linear-gradient(90deg, #2c2c2c, #141414);
+  color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -367,7 +360,7 @@ html::-webkit-scrollbar-thumb {
 
 /* ראש הטבלה */
 #recordsTable thead {
-  background: linear-gradient(45deg, #6c63ff, #3b3b9f);
+  background: var(--accent-color);
   color: #ffffff;
   font-weight: bold;
   text-transform: uppercase;
@@ -380,7 +373,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 #recordsTable tbody tr:hover {
-  background: rgba(108, 99, 255, 0.1); /* היילייט לשורה */
+  background: #f9f9f9; /* היילייט לשורה */
   cursor: pointer;
 }
 
