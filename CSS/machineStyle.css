@@ -420,3 +420,34 @@ html::-webkit-scrollbar-thumb {
   border-radius: 4px;
   text-align: center;
 }
+
+/* עיצוב עבור כפתור חיפוש */
+.dt-search {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.dt-search label {
+  font-size: 16px;
+  margin-right: 10px;
+  color: #555555;
+  font-weight: 600;
+}
+
+.dt-search .dt-input {
+  width: 300px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dt-search .dt-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
+}
