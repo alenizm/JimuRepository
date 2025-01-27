@@ -300,6 +300,8 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 // DATA TABLE (inline editing with DataTables)
 // ======================================================
 
+let dataTable; // We'll keep a reference to our DataTable
+
 // 1. Fetch and populate data
 async function fetchDataAndPopulateTable() {
   try {
@@ -482,15 +484,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchDataAndPopulateTable();
 
   // Hook up filters for machines (if used)
-  document
-    .getElementById("searchInput")
-    ?.addEventListener("input", filterMachines);
-  document
-    .getElementById("filterType")
-    ?.addEventListener("change", filterMachines);
-  document
-    .getElementById("filterTarget")
-    ?.addEventListener("change", filterMachines);
+  document.getElementById("searchInput")?.addEventListener("input", filterMachines);
+  document.getElementById("filterType")?.addEventListener("change", filterMachines);
+  document.getElementById("filterTarget")?.addEventListener("change", filterMachines);
 
   // Logout handler
   document.querySelector(".logOut")?.addEventListener("click", () => {
