@@ -399,11 +399,12 @@ function setupDataTableEventListeners() {
       const recordId = row.dataset.recordId;
       const cells = row.querySelectorAll("td");
 
-      // By default, our columns: 0->set, 1->reps, 2->weight, 3->timestamp, 4->actions
-      const setCell = cells[0];
-      const repsCell = cells[1];
-      const weightCell = cells[2];
-      // Timestamp is cell[3], read-only
+      // By default, our columns: 0->Machine name 1->set, 2->reps, 3->weight, 4->timestamp, 5->actions
+      const setCell = cells[1];
+      const repsCell = cells[2];
+      const weightCell = cells[3];
+      // Machine Name is cell[0], read-only
+      // Timestamp is cell[4], read-only
 
       if (btn.textContent === "Edit") {
         // Switch to inline editing mode
@@ -428,6 +429,7 @@ function setupDataTableEventListeners() {
         }
 
         const payload = {
+          RecorID: recordId,
           set: Number(newSetVal),
           repetitions: Number(newRepsVal),
           weight: Number(newWeightVal),
@@ -436,7 +438,7 @@ function setupDataTableEventListeners() {
 
         try {
           // PUT /Records/{recordId}
-          const response = await fetch(`${ENDPOINTS.TRAINING}/${recordId}`, {
+          const response = await fetch(`${ENDPOINTS.TRAINING}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
