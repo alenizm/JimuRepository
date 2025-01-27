@@ -420,34 +420,54 @@ html::-webkit-scrollbar-thumb {
   border-radius: 4px;
   text-align: center;
 }
-
-/* עיצוב עבור כפתור חיפוש */
-.dt-search {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 10px;
-  margin-bottom: 20px;
+/* עיצוב כלל עבור select */
+.dt-input {
+  width: 120px;
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+  background-color: #ffffff;
+  color: #333333;
+  outline: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
+.dt-input:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
+}
+
+.dt-input option {
+  padding: 8px 12px;
+}
+
+/* עיצוב ברקע עבור כפתור select */
+.dt-input::-ms-expand {
+  display: none; /* הסתרת החץ בדפדפן Internet Explorer */
+}
+
+.dt-input:focus::-ms-expand {
+  display: block; /* הצגת החץ רק כאשר נמצא במצב פוקוס */
+}
+
+.dt-input {
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"%3E%3Cpath d="M6 8L10 4H2z" fill="gray"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+}
+
+/* שינוי צבע רקע בעת ריחוף */
+.dt-input:hover {
+  background-color: #f1f1f1;
+}
+
+/* עיצוב עבור תווית הקטגוריה - Label */
 .dt-search label {
   font-size: 16px;
   margin-right: 10px;
   color: #555555;
   font-weight: 600;
-}
-
-.dt-search .dt-input {
-  width: 300px;
-  padding: 8px 12px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 2px solid #007bff;
-  outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dt-search .dt-input:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 8px rgba(0, 91, 179, 0.5);
 }
