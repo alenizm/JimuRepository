@@ -468,3 +468,31 @@ html::-webkit-scrollbar-thumb:hover {
 .dt-input::placeholder {
   color: #aaaaaa; /* צבע בהיר יותר עבור הטקסט המהבהב בשדה החיפוש */
 }
+.dt-paging-button {
+  background-color: var(--accent-color); /* כתום יפהפה */
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  margin: 0 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dt-paging-button:hover:not(.disabled) {
+  background-color: #ff8c00; /* כתום כהה יותר בעת ריחוף */
+  transform: scale(1.1); /* אפקט קל של התקרבות */
+}
+
+.dt-paging-button.disabled {
+  background-color: #d3d3d3; /* אפור בהיר לכפתורים מושבתים */
+  color: #a9a9a9;
+  cursor: not-allowed;
+}
+
+.dt-paging-button.current {
+  background-color: var(--accent-color); /* כתום אלמוג לכפתור הנוכחי */
+  font-weight: bold;
+  border: 2px solid #ff4500; /* מסגרת כתום כהה */
+}
