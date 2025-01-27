@@ -245,7 +245,7 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID,machine.name ,weight, sets, reps);
+    await updateWorkout(machine.MachineID,machine.Name ,weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
@@ -253,7 +253,7 @@ function setupMachineCardListeners(cardElement, machine) {
   });
 }
 let dataTable; // We'll keep a reference to our DataTable
-async function updateWorkout(machineId,name, weight, sets, reps) {
+async function updateWorkout(machineId, machineName, weight, sets, reps) {
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -263,7 +263,7 @@ async function updateWorkout(machineId,name, weight, sets, reps) {
 
     const workoutData = {
       UserID: userSub,
-      MachineName : name,
+      MachineName : machineName,
       MachineID: machineId,
       Weight: weight,
       Set: sets,
@@ -288,7 +288,7 @@ async function updateWorkout(machineId,name, weight, sets, reps) {
     }).format(new Date());
     // עדכון DataTable אחרי הצלחה
     const newRowData = [
-      workoutData.name,
+      workoutData.MachineName,
       workoutData.Set,
       workoutData.Repetitions,
       workoutData.Weight.toFixed(2),
