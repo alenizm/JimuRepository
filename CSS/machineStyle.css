@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
 
 :root {
   --primary-color: #333333;
@@ -114,7 +114,6 @@ html::-webkit-scrollbar-thumb {
   color: var(--text-light);
   padding: 0.7rem 1.2rem;
 }
-
 .logOut:hover {
   background-color: #c0392b;
 }

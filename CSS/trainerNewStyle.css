@@ -1,53 +1,73 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
 
 :root {
-  --primary-color: #2c3e50;
-  --secondary-color: #e67e22;
+  --primary-color: #333333;
+  --secondary-color: #ffffff;
   --background-light: #f4f4f4;
   --card-background: #ffffff;
   --text-dark: #2c3e50;
   --text-light: #ffffff;
   --text-gray: #7f8c8d;
-  --accent-color: #3498db;
+  --accent-color: #e67e22;
   --danger-color: #e74c3c;
   --border-color: #ecf0f1;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-body {
-  background-color: var(--background-light);
-  color: var(--text-dark);
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
+.list {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff7300; /* צבע כתום יפהפה */
+  margin: 20px 0;
+  text-align: center;
 }
 
+body {
+  background: linear-gradient(145deg, #0a0d12, #16191f);
+  color: var(--text-dark);
+  background-attachment: fixed;
+  background-size: cover;
+}
 /* HEADER */
 /* Sticky header */
 .main-header {
-  background-color: var(--primary-color);
-  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #2c2c2c, #141414); /* רקע כהה כמו התמונה */
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* אפקט עומק */
 }
-
+.main-header .navbar {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.9);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
 .logo {
-  color: var(--text-light);
-  text-decoration: none;
-  font-size: 1.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-size: 14px;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  transition: color 0.3s ease;
 }
 
 .logo i {
-  color: var(--secondary-color);
+  padding-right: 0.5rem;
+  color: #ffffff;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.logo:hover i {
+  color: #ffffff;
+  text-shadow: 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ff80ff,
+    0 0 70px #ff80ff, 0 0 80px #ff80ff;
 }
 
 .user-greeting {
@@ -141,32 +161,127 @@ body {
 .trainee-card button:hover {
   background-color: #2980b9;
 }
-
-/* MODAL */
+/* Modal Styling */
 .modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none; /* shown via JS */
-  justify-content: center;
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
 
 .modal-content {
-  background: var(--card-background);
-  width: 90%;
-  max-width: 600px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  width: 40%; /* שונה ל-40% */
+  max-height: 90%; /* גובה מקסימלי */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
-  padding: 2rem;          /* extra padding around edges */
-  max-height: 90vh;       /* scroll if very tall */
-  overflow-y: auto;
-  overflow-x: hidden;     /* prevent horizontal scroll if text is too long */
+  animation: fadeIn 0.4s ease-out;
+  overflow-y: auto; /* גלילה אוטומטית */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #ff7300;
+}
+
+.modal-content .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.modal-content label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #ffa94d;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.button-group button {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.button-group .btn-add {
+  background-color: #ff7300;
+  color: white;
+}
+
+.button-group .btn-add:hover {
+  background-color: #ffa94d;
+}
+
+.button-group .btn-cancel {
+  background-color: #ddd;
+  color: #333;
+}
+
+.button-group .btn-cancel:hover {
+  background-color: #ccc;
+}
+
+.button-group .btn-submit {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.button-group .btn-submit:hover {
+  background-color: #4cae4c;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 80%; /* שונה ל-80% במסכים קטנים */
+  }
+
+  .search-container input {
+    width: 90%;
+  }
 }
 
 .close-modal {
@@ -183,49 +298,6 @@ body {
 
 .close-modal:hover {
   color: var(--danger-color);
-}
-
-/* Buttons inside the modal */
-.btn {
-  background-color: var(--accent-color);
-  color: var(--text-light);
-  border: none;
-  border-radius: 5px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-  background-color: #2980b9;
-}
-
-.btn-cancel {
-  background-color: var(--danger-color);
-}
-
-.btn-cancel:hover {
-  background-color: #c0392b;
-}
-
-.btn-add {
-  background-color: var(--secondary-color);
-}
-
-.btn-add:hover {
-  background-color: #d35400;
-}
-
-.btn-submit {
-  background-color: var(--accent-color);
-}
-
-/* Spacing for button groups */
-.button-group {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  justify-content: flex-start;
 }
 
 .form-group {
@@ -245,29 +317,24 @@ body {
   font-weight: 600;
 }
 
-/* 
-  Program preview container:
-  Removed the border & box-shadow here, 
-  so only the .program-box has borders.
-*/
+/* Program preview container */
 .program-preview {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #fff;
   border-radius: 6px;
-  /* No border or box-shadow */
+  max-height: 300px; /* הוספת גובה מקסימלי */
+  overflow-y: auto; /* גלילה אנכית */
 }
 
-/* Each machine's box in the preview:
-   This retains a visible border & slight shadow.
-*/
+/* Each machine's box in the preview */
 .program-box {
   margin-bottom: 1rem;
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 6px;
   background-color: #fdfdfd;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* 
@@ -340,8 +407,12 @@ body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive tweaks */
