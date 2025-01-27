@@ -420,14 +420,3 @@ html::-webkit-scrollbar-thumb {
   border-radius: 4px;
   text-align: center;
 }
-/* עיצוב למסביב של הטבלה */
-#recordsTable_wrapper {
-  background-color: #f9f9f9; /* רקע בהיר */
-  position: fixed; /* קיבוע הטבלה לתחתית הדף */
-  bottom: 0; /* מקם בתחתית הדף */
-  left: 0; /* יישור לצד שמאל */
-  width: 100%; /* מותאם לרוחב הדף */
-  z-index: 0; /* ודא שהאלמנט לא יכסה אחרים */
-  padding: 10px 0; /* רווחים מסביב */
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* תוספת צל דקה */
-}
