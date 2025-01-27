@@ -245,15 +245,15 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID, machine.Name, weight, sets, reps);
+    await updateWorkout(machine.MachineID, weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
     repInput.value = "";
   });
 }
-
-async function updateWorkout(machineId, machineName, weight, sets, reps) {
+let dataTable; // We'll keep a reference to our DataTable
+async function updateWorkout(machineId, weight, sets, reps) {
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -264,7 +264,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
     const workoutData = {
       UserID: userSub,
       MachineID: machineId,
-      MachineName: machineName,
       Weight: weight,
       Set: sets,
       Repetitions: reps,
@@ -278,7 +277,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 
     if (!response.ok) throw new Error("Failed to update workout");
     await showSuccess("Workout updated successfully!");
-    let dataTable; // We'll keep a reference to our DataTable
     // פורמט חדש ל-timestamp הנוכחי
     const formattedTimestamp = new Intl.DateTimeFormat("he-IL", {
       year: "numeric",
