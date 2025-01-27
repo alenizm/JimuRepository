@@ -252,7 +252,7 @@ function setupMachineCardListeners(cardElement, machine) {
     repInput.value = "";
   });
 }
-
+let dataTable; // We'll keep a reference to our DataTable
 async function updateWorkout(machineId, weight, sets, reps) {
   try {
     const userSub = getUserSub();
@@ -298,8 +298,6 @@ async function updateWorkout(machineId, weight, sets, reps) {
 // ======================================================
 // DATA TABLE (inline editing with DataTables)
 // ======================================================
-
-let dataTable; // We'll keep a reference to our DataTable
 
 // 1. Fetch and populate data
 async function fetchDataAndPopulateTable() {
