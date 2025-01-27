@@ -234,7 +234,8 @@ html::-webkit-scrollbar-thumb {
 }
 
 .btn:hover {
-  background-color: #2980b9;
+  background-color: #d35400;
+  transform: translateY(-2px);
 }
 
 .btn-cancel {
