@@ -15,8 +15,7 @@
 }
 
 body {
-  /* background: linear-gradient(145deg, #0a0d12, #16191f); */
-  background: linear-gradient(wheat);
+  background: linear-gradient(145deg, #0a0d12, #16191f);
   color: var(--white);
   margin: 0;
   font-family: "Poppins", sans-serif;
@@ -24,18 +23,6 @@ body {
 }
 /* Responsive Design */
 
-* {
-  font-family: "Nunito", "Roboto", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  outline: none;
-  border: none;
-  text-decoration: none;
-  text-transform: uppercase;
-  list-style: none;
-  transition: 0.3s ease-in-out;
-}
 body {
   background: linear-gradient(145deg, #0a0d12, #16191f);
   color: var(--white);
