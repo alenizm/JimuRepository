@@ -214,12 +214,7 @@ function filterMachines() {
     const typeInfo = card.querySelector(".machine-type").textContent;
     const matchesSearch = name.includes(searchTerm);
     const matchesType = !selectedType || typeInfo.includes(selectedType);
-<<<<<<< Updated upstream
     const matchesTarget = !selectedTarget || typeInfo.includes(selectedTarget);
-=======
-    const matchesTarget =
-      !selectedTarget || typeInfo.includes(selectedTarget);
->>>>>>> Stashed changes
 
     card.style.display =
       matchesSearch && matchesType && matchesTarget ? "flex" : "none";
@@ -250,24 +245,15 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-<<<<<<< Updated upstream
-    await updateWorkout(machine.MachineID, weight, sets, reps);
-=======
     await updateWorkout(machine.MachineID, machine.Name, weight, sets, reps);
->>>>>>> Stashed changes
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
     repInput.value = "";
   });
 }
-<<<<<<< Updated upstream
-let dataTable; // We'll keep a reference to our DataTable
-async function updateWorkout(machineId, weight, sets, reps) {
-=======
 
 async function updateWorkout(machineId, machineName, weight, sets, reps) {
->>>>>>> Stashed changes
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -278,10 +264,7 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
     const workoutData = {
       UserID: userSub,
       MachineID: machineId,
-<<<<<<< Updated upstream
-=======
       MachineName: machineName,
->>>>>>> Stashed changes
       Weight: weight,
       Set: sets,
       Repetitions: reps,
@@ -295,7 +278,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 
     if (!response.ok) throw new Error("Failed to update workout");
     await showSuccess("Workout updated successfully!");
-<<<<<<< Updated upstream
     // עדכון DataTable אחרי הצלחה
     const newRowData = [
       workoutData.Set,
@@ -313,24 +295,11 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
     showError("Failed to update workout");
   }
 }
-=======
-  } catch (error) {
-    console.error("Error updating workout:", error);
-    showError("Failed to update workout");
-  }
-}
-
->>>>>>> Stashed changes
 
 // ======================================================
 // DATA TABLE (inline editing with DataTables)
 // ======================================================
 
-<<<<<<< Updated upstream
-=======
-let dataTable; // We'll keep a reference to our DataTable
-
->>>>>>> Stashed changes
 // 1. Fetch and populate data
 async function fetchDataAndPopulateTable() {
   try {
@@ -346,17 +315,9 @@ async function fetchDataAndPopulateTable() {
 
     const data = await response.json();
     console.log(data);
-<<<<<<< Updated upstream
-    const body =
-      typeof data.body === "string" ? JSON.parse(data.body) : data.body;
-    const records = body.records;
-    if (!Array.isArray(records))
-      throw new Error("Records data is not an array");
-=======
     const body = typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     const records = body.records;
     if (!Array.isArray(records)) throw new Error("Records data is not an array");
->>>>>>> Stashed changes
 
     // Initialize or clear DataTable
     if (!dataTable) {
@@ -372,13 +333,8 @@ async function fetchDataAndPopulateTable() {
 
     // Add each record as a row. We store recordId in the <tr> dataset.
     records.forEach((record) => {
-<<<<<<< Updated upstream
-      const rowNode = dataTable.row
-        .add([
-=======
       const rowNode = dataTable
         .row.add([
->>>>>>> Stashed changes
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
