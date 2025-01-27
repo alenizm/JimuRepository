@@ -291,9 +291,9 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
       workoutData.Set,
       workoutData.Repetitions,
       workoutData.Weight.toFixed(2),
-      new Date().toLocaleString(), // להוסיף timestamp נוכחי
+      formattedTimestamp, // הוספת timestamp מעודכן
       `<button class="edit-btn">Edit</button>
-       <button class="delete-btn">Delete</button>`,
+   <button class="delete-btn">Delete</button>`,
     ];
 
     // הוספת השורה ל-DataTable
@@ -323,9 +323,11 @@ async function fetchDataAndPopulateTable() {
 
     const data = await response.json();
     console.log(data);
-    const body = typeof data.body === "string" ? JSON.parse(data.body) : data.body;
+    const body =
+      typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     const records = body.records;
-    if (!Array.isArray(records)) throw new Error("Records data is not an array");
+    if (!Array.isArray(records))
+      throw new Error("Records data is not an array");
 
     // Initialize or clear DataTable
     if (!dataTable) {
@@ -341,8 +343,8 @@ async function fetchDataAndPopulateTable() {
 
     // Add each record as a row. We store recordId in the <tr> dataset.
     records.forEach((record) => {
-      const rowNode = dataTable
-        .row.add([
+      const rowNode = dataTable.row
+        .add([
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
