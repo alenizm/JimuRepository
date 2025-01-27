@@ -277,6 +277,14 @@ async function updateWorkout(machineId, weight, sets, reps) {
 
     if (!response.ok) throw new Error("Failed to update workout");
     await showSuccess("Workout updated successfully!");
+    // פורמט חדש ל-timestamp הנוכחי
+    const formattedTimestamp = new Intl.DateTimeFormat("he-IL", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date());
     // עדכון DataTable אחרי הצלחה
     const newRowData = [
       workoutData.Set,
