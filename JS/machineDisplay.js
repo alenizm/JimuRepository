@@ -8,6 +8,27 @@ const ENDPOINTS = {
     "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records",
 };
 
+function formatTimestamp(timestamp) {
+  try {
+    // Parse the timestamp into a Date object
+    const date = new Date(timestamp);
+
+    // Format the date using Intl.DateTimeFormat
+    const formattedTimestamp = new Intl.DateTimeFormat("he-IL", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+
+    return formattedTimestamp;
+  } catch (error) {
+    console.error("Error formatting timestamp:", error);
+    return timestamp; // Return the original timestamp if formatting fails
+  }
+}
+
 function parseJwt(token) {
   try {
     const base64Url = token.split(".")[1];
@@ -245,7 +266,7 @@ function setupMachineCardListeners(cardElement, machine) {
       return;
     }
 
-    await updateWorkout(machine.MachineID, weight, sets, reps);
+    await updateWorkout(machine.MachineID,machine.Name ,weight, sets, reps);
     // Clear fields on success
     weightInput.value = "";
     setInput.value = "";
@@ -253,7 +274,7 @@ function setupMachineCardListeners(cardElement, machine) {
   });
 }
 let dataTable; // We'll keep a reference to our DataTable
-async function updateWorkout(machineId, weight, sets, reps) {
+async function updateWorkout(machineId, machineName, weight, sets, reps) {
   try {
     const userSub = getUserSub();
     if (!userSub) {
@@ -263,6 +284,7 @@ async function updateWorkout(machineId, weight, sets, reps) {
 
     const workoutData = {
       UserID: userSub,
+      MachineName : machineName,
       MachineID: machineId,
       Weight: weight,
       Set: sets,
@@ -287,6 +309,7 @@ async function updateWorkout(machineId, weight, sets, reps) {
     }).format(new Date());
     // עדכון DataTable אחרי הצלחה
     const newRowData = [
+      workoutData.MachineName,
       workoutData.Set,
       workoutData.Repetitions,
       workoutData.Weight.toFixed(2),
@@ -342,12 +365,13 @@ async function fetchDataAndPopulateTable() {
 
     // Add each record as a row. We store recordId in the <tr> dataset.
     records.forEach((record) => {
-      const rowNode = dataTable.row
-        .add([
+      const rowNode = dataTable
+        .row.add([
+          record.MachineName,
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
-          record.Timestamp || "",
+          formatTimestamp(record.Timestamp),
           `<button class="edit-btn">Edit</button>
                <button class="delete-btn">Delete</button>`,
         ])
