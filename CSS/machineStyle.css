@@ -24,15 +24,19 @@ body {
 
 /* Sticky header */
 .main-header {
-  background-color: var(--primary-color);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: var(--shadow);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 9%;
+  background: linear-gradient(90deg, #0d0d0d, #1c1c1c);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
 }
 
 .logo {
@@ -93,6 +97,10 @@ body {
   gap: 1rem;
   align-items: center;
   justify-content: center;
+  background-color: #f9f9f9; /* צבע רקע לבן אלגנטי */
+  border-radius: 12px; /* פינות מעוגלות למראה מקצועי */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* צל עדין למראה יוקרתי */
+  padding: 1.5rem;
 }
 
 .search-container input,
