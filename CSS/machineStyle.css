@@ -114,7 +114,6 @@ html::-webkit-scrollbar-thumb {
   color: var(--text-light);
   padding: 0.7rem 1.2rem;
 }
-
 .logOut:hover {
   background-color: #c0392b;
 }
