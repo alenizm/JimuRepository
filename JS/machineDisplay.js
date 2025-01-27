@@ -278,6 +278,7 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 
     if (!response.ok) throw new Error("Failed to update workout");
     await showSuccess("Workout updated successfully!");
+    let dataTable; // We'll keep a reference to our DataTable
     // פורמט חדש ל-timestamp הנוכחי
     const formattedTimestamp = new Intl.DateTimeFormat("he-IL", {
       year: "numeric",
@@ -307,8 +308,6 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 // ======================================================
 // DATA TABLE (inline editing with DataTables)
 // ======================================================
-
-let dataTable; // We'll keep a reference to our DataTable
 
 // 1. Fetch and populate data
 async function fetchDataAndPopulateTable() {
@@ -494,9 +493,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchDataAndPopulateTable();
 
   // Hook up filters for machines (if used)
-  document.getElementById("searchInput")?.addEventListener("input", filterMachines);
-  document.getElementById("filterType")?.addEventListener("change", filterMachines);
-  document.getElementById("filterTarget")?.addEventListener("change", filterMachines);
+  document
+    .getElementById("searchInput")
+    ?.addEventListener("input", filterMachines);
+  document
+    .getElementById("filterType")
+    ?.addEventListener("change", filterMachines);
+  document
+    .getElementById("filterTarget")
+    ?.addEventListener("change", filterMachines);
 
   // Logout handler
   document.querySelector(".logOut")?.addEventListener("click", () => {
