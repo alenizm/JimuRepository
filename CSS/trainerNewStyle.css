@@ -204,15 +204,35 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .modal-content {
-  background: var(--card-background);
+  background: var(--card-background); /* רקע לבן */
+  color: var(--text-dark); /* טקסט כהה */
   width: 90%;
   max-width: 700px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  padding: 2rem;
+  padding: 2rem; /* מרווח פנימי */
   max-height: 90vh;
   overflow-y: auto;
+  line-height: 1.6; /* מרווח בין שורות */
+  font-size: 1rem; /* פונט קריא */
+}
+
+.modal-content h1,
+.modal-content h2,
+.modal-content h3 {
+  color: var(--text-dark);
+  margin-bottom: 1rem; /* מרווח כותרות */
+}
+
+.modal-content p {
+  color: var(--text-gray); /* טקסט משני */
+  margin-bottom: 1rem;
+}
+
+.modal-content a {
+  color: var(--accent-color);
+  text-decoration: underline;
 }
 
 .close-modal {
