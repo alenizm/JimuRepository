@@ -288,6 +288,7 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
     }).format(new Date());
     // עדכון DataTable אחרי הצלחה
     const newRowData = [
+      workoutData.MachineName,
       workoutData.Set,
       workoutData.Repetitions,
       workoutData.Weight.toFixed(2),
@@ -345,6 +346,7 @@ async function fetchDataAndPopulateTable() {
     records.forEach((record) => {
       const rowNode = dataTable
         .row.add([
+          record.MachineName,
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
