@@ -277,6 +277,18 @@ async function updateWorkout(machineId, weight, sets, reps) {
 
     if (!response.ok) throw new Error("Failed to update workout");
     await showSuccess("Workout updated successfully!");
+    // עדכון DataTable אחרי הצלחה
+    const newRowData = [
+      workoutData.Set,
+      workoutData.Repetitions,
+      workoutData.Weight.toFixed(2),
+      new Date().toLocaleString(), // להוסיף timestamp נוכחי
+      `<button class="edit-btn">Edit</button>
+       <button class="delete-btn">Delete</button>`,
+    ];
+
+    // הוספת השורה ל-DataTable
+    dataTable.row.add(newRowData).draw();
   } catch (error) {
     console.error("Error updating workout:", error);
     showError("Failed to update workout");
