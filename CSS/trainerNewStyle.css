@@ -1,90 +1,53 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 :root {
-  --primary-color: #333333;
-  --secondary-color: #ffffff;
+  --primary-color: #2c3e50;
+  --secondary-color: #e67e22;
   --background-light: #f4f4f4;
   --card-background: #ffffff;
   --text-dark: #2c3e50;
   --text-light: #ffffff;
   --text-gray: #7f8c8d;
-  --accent-color: #e67e22;
+  --accent-color: #3498db;
   --danger-color: #e74c3c;
   --border-color: #ecf0f1;
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 body {
-  background: linear-gradient(145deg, #0a0d12, #16191f);
-  color: var(--text-light);
-  background-attachment: fixed;
-  background-size: cover;
-  font-family: "Nunito", sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-dark);
   margin: 0;
-  padding: 0;
-}
-
-html::-webkit-scrollbar {
-  width: 10px;
-}
-
-html::-webkit-scrollbar-track {
-  background: #1a1a1a;
-  border-radius: 5rem;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ffffff, #707070);
-  border-radius: 5rem;
-  border: 2px solid #000000;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #e0e0e0, #4d4d4d);
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
 }
 
 /* HEADER */
+/* Sticky header */
 .main-header {
+  background-color: var(--primary-color);
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: linear-gradient(90deg, #2c2c2c, #141414);
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-}
-
-.main-header .navbar {
-  display: none;
-  flex-direction: column;
-  background: rgba(0, 0, 0, 0.9);
-  position: absolute;
-  top: 100%;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .logo {
-  font-size: 14px;
-  font-weight: 900;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.2rem;
-  transition: color 0.3s ease;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logo i {
-  padding-right: 0.5rem;
-  color: #ffffff;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.logo:hover i {
-  color: #ffffff;
-  text-shadow: 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ff80ff,
-    0 0 70px #ff80ff, 0 0 80px #ff80ff;
+  color: var(--secondary-color);
 }
 
 .user-greeting {
@@ -101,10 +64,6 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--danger-color);
   color: var(--text-light);
   padding: 0.7rem 1.2rem;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .logOut:hover {
@@ -124,7 +83,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 #trainee-search {
-  width: 100%;
+  width: 300px;
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 25px;
@@ -142,7 +101,7 @@ html::-webkit-scrollbar-thumb:hover {
 .trainees {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -151,23 +110,17 @@ html::-webkit-scrollbar-thumb:hover {
   background: var(--card-background);
   border-radius: 8px;
   box-shadow: var(--shadow);
-  padding: 1.5rem;
+  padding: 1rem;
   width: 240px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  transition: transform 0.3s ease;
-}
-
-.trainee-card:hover {
-  transform: translateY(-5px);
 }
 
 .trainee-card h3 {
   margin: 0 0 0.5rem 0;
   color: var(--text-dark);
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.1rem;
 }
 
 .trainee-card p {
@@ -196,43 +149,24 @@ html::-webkit-scrollbar-thumb:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: none;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* shown via JS */
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
 .modal-content {
-  background: var(--card-background); /* רקע לבן */
-  color: var(--text-dark); /* טקסט כהה */
+  background: var(--card-background);
   width: 90%;
-  max-width: 700px;
+  max-width: 600px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  padding: 2rem; /* מרווח פנימי */
-  max-height: 90vh;
+  padding: 2rem; /* extra padding around edges */
+  max-height: 90vh; /* scroll if very tall */
   overflow-y: auto;
-  line-height: 1.6; /* מרווח בין שורות */
-  font-size: 1rem; /* פונט קריא */
-}
-
-.modal-content h1,
-.modal-content h2,
-.modal-content h3 {
-  color: var(--text-dark);
-  margin-bottom: 1rem; /* מרווח כותרות */
-}
-
-.modal-content p {
-  color: var(--text-gray); /* טקסט משני */
-  margin-bottom: 1rem;
-}
-
-.modal-content a {
-  color: var(--accent-color);
-  text-decoration: underline;
+  overflow-x: hidden; /* prevent horizontal scroll if text is too long */
 }
 
 .close-modal {
@@ -251,6 +185,7 @@ html::-webkit-scrollbar-thumb:hover {
   color: var(--danger-color);
 }
 
+/* Buttons inside the modal */
 .btn {
   background-color: var(--accent-color);
   color: var(--text-light);
@@ -262,8 +197,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .btn:hover {
-  background-color: #d35400;
-  transform: translateY(-2px);
+  background-color: #2980b9;
 }
 
 .btn-cancel {
@@ -274,17 +208,31 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: #c0392b;
 }
 
+.btn-add {
+  background-color: var(--secondary-color);
+}
+
+.btn-add:hover {
+  background-color: #d35400;
+}
+
 .btn-submit {
   background-color: var(--accent-color);
 }
 
+/* Spacing for button groups */
 .button-group {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1rem;
   justify-content: flex-start;
 }
 
+.form-group {
+  margin-bottom: 1rem;
+}
+
+/* Set navigation (prev/next buttons) */
 .set-navigation {
   display: flex;
   align-items: center;
@@ -293,12 +241,55 @@ html::-webkit-scrollbar-thumb:hover {
   margin: 1rem 0;
 }
 
+#set-title {
+  font-weight: 600;
+}
+
+/* 
+  Program preview container:
+  Removed the border & box-shadow here, 
+  so only the .program-box has borders.
+*/
+.program-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  /* No border or box-shadow */
+}
+
+/* Each machine's box in the preview:
+   This retains a visible border & slight shadow.
+*/
+.program-box {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 
+   Layout for each set line: 
+   1) The text 
+   2) Delete button 
+   3) Edit button
+*/
 .set-info {
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 1rem;
   margin-bottom: 0.5rem;
+
+  /* 
+    Force wrapping for extremely long words/strings 
+    so buttons won't be pushed out of the modal.
+  */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .set-info span {
@@ -307,41 +298,36 @@ html::-webkit-scrollbar-thumb:hover {
   word-break: break-word;
 }
 
-.btn-delete,
-.btn-edit {
-  font-size: 0.8rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-add {
-  background-color: var(--secondary-color);
-  color: var(--text-dark);
-}
-
-.btn-add:hover {
-  background-color: #d35400;
-}
-
+/* Delete & Edit button styling */
 .btn-delete {
   background-color: var(--danger-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
 }
-
 .btn-delete:hover {
   background-color: #c0392b;
 }
 
 .btn-edit {
   background-color: var(--accent-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease;
 }
-
 .btn-edit:hover {
   background-color: #2980b9;
 }
 
+/* Spinner or loading states (if any) */
 .loading-spinner {
   text-align: center;
   padding: 2rem;
@@ -354,22 +340,26 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-/* MEDIA QUERIES */
+/* Responsive tweaks */
 @media (max-width: 768px) {
-  .trainees {
+  .search-container {
     flex-direction: column;
-    align-items: center;
   }
 
-  .trainee-card {
+  #trainee-search {
     width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .trainees {
+    justify-content: center;
   }
 }
