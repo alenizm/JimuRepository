@@ -482,7 +482,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchDataAndPopulateTable();
 
   // Hook up filters for machines (if used)
-<<<<<<< Updated upstream
   document
     .getElementById("searchInput")
     ?.addEventListener("input", filterMachines);
@@ -492,11 +491,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("filterTarget")
     ?.addEventListener("change", filterMachines);
-=======
-  document.getElementById("searchInput")?.addEventListener("input", filterMachines);
-  document.getElementById("filterType")?.addEventListener("change", filterMachines);
-  document.getElementById("filterTarget")?.addEventListener("change", filterMachines);
->>>>>>> Stashed changes
 
   // Logout handler
   document.querySelector(".logOut")?.addEventListener("click", () => {
@@ -504,8 +498,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     localStorage.removeItem("id_token");
     window.location.href = "index.html";
   });
-<<<<<<< Updated upstream
 });
-=======
-});
->>>>>>> Stashed changes
