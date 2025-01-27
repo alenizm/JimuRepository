@@ -161,7 +161,6 @@ body {
 .trainee-card button:hover {
   background-color: #2980b9;
 }
-
 /* Modal Styling */
 .modal {
   display: flex;
@@ -180,10 +179,12 @@ body {
   background: white;
   border-radius: 15px;
   padding: 2rem;
-  width: 50%;
+  width: 40%; /* שונה ל-40% */
+  max-height: 90%; /* גובה מקסימלי */
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.4s ease-out;
+  overflow-y: auto; /* גלילה אוטומטית */
 }
 
 .modal-content h2 {
@@ -275,7 +276,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
   .modal-content {
-    width: 90%;
+    width: 80%; /* שונה ל-80% במסכים קטנים */
   }
 
   .search-container input {
@@ -316,22 +317,17 @@ body {
   font-weight: 600;
 }
 
-/* 
-  Program preview container:
-  Removed the border & box-shadow here, 
-  so only the .program-box has borders.
-*/
+/* Program preview container */
 .program-preview {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #fff;
   border-radius: 6px;
-  /* No border or box-shadow */
+  max-height: 300px; /* הוספת גובה מקסימלי */
+  overflow-y: auto; /* גלילה אנכית */
 }
 
-/* Each machine's box in the preview:
-   This retains a visible border & slight shadow.
-*/
+/* Each machine's box in the preview */
 .program-box {
   margin-bottom: 1rem;
   padding: 1rem;
