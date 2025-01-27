@@ -3,8 +3,8 @@
 :root {
   --primary: #333333;
   --secondary: #ffffff;
-  --accent: #ff6347;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --accent: #ff6347; /* גוון כתום מדהים */
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* צל עדין */
   --gradient-bg: linear-gradient(135deg, #121212, #1f1f1f);
 }
 

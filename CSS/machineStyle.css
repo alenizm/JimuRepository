@@ -21,6 +21,50 @@ body {
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
 }
+/* Responsive Design */
+
+* {
+  font-family: "Nunito", "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  list-style: none;
+  transition: 0.3s ease-in-out;
+}
+body {
+  background: linear-gradient(145deg, #0a0d12, #16191f);
+  color: var(--white);
+  background-attachment: fixed;
+  background-size: cover;
+}
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 5rem;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #707070);
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e0e0e0, #4d4d4d);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #b0b0b0);
+  border-radius: 5rem;
+  border: 2px solid #000000;
+}
 
 /* Sticky Header - Simple and Modern */
 .main-header {
@@ -31,6 +75,17 @@ body {
   background: linear-gradient(90deg, #2c2c2c, #141414); /* רקע כהה כמו התמונה */
   color: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* אפקט עומק */
+}
+.main-header .navbar {
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.9);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .logo {
@@ -104,13 +159,15 @@ body {
   border-radius: 25px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  background-color: #ffffff; /* צבע לבן למראה מקצועי */
+  color: #333333; /* צבע טקסט כהה לקריאות */
 }
 
 .search-container input:focus,
 .search-container select:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+  box-shadow: 0 0 8px rgba(255, 99, 71, 0.3); /* צל עדין להדגשה */
 }
 
 /* Machines Grid */
