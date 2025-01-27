@@ -8,6 +8,27 @@ const ENDPOINTS = {
     "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/Records",
 };
 
+function formatTimestamp(timestamp) {
+  try {
+    // Parse the timestamp into a Date object
+    const date = new Date(timestamp);
+
+    // Format the date using Intl.DateTimeFormat
+    const formattedTimestamp = new Intl.DateTimeFormat("he-IL", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+
+    return formattedTimestamp;
+  } catch (error) {
+    console.error("Error formatting timestamp:", error);
+    return timestamp; // Return the original timestamp if formatting fails
+  }
+}
+
 function parseJwt(token) {
   try {
     const base64Url = token.split(".")[1];
@@ -350,7 +371,7 @@ async function fetchDataAndPopulateTable() {
           record.Set,
           record.Repetitions,
           Number(record.Weight).toFixed(2),
-          record.Timestamp || "",
+          formatTimestamp(record.Timestamp),
           `<button class="edit-btn">Edit</button>
                <button class="delete-btn">Delete</button>`,
         ])
