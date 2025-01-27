@@ -125,7 +125,10 @@ async function fetchDataAndRedirect(idToken) {
       typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     if (!machines) throw new Error("No data received");
 
-    redirectToRolePage(idToken);
+    // Delay before redirecting (e.g., 3 seconds)
+    setTimeout(() => {
+      redirectToRolePage(idToken);
+    }, 2222); // 3000 milliseconds = 3 seconds
   } catch (error) {
     console.error("Error during fetch:", error);
     showError("Failed to fetch data. Please try again.");
