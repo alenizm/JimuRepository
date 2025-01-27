@@ -448,9 +448,9 @@ function setupDataTableEventListeners() {
           await showSuccess("Record updated!");
 
           // Revert cells to text
-          setCell.textContent = payload.set;
-          repsCell.textContent = payload.repetitions;
-          weightCell.textContent = payload.weight.toFixed(2);
+          setCell.textContent = payload.Set;
+          repsCell.textContent = payload.Repetitions;
+          weightCell.textContent = payload.Weight.toFixed(2);
 
           btn.textContent = "Edit";
         } catch (error) {
