@@ -296,6 +296,15 @@ html::-webkit-scrollbar-thumb:hover {
   border: none;
   transition: background-color 0.3s ease;
 }
+/* Additional .btn-add styles to enhance it */
+.btn-add {
+  background-color: var(--secondary-color); /* Light background */
+  color: var(--text-dark); /* Darker text for contrast */
+}
+
+.btn-add:hover {
+  background-color: #d35400; /* Hover effect for all buttons */
+}
 
 .btn-delete {
   background-color: var(--danger-color);
