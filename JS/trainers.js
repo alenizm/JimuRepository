@@ -576,26 +576,27 @@ async function submitProgram() {
   });
 }
 
-// פונקציה לשליפת הנתונים מ-API של Lambda
 function fetchPlans() {
   fetch(TRAINING_PROGRAM_API_ENDPOINT, {
-    method: "GET", // מבצע קריאת GET
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
-      // הוסף כאן את כל ה-Headers אם יש צורך
     },
   })
-    .then((response) => response.json()) // ממיר את התגובה ל-JSON
+    .then((response) => response.json())
     .then((data) => {
-      console.log(data); // הדפסת הנתונים למעקב
-      populateTable(data.plans); // מעביר את הנתונים לפונקציה שממלאת את הטבלה
+      console.log("Data from API:", data); // הדפסת הנתונים למעקב
+      if (data.plans && Array.isArray(data.plans)) {
+        populateTable(data.plans);
+      } else {
+        console.error("Plans data is missing or not an array");
+      }
     })
     .catch((error) => {
-      console.error("Error fetching data:", error); // טיפול בשגיאות אם יש
+      console.error("Error fetching data:", error);
     });
 }
 
-// פונקציה להוסיף את הנתונים לטבלה
 function populateTable(data) {
   const tableBody = document.getElementById("trainer-table-body");
 
@@ -604,32 +605,34 @@ function populateTable(data) {
 
   // מעבד את הנתונים וממלא את הטבלה
   data.forEach((item) => {
-    const traineeEmail = item.UserEmail.S; // הנחה שהמייל נמצא כאן
-    item.PlanDetails.L.forEach((plan) => {
-      const machine = plan.M.machine.S; // הנחה שמכונה נמצאת כאן
-      plan.M.sets.L.forEach((set) => {
-        const weight = set.M.weight.S; // משקל
-        const reps = set.M.reps.S; // חזרות
+    console.log("Item from plans:", item); // הדפסת כל item
+    const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
+    if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
+      item.PlanDetails.L.forEach((plan) => {
+        const machine = plan.M?.machine?.S || "No machine"; // בדיקה אם יש מכונה
+        if (plan.M?.sets?.L) {
+          plan.M.sets.L.forEach((set) => {
+            const weight = set.M?.weight?.S || "No weight";
+            const reps = set.M?.reps?.S || "No reps";
 
-        // יצירת שורה חדשה עבור כל סט
-        const row = document.createElement("tr");
+            // יצירת שורה חדשה
+            const row = document.createElement("tr");
 
-        // הוספת הנתונים לשורה
-        row.innerHTML = `
-          <td>${traineeEmail}</td>
-          <td>${machine}</td>
-          <td>${weight} x ${reps}</td>
-        `;
+            // הוספת הנתונים לשורה
+            row.innerHTML = `
+              <td>${traineeEmail}</td>
+              <td>${machine}</td>
+              <td>${weight} x ${reps}</td>
+            `;
 
-        // הוספת השורה לטבלה
-        tableBody.appendChild(row);
+            // הוספת השורה לטבלה
+            tableBody.appendChild(row);
+          });
+        }
       });
-    });
+    }
   });
 
   // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
   $("#trainer-table").DataTable();
 }
-
-// קריאה לפונקציה לשליפת הנתונים
-fetchPlans();
