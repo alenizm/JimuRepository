@@ -4,8 +4,8 @@
 const cognitoDomain =
   "https://us-east-1gxjtpxbr6.auth.us-east-1.amazoncognito.com";
 const clientId = "4stnvic28pb26ps8ihehcfn36a";
-const redirectUri = "https://alenizm.github.io/JimuRepository/loading.html";
-const logoutUri = "https://alenizm.github.io/JimuRepository/index.html";
+const redirectUri = "https://jimu-website.s3.us-east-1.amazonaws.com/loading.html";
+const logoutUri = "https://jimu-website.s3.us-east-1.amazonaws.com/index.html";
 
 const cognitoLoginUrl = `${cognitoDomain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${encodeURIComponent(
   redirectUri
@@ -125,7 +125,10 @@ async function fetchDataAndRedirect(idToken) {
       typeof data.body === "string" ? JSON.parse(data.body) : data.body;
     if (!machines) throw new Error("No data received");
 
-    redirectToRolePage(idToken);
+    // Delay before redirecting (e.g., 3 seconds)
+    setTimeout(() => {
+      redirectToRolePage(idToken);
+    }, 2222); // 3000 milliseconds = 3 seconds
   } catch (error) {
     console.error("Error during fetch:", error);
     showError("Failed to fetch data. Please try again.");

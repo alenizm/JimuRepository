@@ -255,7 +255,7 @@ html::-webkit-scrollbar-thumb {
 /* home */
 
 .home {
-  background: url(https://jimu-website.s3.us-east-1.amazonaws.com/JimuRepository/images/home.jpg)
+  background: url(https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpg)
     no-repeat;
   min-height: 110vh;
   display: flex;
