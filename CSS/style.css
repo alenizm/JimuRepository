@@ -3,19 +3,9 @@
 :root {
   --primary: #333333;
   --secondary: #ffffff;
-  --accent: #ff6347;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --accent: #ff6347; /* גוון כתום מדהים */
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* צל עדין */
   --gradient-bg: linear-gradient(135deg, #121212, #1f1f1f);
-}
-
-#beautiful-heading {
-  font-family: "Arial", sans-serif;
-  color: #222;
-  font-size: 48px;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
 }
 
 * {
@@ -34,10 +24,10 @@
 body {
   background: linear-gradient(
     145deg,
-    #d9d9d9,
-    #f0f0f0
-  ); /* גרדיאנט אפור-לבן בהיר עם מראה עדין ואלגנטי */
-  color: var(--black); /* טקסט בצבע כהה ליצירת ניגודיות נעימה */
+    #2c2c2c,
+    #3f3f3f
+  ); /* גרדיאנט אפור כהה עם נגיעות עומק */
+  color: var(--white); /* טקסט בלבן ליצירת ניגודיות חזקה */
   background-attachment: fixed;
   background-size: cover;
 }
@@ -265,7 +255,7 @@ html::-webkit-scrollbar-thumb {
 /* home */
 
 .home {
-  background: url(https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpg)
+  background: url(https://jimu-website.s3.us-east-1.amazonaws.com/JimuRepository/images/home.jpg)
     no-repeat;
   min-height: 110vh;
   display: flex;
