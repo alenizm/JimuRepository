@@ -575,3 +575,61 @@ async function submitProgram() {
     }
   });
 }
+
+// פונקציה לשליפת הנתונים מ-API של Lambda
+function fetchPlans() {
+  fetch(TRAINING_PROGRAM_API_ENDPOINT, {
+    method: "GET", // מבצע קריאת GET
+    headers: {
+      "Content-Type": "application/json",
+      // הוסף כאן את כל ה-Headers אם יש צורך
+    },
+  })
+    .then((response) => response.json()) // ממיר את התגובה ל-JSON
+    .then((data) => {
+      console.log(data); // הדפסת הנתונים למעקב
+      populateTable(data.plans); // מעביר את הנתונים לפונקציה שממלאת את הטבלה
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error); // טיפול בשגיאות אם יש
+    });
+}
+
+// פונקציה להוסיף את הנתונים לטבלה
+function populateTable(data) {
+  const tableBody = document.getElementById("trainer-table-body");
+
+  // מנקה את הטבלה לפני הוספת נתונים חדשים
+  tableBody.innerHTML = "";
+
+  // מעבד את הנתונים וממלא את הטבלה
+  data.forEach((item) => {
+    const traineeEmail = item.UserEmail.S; // הנחה שהמייל נמצא כאן
+    item.PlanDetails.L.forEach((plan) => {
+      const machine = plan.M.machine.S; // הנחה שמכונה נמצאת כאן
+      plan.M.sets.L.forEach((set) => {
+        const weight = set.M.weight.S; // משקל
+        const reps = set.M.reps.S; // חזרות
+
+        // יצירת שורה חדשה עבור כל סט
+        const row = document.createElement("tr");
+
+        // הוספת הנתונים לשורה
+        row.innerHTML = `
+          <td>${traineeEmail}</td>
+          <td>${machine}</td>
+          <td>${weight} x ${reps}</td>
+        `;
+
+        // הוספת השורה לטבלה
+        tableBody.appendChild(row);
+      });
+    });
+  });
+
+  // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
+  $("#trainer-table").DataTable();
+}
+
+// קריאה לפונקציה לשליפת הנתונים
+fetchPlans();
