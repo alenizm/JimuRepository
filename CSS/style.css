@@ -20,16 +20,10 @@
   list-style: none;
   transition: 0.3s ease-in-out;
 }
-
 body {
-  background: linear-gradient(
-    145deg,
-    #2c2c2c,
-    #3f3f3f
-  ); /* גרדיאנט אפור כהה עם נגיעות עומק */
-  color: var(--white); /* טקסט בלבן ליצירת ניגודיות חזקה */
-  background-attachment: fixed;
-  background-size: cover;
+  background: linear-gradient(135deg, #0d0d0d, #2a2a2a, #555, #2a2a2a, #0d0d0d);
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
 section {
@@ -259,6 +253,7 @@ html::-webkit-scrollbar-thumb {
     no-repeat;
   min-height: 110vh;
   display: flex;
+  justify-content: flex-start; /* מוודא שהתמונה תישאר בצד ימין */
   align-items: center;
   background-size: contain;
   background-position: right center;
@@ -266,33 +261,27 @@ html::-webkit-scrollbar-thumb {
 
 .home .content {
   max-width: 65rem;
-}
-
-.home .content h3 {
-  font-size: 48px;
-  color: #dcdcdc;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1.5;
+  text-align: left; /* שים את הטקסט בצד שמאל */
+  padding-left: 20px; /* ריווח מצד שמאל */
 }
 
 .home .content h3 {
   font-size: 36px;
-  color: #dcdcdc; /* צבע כסוף עדין שמתמזג עם הרקע */
+  color: #dcdcdc;
   font-weight: bold;
-  text-align: center;
+  text-align: left; /* שים את הטקסט בצד שמאל */
   line-height: 1.4;
 }
 
 .home .content h3 span {
-  color: #ff4500; /* כתום-אדום בוהק */
-  font-size: 64px; /* טקסט גדול יותר */
+  color: #ff4500;
+  font-size: 64px;
   font-weight: 900;
-  display: block; /* מבטיח שה-span מופיע בשורה נפרדת */
-  text-align: center; /* ממרכז את הטקסט */
-  text-shadow: 0 0 15px rgba(255, 69, 0, 0.8), 0 0 30px rgba(255, 99, 71, 0.6); /* אפקט זוהר חזק יותר */
-  margin-top: 20px; /* רווח בין ה-h3 לבין ה-span */
-  line-height: 1.2; /* התאמה לגובה השורות */
+  display: block;
+  text-align: left;
+  text-shadow: 0 0 5px rgba(255, 69, 0, 0.5), 0 0 10px rgba(255, 99, 71, 0.4);
+  margin-top: 20px;
+  line-height: 1.2;
 }
 
 /* end */
