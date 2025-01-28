@@ -7,6 +7,15 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* צל עדין */
   --gradient-bg: linear-gradient(135deg, #121212, #1f1f1f);
 }
+#beautiful-heading {
+  font-family: "Arial", sans-serif;
+  color: #222; /* צבע כהה מעט יותר לעומק */
+  font-size: 48px; /* גודל גדול יותר כדי להבליט */
+  text-align: center;
+  text-transform: uppercase; /* אותיות גדולות לסטייל */
+  letter-spacing: 1px; /* ריווח עדין בין אותיות */
+  margin-bottom: 20px; /* ריווח נמוך יותר לכותרת */
+}
 
 * {
   font-family: "Nunito", "Roboto", sans-serif;
@@ -818,17 +827,4 @@ button:hover {
   border: 2px solid #ff6347;
   transform: scale(1.1);
   box-shadow: 0 0 10px #ff6347, 0 0 20px #ff6347, 0 0 30px #ff6347;
-}
-
-.beautiful-heading {
-  font-family: "Arial", sans-serif;
-  color: black;
-  font-size: 36px;
-  text-align: center;
-}
-
-.highlight-text {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
 }
