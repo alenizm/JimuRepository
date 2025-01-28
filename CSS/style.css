@@ -819,3 +819,16 @@ button:hover {
   transform: scale(1.1);
   box-shadow: 0 0 10px #ff6347, 0 0 20px #ff6347, 0 0 30px #ff6347;
 }
+
+.beautiful-heading {
+  font-family: "Arial", sans-serif;
+  color: black;
+  font-size: 36px;
+  text-align: center;
+}
+
+.highlight-text {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
