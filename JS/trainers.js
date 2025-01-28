@@ -576,27 +576,42 @@ async function submitProgram() {
   });
 }
 
-function fetchPlans() {
-  fetch(TRAINING_PROGRAM_API_ENDPOINT, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Data from API:", data); // הדפסת הנתונים למעקב
-      if (data.plans && Array.isArray(data.plans)) {
-        populateTable(data.plans);
-      } else {
-        console.error("Plans data is missing or not an array");
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
+/*******************************
+ * FETCH PLANS
+ *******************************/
+async function fetchPlans() {
+  try {
+    const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+
+    if (!response.ok) throw new Error("Failed to fetch training plans");
+
+    const data = await response.json();
+
+    console.log("Plans fetched successfully:", data); // הדפסת הנתונים למעקב
+
+    if (data.plans && Array.isArray(data.plans)) {
+      populateTable(data.plans);
+    } else {
+      console.error("Plans data is missing or not an array");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    Swal.fire(
+      "Error",
+      "Failed to fetch training plans. Please try again later.",
+      "error"
+    );
+  }
 }
 
+/*******************************
+ * POPULATE TABLE
+ *******************************/
 function populateTable(data) {
   const tableBody = document.getElementById("trainer-table-body");
 
@@ -636,3 +651,6 @@ function populateTable(data) {
   // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
   $("#trainer-table").DataTable();
 }
+
+// קריאה לפונקציה לשליפת הנתונים
+fetchPlans();
