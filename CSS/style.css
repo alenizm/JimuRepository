@@ -3,18 +3,19 @@
 :root {
   --primary: #333333;
   --secondary: #ffffff;
-  --accent: #ff6347; /* גוון כתום מדהים */
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* צל עדין */
+  --accent: #ff6347;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   --gradient-bg: linear-gradient(135deg, #121212, #1f1f1f);
 }
+
 #beautiful-heading {
   font-family: "Arial", sans-serif;
-  color: #222; /* צבע כהה מעט יותר לעומק */
-  font-size: 48px; /* גודל גדול יותר כדי להבליט */
+  color: #222;
+  font-size: 48px;
   text-align: center;
-  text-transform: uppercase; /* אותיות גדולות לסטייל */
-  letter-spacing: 1px; /* ריווח עדין בין אותיות */
-  margin-bottom: 20px; /* ריווח נמוך יותר לכותרת */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
 }
 
 * {
