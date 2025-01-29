@@ -644,10 +644,18 @@ function populateTable(data) {
   // מנקה את הטבלה לפני הוספת נתונים חדשים
   tableBody.innerHTML = "";
 
-  // מעבד את הנתונים וממלא את הטבלה
+  // מאחסן את הנתונים לפי אימייל
+  const groupedByEmail = {};
+
+  // מעבד את הנתונים ומאחסן לפי אימייל
   data.forEach((item) => {
     const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
+      // אם אין אימייל בקבוצת groupedByEmail, יצר אותו
+      if (!groupedByEmail[traineeEmail]) {
+        groupedByEmail[traineeEmail] = [];
+      }
+
       item.PlanDetails.L.forEach((plan) => {
         const machine = plan.M?.machine?.S || "No machine"; // בדיקה אם יש מכונה
         if (plan.M?.sets?.L) {
@@ -656,24 +664,47 @@ function populateTable(data) {
             const reps = set.M?.reps?.S || "No reps";
             const planId = item.PlanID; // יצירת מזהה ייחודי לתכנית
 
-            // יצירת שורה חדשה
-            const row = document.createElement("tr");
-            row.setAttribute("data-plan-id", planId); // הוספת מזהה ייחודי
-
-            // הוספת הנתונים לשורה
-            row.innerHTML = `
-              <td>${traineeEmail}</td>
-              <td>${machine}</td>
-              <td>${weight} x ${reps}</td>
-              <td><button class="delete-btn" onclick="deletePlan('${planId}')">Delete</button></td> <!-- כפתור מחיקה -->
-            `;
-
-            // הוספת השורה לטבלה
-            tableBody.appendChild(row);
+            // הוספת התכנית לרשימה לפי אימייל
+            groupedByEmail[traineeEmail].push({
+              planId: planId,
+              machine: machine,
+              weight: weight,
+              reps: reps,
+            });
           });
         }
       });
     }
+  });
+
+  // כעת, עובר על כל הקבוצות לפי אימייל וממלא את הטבלה
+  Object.keys(groupedByEmail).forEach((email) => {
+    const plans = groupedByEmail[email];
+
+    // יצירת שורה אחת לכל אימייל
+    const row = document.createElement("tr");
+
+    // יצירת התוכן של השורה
+    let planDetails = "";
+    plans.forEach((plan) => {
+      planDetails += `
+        <div>
+          <strong>Machine:</strong> ${plan.machine} <br>
+          <strong>Weight x Reps:</strong> ${plan.weight} x ${plan.reps} <br>
+          <button class="delete-btn" onclick="deletePlan('${plan.planId}')">Delete</button>
+        </div>
+        <hr>
+      `;
+    });
+
+    // הוספת הנתונים לשורה
+    row.innerHTML = `
+      <td>${email}</td>
+      <td>${planDetails}</td>
+    `;
+
+    // הוספת השורה לטבלה
+    tableBody.appendChild(row);
   });
 
   // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
