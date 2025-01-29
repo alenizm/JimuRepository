@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500&display=swap");
 
 :root {
-  --primary: #ff8c00;
+  --primary: #ffb74d;
   --secondary: #ff8c00;
-  --accent: #ff8c00;
+  --accent: #e65100;
   --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   --gradient-bg: linear-gradient(
     135deg,
