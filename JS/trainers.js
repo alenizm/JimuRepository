@@ -648,7 +648,7 @@ function populateTable(data) {
     const traineeEmail = item.UserEmail?.S || "No email";
     const planId = item.PlanID?.S || "No PlanID";
 
-    // Make sure we have the structure in place
+    // Ensure grouping structure
     if (!groupedData[traineeEmail]) {
       groupedData[traineeEmail] = {};
     }
@@ -659,14 +659,21 @@ function populateTable(data) {
     // Gather machines/sets under this plan
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
       item.PlanDetails.L.forEach((plan) => {
+        // 1) Get the machine name
         const machine = plan.M?.machine?.S || "No machine";
+        // 2) Get the set name/number from the plan details
+        const planSet = plan.M?.set?.S || "No set info";
+        // 3) Retrieve the array of sets
         const setsArray = plan.M?.sets?.L || [];
 
+        // 4) Push each set with all info into groupedData
         setsArray.forEach((set) => {
           const weight = set.M?.weight?.S || "No weight";
           const reps = set.M?.reps?.S || "No reps";
+
           groupedData[traineeEmail][planId].push({
             machine,
+            planSet,
             weight,
             reps,
           });
@@ -675,7 +682,7 @@ function populateTable(data) {
     }
   });
 
-  // Now build rows: one row per plan, per email
+  // Now build rows: one row per (email, planId)
   Object.keys(groupedData).forEach((email) => {
     Object.keys(groupedData[email]).forEach((planId) => {
       const machineSets = groupedData[email][planId];
@@ -686,15 +693,16 @@ function populateTable(data) {
         planDetailsHTML += `
           <div>
             <strong>Machine:</strong> ${entry.machine}<br>
-            <strong>Weight x Reps:</strong> ${entry.weight} x ${entry.reps}
+            <strong>Set ${entry.planSet} - Weight x Reps:</strong> 
+              ${entry.weight} x ${entry.reps}
           </div>
           <hr>
         `;
       });
 
-      // Create a row for this plan
+      // Create a single row for this plan
       const row = document.createElement("tr");
-      row.setAttribute("data-plan-id", planId); // For easy removal later
+      row.setAttribute("data-plan-id", planId);
 
       row.innerHTML = `
         <td>${email}</td>
@@ -765,5 +773,5 @@ async function deletePlanById(planId) {
   }
 }
 
-// Initial call to fetch data
+// Fetch plans on initial load
 fetchPlans();
