@@ -632,6 +632,53 @@ async function fetchPlans() {
 }
 
 /*******************************
+ * DELETE PLAN
+ *******************************/
+async function deletePlan(UserID, planId, row) {
+  // יצירת אובייקט בקשה למחיקת התוכנית
+  const requestBody = {
+    UserID: UserID,
+    PlanID: planId,
+  };
+
+  try {
+    const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
+      method: "DELETE", // שיטה DELETE
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody), // שולחים את המידע בבקשה כ-JSON
+    });
+
+    if (response.ok) {
+      console.log("Plan deleted successfully");
+      Swal.fire("Deleted", "Training plan deleted successfully.", "success");
+
+      // הסרת השורה מהטבלה
+      row.remove(); // מסיר את השורה בטבלה
+
+      // קריאה מחדש לנתונים אחרי המחיקה (אם צריך)
+      // fetchPlans(); // אם אתה רוצה לטעון מחדש את כל התכניות
+    } else {
+      const result = await response.json();
+      console.error("Failed to delete plan:", result.body);
+      Swal.fire(
+        "Error",
+        "Failed to delete training plan. Please try again.",
+        "error"
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting plan:", error);
+    Swal.fire(
+      "Error",
+      "Failed to delete training plan. Please try again.",
+      "error"
+    );
+  }
+}
+
+/*******************************
  * POPULATE TABLE
  *******************************/
 function populateTable(data) {
@@ -662,7 +709,7 @@ function populateTable(data) {
               <td>${traineeEmail}</td>
               <td>${machine}</td>
               <td>${weight} x ${reps}</td>
-              <td><button class="delete-btn" onclick="deletePlan('${UserID}', '${planId}')">Delete</button></td> <!-- כפתור מחיקה -->
+              <td><button class="delete-btn" onclick="deletePlan('${UserID}', '${planId}', this.closest('tr'))">Delete</button></td> <!-- כפתור מחיקה -->
             `;
 
             // הוספת השורה לטבלה
@@ -676,50 +723,3 @@ function populateTable(data) {
   // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
   $("#trainer-table").DataTable(); // הפעלת DataTables עם jQuery
 }
-
-/*******************************
- * DELETE PLAN
- *******************************/
-async function deletePlan(UserID, planId) {
-  // יצירת אובייקט בקשה למחיקת התוכנית
-  const requestBody = {
-    UserID: UserID,
-    PlanID: planId,
-  };
-
-  try {
-    const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
-      method: "DELETE", // שיטה DELETE
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody), // שולחים את המידע בבקשה כ-JSON
-    });
-
-    if (response.ok) {
-      console.log("Plan deleted successfully");
-      Swal.fire("Deleted", "Training plan deleted successfully.", "success");
-
-      // קריאה מחדש לנתונים אחרי המחיקה
-      fetchPlans();
-    } else {
-      const result = await response.json();
-      console.error("Failed to delete plan:", result.body);
-      Swal.fire(
-        "Error",
-        "Failed to delete training plan. Please try again.",
-        "error"
-      );
-    }
-  } catch (error) {
-    console.error("Error deleting plan:", error);
-    Swal.fire(
-      "Error",
-      "Failed to delete training plan. Please try again.",
-      "error"
-    );
-  }
-}
-
-// קריאה לפונקציה לשליפת הנתונים
-fetchPlans();
