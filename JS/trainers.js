@@ -700,8 +700,12 @@ function populateTable(data) {
       <td>${email}</td>
       <td>${planDetails}</td>
       <td>
-        <!-- כפתור מחיקה אחד לכל תוכנית -->
-        <button class="delete-btn" onclick="deletePlanById('${email}', '${plans[0].planId}')">Delete</button>
+        ${plans
+          .map(
+            (plan) =>
+              `<button class="delete-btn" onclick="deletePlanById('${plan.planId}')">Delete</button>`
+          )
+          .join("")}
       </td>
     `;
 
@@ -716,7 +720,7 @@ function populateTable(data) {
 /*******************************
  * DELETE SPECIFIC PLAN
  *******************************/
-async function deletePlanById(email, planId) {
+async function deletePlanById(planId) {
   try {
     // שלב 1: אישור מחיקה
     const confirmRes = await Swal.fire({
@@ -736,7 +740,7 @@ async function deletePlanById(email, planId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserEmail: email, PlanID: planId }),
+      body: JSON.stringify({ PlanID: planId }),
     });
 
     if (!response.ok) throw new Error("Failed to delete the training plan");
