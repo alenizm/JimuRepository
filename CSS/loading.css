@@ -35,11 +35,17 @@ body {
 }
 
 body {
-  background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpeg")
-    no-repeat center center fixed;
-  background-size: auto 100%; /* התמונה תתפרס על הגובה ב-100%, הרוחב יהיה אוטומטי */
-  background-position: center center; /* ממקם את התמונה במרכז */
-  background-color: black; /* אם יש שוליים ריקים */
+  background: linear-gradient(
+      to right,
+      rgba(255, 0, 0, 0.8),
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 255, 0.8)
+    ),
+    url("/mnt/data/home.jpeg") no-repeat center center fixed;
+  background-size: contain; /* מוודא שהתמונה לא תגדל מעבר לגבולות המסך */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: black;
 }
 
 /* Custom Scrollbar */
