@@ -589,7 +589,7 @@ async function fetchPlans() {
     return;
   }
 
-  const url = `${TRAINING_Plans_API_ENDPOINT}`; // רק ה-URL הבסיסי, בלי פרמטרים ב-query string
+  const url = `${TRINING_Plans_API_ENDPOINAT}`; // רק ה-URL הבסיסי, בלי פרמטרים ב-query string
   console.log("Fetching plans from URL:", url);
 
   try {
