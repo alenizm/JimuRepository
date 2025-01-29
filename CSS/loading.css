@@ -37,7 +37,7 @@ body {
 body {
   background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpeg")
     no-repeat center center fixed;
-  background-size: cover; /* התמונה תכסה את כל הרקע */
+  background-size: auto 100%; /* התמונה תתפרס על הגובה ב-100%, הרוחב יהיה אוטומטי */
   background-position: center center; /* ממקם את התמונה במרכז */
   background-color: black; /* אם יש שוליים ריקים */
 }
