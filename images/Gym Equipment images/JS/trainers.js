@@ -7,8 +7,6 @@ const TRAINEES_API_ENDPOINT =
   "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/trainees";
 const TRAINING_PROGRAM_API_ENDPOINT =
   "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/WorkingPlans";
-const TRAINING_Plans_API_ENDPOINT =
-  "https://75605lbiti.execute-api.us-east-1.amazonaws.com/prod/TrainerPlans";
 
 // Cognito details
 const COGNITO_USER_POOL_ID = "us-east-1_gXjTPXbr6";
@@ -582,41 +580,26 @@ async function submitProgram() {
  * FETCH PLANS
  *******************************/
 async function fetchPlans() {
-  const trainerName = getTrainerName(); // ודא שהפונקציה מחזירה את השם כראוי
-  if (!trainerName) {
-    console.error("TrainerName is missing");
-    Swal.fire("Error", "TrainerName is missing", "error");
-    return;
-  }
-
-  const url = `${TRAINING_Plans_API_ENDPOINT}`; // רק ה-URL הבסיסי, בלי פרמטרים ב-query string
-  console.log("Fetching plans from URL:", url);
-
   try {
-    const response = await fetch(url, {
-      method: "POST", // שימוש ב-POST כמו בדוגמה שלך
+    const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        TrainerName: trainerName, // שליחת שם המתאמן בגוף הבקשה
-      }),
     });
 
     if (!response.ok) throw new Error("Failed to fetch training plans");
 
-    const result = await response.json(); // מקבל את התוצאה כ-JSON
-    const plans = JSON.parse(result.body).data; // כאן פורסים את ה-body ומוציאים את המידע
-    console.log("Plans fetched successfully:", plans);
+    const data = await response.json();
 
-    if (plans && Array.isArray(plans)) {
-      populateTable(plans); // הדפס את התכניות בטבלה
+    console.log("Plans fetched successfully:", data); // הדפסת הנתונים למעקב
+
+    // במקרה שבו הנתונים הם כבר מערך, אין צורך לחפש את plans
+    if (Array.isArray(data)) {
+      populateTable(data);
     } else {
-      console.error("Plans data is missing or malformed");
-      Swal.fire("Error", "Plans data is missing or malformed.", "error");
+      console.error("Plans data is missing or not an array");
     }
-
-    return plans; // מחזיר את התכניות
   } catch (error) {
     console.error("Error fetching data:", error);
     Swal.fire(
@@ -624,10 +607,8 @@ async function fetchPlans() {
       "Failed to fetch training plans. Please try again later.",
       "error"
     );
-    return []; // מחזיר מערך ריק במקרה של טעות
   }
 }
-
 /*******************************
  * POPULATE TABLE
  *******************************/
@@ -640,11 +621,7 @@ function populateTable(data) {
   // מעבד את הנתונים וממלא את הטבלה
   data.forEach((item) => {
     console.log("Item from plans:", item); // הדפסת כל item
-
     const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
-    const userID = item.UserID?.S; // הוצאת ה-UserID
-    const planID = item.PlanID?.S; // הוצאת ה-PlanID
-
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
       item.PlanDetails.L.forEach((plan) => {
         const machine = plan.M?.machine?.S || "No machine"; // בדיקה אם יש מכונה
@@ -661,11 +638,6 @@ function populateTable(data) {
               <td>${traineeEmail}</td>
               <td>${machine}</td>
               <td>${weight} x ${reps}</td>
-              <td>
-                <button class="delete-btn" data-user-id="${userID}" data-plan-id="${planID}">
-                  Delete
-                </button>
-              </td>
             `;
 
             // הוספת השורה לטבלה
@@ -677,54 +649,8 @@ function populateTable(data) {
   });
 
   // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
-  $("#trainer-table").DataTable(); // הפעלת DataTables עם jQuery
-
-  // הוספת אירוע לכפתור המחיקה
-  const deleteButtons = document.querySelectorAll(".delete-btn");
-  deleteButtons.forEach((button) => {
-    button.addEventListener("click", async function () {
-      const userID = this.getAttribute("data-user-id");
-      const planID = this.getAttribute("data-plan-id");
-
-      // קריאה למחיקת תכנית
-      const success = await deletePlan(userID, planID);
-      if (success) {
-        // אם הצלחנו למחוק, נעדכן את הטבלה
-        Swal.fire("Success", "Plan deleted successfully", "success");
-        fetchPlans(); // לקרוא שוב את התכניות לאחר מחיקה
-      } else {
-        Swal.fire("Error", "Failed to delete plan", "error");
-      }
-    });
-  });
+  $("#trainer-table").DataTable();
 }
 
-/*******************************
- * DELETE PLAN
- *******************************/
-async function deletePlan(userID, planID) {
-  const url = `${TRAINING_Plans_API_ENDPOINT}/delete`; // כתובת ה-API למחיקה
-
-  try {
-    const response = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        UserID: userID,
-        PlanID: planID,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error("Failed to delete plan");
-      return false;
-    }
-
-    return true; // מחיקה הצליחה
-  } catch (error) {
-    console.error("Error deleting plan:", error);
-    return false; // קרתה שגיאה
-  }
-}
+// קריאה לפונקציה לשליפת הנתונים
+fetchPlans();

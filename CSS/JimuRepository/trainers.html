@@ -19,8 +19,13 @@
 
     <!-- AWS SDK (if needed) -->
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1183.0.min.js"></script>
-
-    <!-- DataTables CSS (Version 1.11.3) -->
+    <!-- DataTables CSS and JS (2.2.1) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css"
+    />
+    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+    <!-- קישור ל-CSS של DataTables -->
     <link
       rel="stylesheet"
       type="text/css"
@@ -44,6 +49,7 @@
       </nav>
     </header>
 
+    <!-- Trainees List Section -->
     <section class="trainees-list">
       <h1 class="list">List of Trainees</h1>
 
@@ -61,12 +67,15 @@
       </div>
     </section>
 
+    <!-- Training Program Modal -->
     <div id="programModal" class="modal" style="display: none">
       <div class="modal-content">
         <button class="close-modal" onclick="closeProgramModal()">
           &times;
         </button>
         <h2>Create Training Program</h2>
+
+        <!-- Machine Selection -->
         <div class="form-group">
           <label for="machine-select">Select Machine:</label>
           <select
@@ -79,8 +88,14 @@
           </select>
         </div>
 
+        <!-- Container for Sets -->
         <div id="sets-container" style="display: none">
+          <!--
+          Use a FORM so that built-in validation (required fields) can be checked
+          with form.checkValidity() and form.reportValidity() in the JS.
+        -->
           <form id="sets-form" onsubmit="return false;">
+            <!-- Navigation for Set Index -->
             <div class="set-navigation">
               <button type="button" class="btn" onclick="navigateSet('prev')">
                 &larr; Previous Set
@@ -90,6 +105,8 @@
                 Next Set &rarr;
               </button>
             </div>
+
+            <!-- Weight/Reps Inputs for Current Set -->
             <div class="form-group">
               <label for="weight">Weight (kg):</label>
               <input
@@ -100,6 +117,7 @@
                 oninput="updateCurrentSet('weight', this.value)"
               />
             </div>
+
             <div class="form-group">
               <label for="repetitions">Repetitions:</label>
               <input
@@ -112,6 +130,7 @@
             </div>
           </form>
 
+          <!-- Buttons for Add Set & Confirm Machine in Program -->
           <div class="button-group">
             <button type="button" class="btn btn-add" onclick="addNewSet()">
               Add Another Set
@@ -126,6 +145,7 @@
           </div>
         </div>
 
+        <!-- Program Controls -->
         <div class="button-group">
           <button
             type="button"
@@ -143,13 +163,13 @@
           </button>
         </div>
 
+        <!-- Program Preview -->
         <h3>Program Preview:</h3>
         <div id="program-preview" class="program-preview">
           <!-- Program preview will be dynamically inserted here by JS -->
         </div>
       </div>
     </div>
-
     <section class="trainerTable-section">
       <table id="trainer-table" class="display">
         <thead>
@@ -160,21 +180,25 @@
           </tr>
         </thead>
         <tbody id="trainer-table-body">
-          <!-- נתונים יתווספו כאן -->
+          <!-- הנתונים יתווספו כאן -->
         </tbody>
       </table>
     </section>
-
-    <!-- Load jQuery first -->
+    <!-- קישור ל-JavaScript של DataTables ו-jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Load DataTables JS after jQuery -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <!-- SweetAlert2 JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.js"></script>
+    <!-- DataTables JS -->
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"
+    ></script>
 
-    <!-- Custom JavaScript -->
+    <!-- טוען את dataTables.js -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <!-- Custom JavaScript (your main logic) -->
     <script src="JS/trainers.js" defer></script>
   </body>
 </html>

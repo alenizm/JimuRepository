@@ -551,3 +551,27 @@ tr:nth-child(odd) {
 .dataTables_paginate .paginate_button.next:hover {
   background-color: #0056b3;
 }
+
+/* עיצוב כפתור מחיקה */
+.delete-btn {
+  background-color: #f44336; /* צבע אדום */
+  color: white; /* צבע טקסט לבן */
+  border: none; /* ביטול גבול */
+  padding: 8px 16px; /* ריפוד פנימי */
+  text-align: center; /* מיקוד טקסט */
+  font-size: 14px; /* גודל גופן */
+  cursor: pointer; /* משנה את סמן העכבר */
+  border-radius: 5px; /* פינות מעוגלות */
+  transition: background-color 0.3s ease; /* אנימציה לשינוי צבע */
+}
+
+/* מצב כאשר העכבר מרחף מעל הכפתור */
+.delete-btn:hover {
+  background-color: #d32f2f; /* אדום כהה יותר */
+}
+
+/* מצב כאשר הכפתור לא זמין */
+.delete-btn:disabled {
+  background-color: #e0e0e0; /* צבע אפור */
+  cursor: not-allowed; /* משנה את הסמן */
+}
