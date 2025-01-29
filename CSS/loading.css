@@ -38,6 +38,7 @@ body {
   background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpeg")
     no-repeat center center fixed;
   background-size: cover; /* מציג את כל התמונה בצורה מלאה */
+  background-position: center center; /* ממקם את התמונה במרכז */
   background-color: black; /* אם יש שוליים ריקים */
 }
 
