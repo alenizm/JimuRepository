@@ -541,15 +541,35 @@ tr:nth-child(odd) {
   background-color: #e67e22;
 }
 
-/* עיצוב כפתור "קודם" ו"לאחר" */
+/* עיצוב כפתור "קודם" ו"לאחר" בגוון כתום */
 .dataTables_paginate .paginate_button.previous,
 .dataTables_paginate .paginate_button.next {
-  background-color: #007bff;
+  background-color: #ff9800; /* כתום חי */
+  color: white;
+  border-radius: 5px;
+  padding: 6px 12px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* עיצוב בעת ריחוף */
 .dataTables_paginate .paginate_button.previous:hover,
 .dataTables_paginate .paginate_button.next:hover {
-  background-color: #0056b3;
+  background-color: #e68900; /* כתום כהה יותר */
+  transform: scale(1.05);
+}
+
+/* אפקט בעת לחיצה */
+.dataTables_paginate .paginate_button.previous:active,
+.dataTables_paginate .paginate_button.next:active {
+  background-color: #cc7700; /* כתום עמוק */
+  transform: scale(0.95);
+}
+
+/* שיפור הנראות במצב נבחר */
+.dataTables_paginate .paginate_button.current {
+  background-color: #ff6f00; /* כתום דומיננטי */
+  color: white;
+  font-weight: bold;
 }
 
 /* עיצוב כפתור מחיקה */
