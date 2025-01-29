@@ -493,6 +493,7 @@ function editSet(machineName, setIndex) {
 /*******************************
  * SUBMIT PROGRAM (with confirmation & loading state)
  *******************************/
+
 async function submitProgram() {
   // Must have at least one machine + at least one set
   if (trainingProgram.length === 0) {
@@ -566,7 +567,7 @@ async function submitProgram() {
           // Reset everything on success
           closeProgramModal();
 
-          // Call fetchPlans to refresh the data from the server
+          // Fetch and update the plans in the table
           fetchPlans(); // This will update the table with the latest training programs
         });
       } catch (error) {
