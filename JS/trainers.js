@@ -634,7 +634,6 @@ async function fetchPlans() {
     return []; // מחזיר מערך ריק במקרה של טעות
   }
 }
-
 /*******************************
  * POPULATE TABLE
  *******************************/
@@ -687,7 +686,7 @@ function populateTable(data) {
     // יצירת התוכן של השורה
     let planDetails = "";
     plans.forEach((plan) => {
-      planDetails += `
+      planDetails += `    
         <div>
           <strong>Machine:</strong> ${plan.machine} <br>
           <strong>Weight x Reps:</strong> ${plan.weight} x ${plan.reps} <br>
@@ -700,7 +699,10 @@ function populateTable(data) {
     row.innerHTML = `
       <td>${email}</td>
       <td>${planDetails}</td>
-      <td><button class="delete-btn" onclick="deletePlansByEmail('${email}')">Delete All Plans</button></td>
+      <td>
+        <!-- כפתור מחיקה אחד לכל תוכנית -->
+        <button class="delete-btn" onclick="deletePlanById('${email}', '${plans[0].planId}')">Delete</button>
+      </td>
     `;
 
     // הוספת השורה לטבלה
@@ -712,55 +714,60 @@ function populateTable(data) {
 }
 
 /*******************************
- * DELETE ALL PLANS FOR EMAIL
+ * DELETE SPECIFIC PLAN
  *******************************/
-async function deletePlansByEmail(email) {
+async function deletePlanById(email, planId) {
   try {
     // שלב 1: אישור מחיקה
     const confirmRes = await Swal.fire({
       icon: "warning",
-      title: "Delete all plans?",
-      text: "Are you sure you want to delete all training plans for this email?",
+      title: "Delete this plan?",
+      text: "Are you sure you want to delete this training plan?",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete them!",
+      confirmButtonText: "Yes, delete it!",
       background: "#2d2d2d",
       color: "#ffffff",
     });
     if (!confirmRes.isConfirmed) return;
 
-    // שלב 2: שליחת בקשת מחיקה לשרת עבור כל התכניות של אותו אימייל
+    // שלב 2: שליחת בקשת מחיקה לשרת עבור התוכנית הספציפית
     const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserEmail: email }),
+      body: JSON.stringify({ UserEmail: email, PlanID: planId }),
     });
 
-    if (!response.ok) throw new Error("Failed to delete training plans");
+    if (!response.ok) throw new Error("Failed to delete the training plan");
 
-    // שלב 3: מחיקת השורות מהטבלה עבור כל התכניות של האימייל
-    const rows = document.querySelectorAll(`tr`);
+    // שלב 3: מחיקת התוכנית מהטבלה
+    const rows = document.querySelectorAll("tr");
     rows.forEach((row) => {
       if (
         row.querySelector("td") &&
         row.querySelector("td").innerText === email
       ) {
-        row.remove();
+        const planButtons = row.querySelectorAll(".delete-btn");
+        planButtons.forEach((button) => {
+          if (button.getAttribute("onclick").includes(planId)) {
+            button.closest("div").remove(); // מסיר את התוכנית
+          }
+        });
       }
     });
 
     // שלב 4: הודעת הצלחה
     await Swal.fire(
       "Deleted!",
-      "All training plans for this email have been deleted.",
+      "The training plan has been deleted.",
       "success"
     );
   } catch (error) {
-    console.error("Error deleting plans:", error);
+    console.error("Error deleting plan:", error);
     Swal.fire(
       "Error",
-      error.message || "Failed to delete training plans",
+      error.message || "Failed to delete the training plan",
       "error"
     );
   }
