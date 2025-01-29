@@ -646,7 +646,6 @@ function populateTable(data) {
 
   // מעבד את הנתונים וממלא את הטבלה
   data.forEach((item) => {
-    const UserID = item.UserID;
     const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
       item.PlanDetails.L.forEach((plan) => {
@@ -655,7 +654,7 @@ function populateTable(data) {
           plan.M.sets.L.forEach((set) => {
             const weight = set.M?.weight?.S || "No weight";
             const reps = set.M?.reps?.S || "No reps";
-            const planId = `${machine}_${weight}_${reps}`; // יצירת מזהה ייחודי לתכנית
+            const planId = item.PlanID; // יצירת מזהה ייחודי לתכנית
 
             // יצירת שורה חדשה
             const row = document.createElement("tr");
@@ -666,7 +665,7 @@ function populateTable(data) {
               <td>${traineeEmail}</td>
               <td>${machine}</td>
               <td>${weight} x ${reps}</td>
-              <td><button class="delete-btn" onclick="deletePlan('${UserID}', '${planId}')">Delete</button></td> <!-- כפתור מחיקה -->
+              <td><button class="delete-btn" onclick="deletePlan('${planId}')">Delete</button></td> <!-- כפתור מחיקה -->
             `;
 
             // הוספת השורה לטבלה
@@ -684,7 +683,7 @@ function populateTable(data) {
 /*******************************
  * DELETE PLAN
  *******************************/
-async function deletePlan(UserID, planId) {
+async function deletePlan(planId) {
   try {
     // שלב 1: אישור מחיקה
     const confirmRes = await Swal.fire({
@@ -704,7 +703,7 @@ async function deletePlan(UserID, planId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserID: UserID, PlanID: planId }),
+      body: JSON.stringify({ PlanID: planId }),
     });
 
     if (!response.ok) throw new Error("Failed to delete training plan");
