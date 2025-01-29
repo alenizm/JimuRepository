@@ -702,7 +702,7 @@ function populateTable(data) {
         <td>
           <button 
             class="delete-btn" 
-            onclick="deletePlanById('${email}', '${planId}')"
+            onclick="deletePlanById('${planId}')"
           >
             Delete
           </button>
