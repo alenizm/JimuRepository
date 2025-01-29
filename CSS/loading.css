@@ -25,16 +25,20 @@
   list-style: none;
   transition: all 0.3s ease-in-out;
 }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* מונע גלילה */
+}
+
 body {
   background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpeg")
     no-repeat center center fixed;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
+  background-size: contain; /* מציג את כל התמונה בלי לחתוך */
+  background-color: black; /* אפשר להחליף את הצבע אם יש שוליים ריקים */
 }
 
 /* Custom Scrollbar */
