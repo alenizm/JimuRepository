@@ -493,6 +493,7 @@ function editSet(machineName, setIndex) {
 /*******************************
  * SUBMIT PROGRAM (with confirmation & loading state)
  *******************************/
+
 async function submitProgram() {
   // Must have at least one machine + at least one set
   if (trainingProgram.length === 0) {
@@ -565,6 +566,9 @@ async function submitProgram() {
         ).then(() => {
           // Reset everything on success
           closeProgramModal();
+
+          // Fetch and update the plans in the table
+          fetchPlans(); // This will update the table with the latest training programs
         });
       } catch (error) {
         console.error("Error submitting program:", error);
@@ -700,7 +704,7 @@ async function deletePlan(UserID, planId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserID, PlanID: planId }),
+      body: JSON.stringify({ UserID: UserID, PlanID: planId }),
     });
 
     if (!response.ok) throw new Error("Failed to delete training plan");
