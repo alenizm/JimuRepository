@@ -310,9 +310,8 @@ function displayCurrentSet() {
     currentSetIndex = currentSets.length - 1;
   }
 
-  document.getElementById("set-title").textContent = `Set ${
-    currentSetIndex + 1
-  } of ${currentSets.length}`;
+  document.getElementById("set-title").textContent = `Set ${currentSetIndex + 1
+    } of ${currentSets.length}`;
 
   document.getElementById("weight").value = currentSets[currentSetIndex].weight;
   document.getElementById("repetitions").value =
@@ -586,44 +585,44 @@ async function submitProgram() {
  * FETCH PLANS
  *******************************/
 async function fetchPlans() {
-  const trainerName = getTrainerName(); // ודא שהפונקציה מחזירה את השם כראוי
+  const trainerName = getTrainerName();
   if (!trainerName) {
     console.error("TrainerName is missing");
     Swal.fire("Error", "TrainerName is missing", "error");
     return;
   }
 
-  const url = `${TRINING_Plans_API_ENDPOINAT}`; // רק ה-URL הבסיסי, בלי פרמטרים ב-query string
+  const url = `${TRINING_Plans_API_ENDPOINAT}`;
   console.log("Fetching plans from URL:", url);
 
   try {
     const response = await fetch(url, {
-      method: "POST", // שימוש ב-POST כמו בדוגמה שלך
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         body: JSON.stringify({
-          // Wrap the payload in a body field
-          TrainerName: trainerName, // שליחת שם המתאמן בגוף הבקשה
+          TrainerName: trainerName,
         }),
       }),
     });
 
     if (!response.ok) throw new Error("Failed to fetch training plans");
 
-    const result = await response.json(); // מקבל את התוצאה כ-JSON
-    const plans = JSON.parse(result.body).data; // כאן פורסים את ה-body ומוציאים את המידע
+    const result = await response.json();
+    console.log(result);
+    const plans = JSON.parse(result.body).data;
     console.log("Plans fetched successfully:", plans);
 
     if (plans && Array.isArray(plans)) {
-      populateTable(plans); // הדפס את התכניות בטבלה
+      populateTable(plans);
     } else {
       console.error("Plans data is missing or malformed");
       Swal.fire("Error", "Plans data is missing or malformed.", "error");
     }
 
-    return plans; // מחזיר את התכניות
+    return plans;
   } catch (error) {
     console.error("Error fetching data:", error);
     Swal.fire(
@@ -631,86 +630,91 @@ async function fetchPlans() {
       "Failed to fetch training plans. Please try again later.",
       "error"
     );
-    return []; // מחזיר מערך ריק במקרה של טעות
+    return [];
   }
 }
+
 /*******************************
  * POPULATE TABLE
  *******************************/
 function populateTable(data) {
   const tableBody = document.getElementById("trainer-table-body");
-
-  // מנקה את הטבלה לפני הוספת נתונים חדשים
   tableBody.innerHTML = "";
 
-  // מאחסן את הנתונים לפי אימייל
-  const groupedByEmail = {};
+  // Structure to group data by Email -> PlanID -> all machines/sets
+  const groupedData = {};
 
-  // מעבד את הנתונים ומאחסן לפי אימייל
   data.forEach((item) => {
-    const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
+    const traineeEmail = item.UserEmail?.S || "No email";
+    const planId = item.PlanID?.S || "No PlanID";
+
+    // Make sure we have the structure in place
+    if (!groupedData[traineeEmail]) {
+      groupedData[traineeEmail] = {};
+    }
+    if (!groupedData[traineeEmail][planId]) {
+      groupedData[traineeEmail][planId] = [];
+    }
+
+    // Gather machines/sets under this plan
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
-      // אם אין אימייל בקבוצת groupedByEmail, יצר אותו
-      if (!groupedByEmail[traineeEmail]) {
-        groupedByEmail[traineeEmail] = [];
-      }
-
       item.PlanDetails.L.forEach((plan) => {
-        const machine = plan.M?.machine?.S || "No machine"; // בדיקה אם יש מכונה
-        if (plan.M?.sets?.L) {
-          plan.M.sets.L.forEach((set) => {
-            const weight = set.M?.weight?.S || "No weight";
-            const reps = set.M?.reps?.S || "No reps";
-            const planId = item.PlanID; // יצירת מזהה ייחודי לתכנית
+        const machine = plan.M?.machine?.S || "No machine";
+        const setsArray = plan.M?.sets?.L || [];
 
-            // הוספת התכנית לרשימה לפי אימייל
-            groupedByEmail[traineeEmail].push({
-              planId: planId,
-              machine: machine,
-              weight: weight,
-              reps: reps,
-            });
+        setsArray.forEach((set) => {
+          const weight = set.M?.weight?.S || "No weight";
+          const reps = set.M?.reps?.S || "No reps";
+          groupedData[traineeEmail][planId].push({
+            machine,
+            weight,
+            reps,
           });
-        }
+        });
       });
     }
   });
 
-  // כעת, עובר על כל הקבוצות לפי אימייל וממלא את הטבלה
-  Object.keys(groupedByEmail).forEach((email) => {
-    const plans = groupedByEmail[email];
+  // Now build rows: one row per plan, per email
+  Object.keys(groupedData).forEach((email) => {
+    Object.keys(groupedData[email]).forEach((planId) => {
+      const machineSets = groupedData[email][planId];
 
-    // יצירת שורה אחת לכל אימייל
-    const row = document.createElement("tr");
+      // Build the HTML for all machines/sets in this plan
+      let planDetailsHTML = "";
+      machineSets.forEach((entry) => {
+        planDetailsHTML += `
+          <div>
+            <strong>Machine:</strong> ${entry.machine}<br>
+            <strong>Weight x Reps:</strong> ${entry.weight} x ${entry.reps}
+          </div>
+          <hr>
+        `;
+      });
 
-    // יצירת התוכן של השורה
-    let planDetails = "";
-    plans.forEach((plan) => {
-      planDetails += `    
-        <div>
-          <strong>Machine:</strong> ${plan.machine} <br>
-          <strong>Weight x Reps:</strong> ${plan.weight} x ${plan.reps} <br>
-        </div>
-        <hr>
+      // Create a row for this plan
+      const row = document.createElement("tr");
+      row.setAttribute("data-plan-id", planId); // For easy removal later
+
+      row.innerHTML = `
+        <td>${email}</td>
+        <td>${planDetailsHTML}</td>
+        <td>
+          <button 
+            class="delete-btn" 
+            onclick="deletePlanById('${email}', '${planId}')"
+          >
+            Delete
+          </button>
+        </td>
       `;
+
+      tableBody.appendChild(row);
     });
-
-    // הוספת הנתונים לשורה
-    row.innerHTML = `
-      <td>${email}</td>
-      <td>${planDetails}</td>
-      <td>
-        <!-- כפתור מחיקה אחד לכל תוכנית -->
-        <button class="delete-btn" onclick="deletePlanById('${email}', '${plans[0].planId}')">Delete</button>
-      </td>
-    `;
-
-    // הוספת השורה לטבלה
-    tableBody.appendChild(row);
   });
 
-  // אתחול DataTables על הטבלה אחרי שהוספנו את הנתונים
-  $("#trainer-table").DataTable(); // הפעלת DataTables עם jQuery
+  // Initialize DataTables after building the table
+  $("#trainer-table").DataTable();
 }
 
 /*******************************
@@ -718,7 +722,7 @@ function populateTable(data) {
  *******************************/
 async function deletePlanById(email, planId) {
   try {
-    // שלב 1: אישור מחיקה
+    // 1) Confirm deletion
     const confirmRes = await Swal.fire({
       icon: "warning",
       title: "Delete this plan?",
@@ -730,39 +734,27 @@ async function deletePlanById(email, planId) {
     });
     if (!confirmRes.isConfirmed) return;
 
-    // שלב 2: שליחת בקשת מחיקה לשרת עבור התוכנית הספציפית
+    // 2) Send DELETE request with the planId
     const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserEmail: email, PlanID: planId }),
+      body: JSON.stringify({
+        PlanID: planId
+      }),
     });
 
     if (!response.ok) throw new Error("Failed to delete the training plan");
 
-    // שלב 3: מחיקת התוכנית מהטבלה
-    const rows = document.querySelectorAll("tr");
-    rows.forEach((row) => {
-      if (
-        row.querySelector("td") &&
-        row.querySelector("td").innerText === email
-      ) {
-        const planButtons = row.querySelectorAll(".delete-btn");
-        planButtons.forEach((button) => {
-          if (button.getAttribute("onclick").includes(planId)) {
-            button.closest("div").remove(); // מסיר את התוכנית
-          }
-        });
-      }
-    });
+    // 3) Remove the entire row for this plan
+    const row = document.querySelector(`tr[data-plan-id="${planId}"]`);
+    if (row) {
+      row.remove();
+    }
 
-    // שלב 4: הודעת הצלחה
-    await Swal.fire(
-      "Deleted!",
-      "The training plan has been deleted.",
-      "success"
-    );
+    // 4) Success message
+    await Swal.fire("Deleted!", "The training plan has been deleted.", "success");
   } catch (error) {
     console.error("Error deleting plan:", error);
     Swal.fire(
@@ -773,5 +765,5 @@ async function deletePlanById(email, planId) {
   }
 }
 
-// קריאה לפונקציה לשליפת הנתונים
+// Initial call to fetch data
 fetchPlans();
