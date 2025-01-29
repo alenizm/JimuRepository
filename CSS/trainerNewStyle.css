@@ -571,7 +571,6 @@ tr:nth-child(odd) {
   color: white;
   font-weight: bold;
 }
-
 /* עיצוב כפתור מחיקה */
 .delete-btn {
   background-color: #f44336; /* צבע אדום */
@@ -583,6 +582,8 @@ tr:nth-child(odd) {
   cursor: pointer; /* משנה את סמן העכבר */
   border-radius: 5px; /* פינות מעוגלות */
   transition: background-color 0.3s ease; /* אנימציה לשינוי צבע */
+  display: block; /* מבטל את התצוגה האנלינית */
+  margin: 0 auto; /* ממרכז את הכפתור */
 }
 
 /* מצב כאשר העכבר מרחף מעל הכפתור */

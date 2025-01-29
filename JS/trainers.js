@@ -491,94 +491,6 @@ function editSet(machineName, setIndex) {
 }
 
 /*******************************
- * SUBMIT PROGRAM (with confirmation & loading state)
- *******************************/
-async function submitProgram() {
-  // Must have at least one machine + at least one set
-  if (trainingProgram.length === 0) {
-    Swal.fire(
-      "Error",
-      "Add at least one machine and one set before submitting.",
-      "error"
-    );
-    return;
-  }
-
-  // Must have a selected user
-  if (!selectedUserEmail || !selectedUserSub) {
-    Swal.fire("Error", "No user selected for this training program.", "error");
-    return;
-  }
-
-  // Get trainer's sub from localStorage
-  const trainerSub = getTrainerSub();
-  if (!trainerSub) return;
-
-  // Build the request payload
-  const bodyPayload = {
-    TrainerName: username,
-    UserEmail: selectedUserEmail,
-    UserID: selectedUserSub,
-    TrainerID: trainerSub,
-    PlanDetails: trainingProgram,
-  };
-
-  // Prompt confirmation before actually sending
-  Swal.fire({
-    title: "Submit Training Program?",
-    text: "Are you sure you want to submit this program?",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, Submit",
-    cancelButtonText: "Cancel",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      // Show a loading state while the fetch is in progress
-      Swal.fire({
-        title: "Submitting Program...",
-        text: "Please wait while we submit the training program.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-
-      try {
-        const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(bodyPayload),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to submit training program");
-        }
-
-        // Close the loading alert
-        Swal.close();
-
-        // Show success message
-        Swal.fire(
-          "Success",
-          "Training program submitted successfully!",
-          "success"
-        ).then(() => {
-          // Reset everything on success
-          closeProgramModal();
-        });
-      } catch (error) {
-        console.error("Error submitting program:", error);
-        Swal.fire(
-          "Error",
-          "Failed to submit training program. Please try again.",
-          "error"
-        );
-      }
-    }
-  });
-}
-
-/*******************************
  * FETCH PLANS
  *******************************/
 async function fetchPlans() {
@@ -700,7 +612,7 @@ async function deletePlan(UserID, planId) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ UserID, PlanID: planId }),
+      body: JSON.stringify({ UserID: UserID, PlanID: planId }),
     });
 
     if (!response.ok) throw new Error("Failed to delete training plan");
@@ -727,3 +639,94 @@ async function deletePlan(UserID, planId) {
 
 // קריאה לפונקציה לשליפת הנתונים
 fetchPlans();
+
+/*******************************
+ * SUBMIT PROGRAM (with confirmation & loading state)
+ *******************************/
+async function submitProgram() {
+  // Must have at least one machine + at least one set
+  if (trainingProgram.length === 0) {
+    Swal.fire(
+      "Error",
+      "Add at least one machine and one set before submitting.",
+      "error"
+    );
+    return;
+  }
+
+  // Must have a selected user
+  if (!selectedUserEmail || !selectedUserSub) {
+    Swal.fire("Error", "No user selected for this training program.", "error");
+    return;
+  }
+
+  // Get trainer's sub from localStorage
+  const trainerSub = getTrainerSub();
+  if (!trainerSub) return;
+
+  // Build the request payload
+  const bodyPayload = {
+    TrainerName: username,
+    UserEmail: selectedUserEmail,
+    UserID: selectedUserSub,
+    TrainerID: trainerSub,
+    PlanDetails: trainingProgram,
+  };
+
+  // Prompt confirmation before actually sending
+  Swal.fire({
+    title: "Submit Training Program?",
+    text: "Are you sure you want to submit this program?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Submit",
+    cancelButtonText: "Cancel",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      // Show a loading state while the fetch is in progress
+      Swal.fire({
+        title: "Submitting Program...",
+        text: "Please wait while we submit the training program.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      try {
+        const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bodyPayload),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to submit training program");
+        }
+
+        // Close the loading alert
+        Swal.close();
+
+        // Show success message
+        Swal.fire(
+          "Success",
+          "Training program submitted successfully!",
+          "success"
+        ).then(() => {
+          // Reset everything on success
+          closeProgramModal();
+
+          // Call fetchPlans to refresh the data from the server
+          fetchPlans(); // This will update the table with the latest training programs
+        });
+      } catch (error) {
+        console.error("Error submitting program:", error);
+        Swal.fire(
+          "Error",
+          "Failed to submit training program. Please try again.",
+          "error"
+        );
+      }
+    }
+  });
+}
