@@ -720,7 +720,7 @@ function populateTable(data) {
 /*******************************
  * DELETE SPECIFIC PLAN
  *******************************/
-async function deletePlanById(email, planId) {
+async function deletePlanById(planId) {
   try {
     // 1) Confirm deletion
     const confirmRes = await Swal.fire({
