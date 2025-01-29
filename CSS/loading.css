@@ -2,8 +2,8 @@
 
 :root {
   --primary: #ffffff;
-  --secondary: #4a90e2; /* כחול נעים יותר לקריאה */
-  --accent: #00c9a7; /* טורקיז עז שמבליט פרטים */
+  --secondary: #f2f2f2;
+  --accent: #ff8c00;
   --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   --gradient-bg: linear-gradient(
     135deg,
