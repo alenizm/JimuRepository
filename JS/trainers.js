@@ -612,6 +612,7 @@ async function fetchPlans() {
 
     const result = await response.json();
     console.log(result);
+    // Parse the result body
     const plans = JSON.parse(result.body).data;
     console.log("Plans fetched successfully:", plans);
 
@@ -641,14 +642,14 @@ function populateTable(data) {
   const tableBody = document.getElementById("trainer-table-body");
   tableBody.innerHTML = "";
 
-  // Structure to group data by Email -> PlanID -> all machines/sets
+  // Structure to group data by Email -> PlanID
   const groupedData = {};
 
   data.forEach((item) => {
     const traineeEmail = item.UserEmail?.S || "No email";
     const planId = item.PlanID?.S || "No PlanID";
 
-    // Ensure grouping structure
+    // Ensure structure
     if (!groupedData[traineeEmail]) {
       groupedData[traineeEmail] = {};
     }
@@ -659,21 +660,21 @@ function populateTable(data) {
     // Gather machines/sets under this plan
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
       item.PlanDetails.L.forEach((plan) => {
-        // 1) Get the machine name
+        // Get the machine name
         const machine = plan.M?.machine?.S || "No machine";
-        // 2) Get the set name/number from the plan details
-        const planSet = plan.M?.set?.S || "No set info";
-        // 3) Retrieve the array of sets
+
+        // Retrieve the array of sets
         const setsArray = plan.M?.sets?.L || [];
 
-        // 4) Push each set with all info into groupedData
-        setsArray.forEach((set) => {
+        // Push each set with all info into groupedData
+        setsArray.forEach((set, index) => {
           const weight = set.M?.weight?.S || "No weight";
           const reps = set.M?.reps?.S || "No reps";
 
           groupedData[traineeEmail][planId].push({
             machine,
-            planSet,
+            // We'll use index+1 for a "Set #"
+            setNumber: index + 1,
             weight,
             reps,
           });
@@ -693,7 +694,7 @@ function populateTable(data) {
         planDetailsHTML += `
           <div>
             <strong>Machine:</strong> ${entry.machine}<br>
-            <strong>Set ${entry.planSet} - Weight x Reps:</strong> 
+            <strong>Set ${entry.setNumber} - Weight x Reps:</strong>
               ${entry.weight} x ${entry.reps}
           </div>
           <hr>
@@ -721,7 +722,7 @@ function populateTable(data) {
     });
   });
 
-  // Initialize DataTables after building the table
+  // Initialize DataTables (if you're using it)
   $("#trainer-table").DataTable();
 }
 
@@ -755,7 +756,7 @@ async function deletePlanById(planId) {
 
     if (!response.ok) throw new Error("Failed to delete the training plan");
 
-    // 3) Remove the entire row for this plan
+    // 3) Remove the row from the table
     const row = document.querySelector(`tr[data-plan-id="${planId}"]`);
     if (row) {
       row.remove();
