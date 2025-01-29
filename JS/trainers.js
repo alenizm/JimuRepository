@@ -642,7 +642,6 @@ function populateTable(data) {
 
   // מעבד את הנתונים וממלא את הטבלה
   data.forEach((item) => {
-    console.log("Item from plans:", item); // הדפסת כל item
     const UserID = item.UserID;
     const traineeEmail = item.UserEmail?.S || "No email"; // בדיקה אם יש את המייל
     if (item.PlanDetails && Array.isArray(item.PlanDetails.L)) {
@@ -656,6 +655,7 @@ function populateTable(data) {
 
             // יצירת שורה חדשה
             const row = document.createElement("tr");
+            row.setAttribute("data-plan-id", planId); // הוספת מזהה ייחודי
 
             // הוספת הנתונים לשורה
             row.innerHTML = `
@@ -681,41 +681,45 @@ function populateTable(data) {
  * DELETE PLAN
  *******************************/
 async function deletePlan(UserID, planId) {
-  // יצירת אובייקט בקשה למחיקת התוכנית
-  const requestBody = {
-    UserID: UserID,
-    PlanID: planId,
-  };
-
   try {
+    // שלב 1: אישור מחיקה
+    const confirmRes = await Swal.fire({
+      icon: "warning",
+      title: "Delete?",
+      text: "Are you sure you want to delete this training plan?",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      background: "#2d2d2d",
+      color: "#ffffff",
+    });
+    if (!confirmRes.isConfirmed) return;
+
+    // שלב 2: שליחת בקשת מחיקה לשרת
     const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
-      method: "DELETE", // שיטה DELETE
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody), // שולחים את המידע בבקשה כ-JSON
+      body: JSON.stringify({ UserID, PlanID: planId }),
     });
 
-    if (response.ok) {
-      console.log("Plan deleted successfully");
-      Swal.fire("Deleted", "Training plan deleted successfully.", "success");
+    if (!response.ok) throw new Error("Failed to delete training plan");
 
-      // קריאה מחדש לנתונים אחרי המחיקה
-      fetchPlans();
-    } else {
-      const result = await response.json();
-      console.error("Failed to delete plan:", result.body);
-      Swal.fire(
-        "Error",
-        "Failed to delete training plan. Please try again.",
-        "error"
-      );
-    }
+    // שלב 3: מחיקת השורה מהטבלה
+    const row = document.querySelector(`tr[data-plan-id="${planId}"]`);
+    if (row) row.remove();
+
+    // שלב 4: הודעת הצלחה
+    await Swal.fire(
+      "Deleted!",
+      "The training plan has been deleted.",
+      "success"
+    );
   } catch (error) {
     console.error("Error deleting plan:", error);
     Swal.fire(
       "Error",
-      "Failed to delete training plan. Please try again.",
+      error.message || "Failed to delete training plan",
       "error"
     );
   }
