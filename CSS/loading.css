@@ -25,13 +25,17 @@
   list-style: none;
   transition: all 0.3s ease-in-out;
 }
-
 body {
   background: url("https://jimu-website.s3.us-east-1.amazonaws.com/images/home.jpeg")
     no-repeat center center fixed;
   background-size: cover;
-  color: var(--primary);
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
   height: 100vh;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
