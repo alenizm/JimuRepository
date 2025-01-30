@@ -99,13 +99,22 @@ document.addEventListener("DOMContentLoaded", () => {
 /*******************************
  * FETCH TRAINEES
  *******************************/
+
+function getAuthHeaders() {
+  const accessToken = localStorage.getItem('access_token');
+  return {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+  };
+}
+
 async function fetchTrainees() {
   try {
     const response = await fetch(
       `${TRAINEES_API_ENDPOINT}?UserPoolId=${COGNITO_USER_POOL_ID}&GroupName=${COGNITO_GROUP_NAME}`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders()
       }
     );
 
@@ -147,7 +156,7 @@ async function fetchMachines() {
   try {
     const response = await fetch(MACHINES_API_ENDPOINT, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) throw new Error("Failed to fetch machines");
@@ -545,9 +554,9 @@ async function submitProgram() {
 
       try {
         const response = await fetch(TRAINING_PROGRAM_API_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(bodyPayload),
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(bodyPayload)
         });
 
         if (!response.ok) {
@@ -597,13 +606,11 @@ async function fetchPlans() {
 
   try {
     const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: 'POST',
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         body: JSON.stringify({
-          TrainerName: trainerName,
+          TrainerName: trainerName
         }),
       }),
     });
@@ -745,10 +752,8 @@ async function deletePlanById(planId) {
 
     // 2) Send DELETE request with the planId
     const response = await fetch(TRINING_Plans_API_ENDPOINAT, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: 'DELETE',
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         PlanID: planId
       }),

@@ -67,6 +67,14 @@ function displayUserInfo() {
   }
 }
 
+function getAuthHeaders() {
+  const accessToken = localStorage.getItem('access_token');
+  return {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+  };
+}
+
 // ======================================================
 // NOTIFICATIONS (SweetAlert2 helpers)
 // ======================================================
@@ -101,7 +109,9 @@ async function loadMachines() {
     container.innerHTML =
       '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading machines...</div>';
 
-    const response = await fetch(ENDPOINTS.MACHINES);
+      const response = await fetch(ENDPOINTS.MACHINES, {
+        headers: getAuthHeaders() 
+      });
     if (!response.ok) throw new Error("Failed to fetch machines");
 
     const data = await response.json();
@@ -116,7 +126,7 @@ async function loadMachines() {
     }
   } catch (error) {
     console.error("Error:", error);
-    showError("Failed to load machines");
+    showError("Failed to load machines"); 
   }
 }
 
@@ -293,7 +303,7 @@ async function updateWorkout(machineId, machineName, weight, sets, reps) {
 
     const response = await fetch(ENDPOINTS.TRAINING, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders(), 
       body: JSON.stringify(workoutData),
     });
 
@@ -340,7 +350,9 @@ async function fetchDataAndPopulateTable() {
     }
 
     const trainingUrl = `${ENDPOINTS.TRAINING}?userId=${userSub}`;
-    const response = await fetch(trainingUrl);
+    const response = await fetch(trainingUrl, {
+      headers: getAuthHeaders()
+    });
     if (!response.ok) throw new Error("Failed to fetch training records");
 
     const data = await response.json();
@@ -485,6 +497,7 @@ async function deleteRecord(recordId) {
 
     const response = await fetch(`${ENDPOINTS.TRAINING}?recordId=${recordId}`, {
       method: "DELETE",
+      headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error("Failed to delete record");
 
